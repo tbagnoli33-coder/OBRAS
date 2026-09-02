@@ -829,9 +829,76 @@
             .linea-rrhh-secundaria { flex-wrap: wrap; }
         }
 
+        /* ===== OVERLAY DE CARGA (splash mientras se traen datos del Sheet) ===== */
+        #overlay-carga {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            background-color: var(--azul-oscuro);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            font-family: 'Montserrat', sans-serif;
+            transition: opacity 0.4s ease;
+        }
+        #overlay-carga.oculto { opacity: 0; pointer-events: none; }
+        #overlay-carga .spinner-carga {
+            width: 54px;
+            height: 54px;
+            border: 5px solid rgba(141, 226, 214, 0.25);
+            border-top-color: var(--celeste);
+            border-radius: 50%;
+            animation: girar-spinner 0.9s linear infinite;
+        }
+        @keyframes girar-spinner { to { transform: rotate(360deg); } }
+        #overlay-carga .titulo-carga {
+            color: var(--blanco);
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        #overlay-carga .subtitulo-carga {
+            color: var(--celeste);
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            max-width: 320px;
+            line-height: 1.4;
+        }
+        #overlay-carga .barra-carga-cont {
+            width: 260px;
+            max-width: 70vw;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        #overlay-carga .barra-carga-fill {
+            width: 40%;
+            height: 100%;
+            background-color: var(--amarillo);
+            border-radius: 6px;
+            animation: barra-indeterminada 1.3s ease-in-out infinite;
+        }
+        @keyframes barra-indeterminada {
+            0%   { margin-left: -40%; }
+            100% { margin-left: 100%; }
+        }
     </style>
 </head>
 <body>
+
+    <!-- OVERLAY DE CARGA: visible al iniciar mientras se traen los datos del Sheet -->
+    <div id="overlay-carga" role="status" aria-live="polite" aria-label="Cargando datos">
+        <div class="spinner-carga"></div>
+        <div class="titulo-carga">Cargando datos del sistema</div>
+        <div class="barra-carga-cont"><div class="barra-carga-fill"></div></div>
+        <div class="subtitulo-carga">Estamos trayendo la información desde el servidor. Esto puede tardar unos segundos, por favor esperá…</div>
+    </div>
 
     <button class="btn-crear-flotante" onclick="abrirModalCreacion()">
         <span style="font-size: 18px;">+</span> CREAR PEDIDO
@@ -1184,7 +1251,17 @@
             opciones.forEach(op => { sel.innerHTML += `<option value="${op}">${op}</option>`; });
         }
 
+        // Oculta el overlay de carga (con fade); se llama al terminar la carga inicial.
+        function ocultarOverlayCarga() {
+            var ov = document.getElementById('overlay-carga');
+            if (!ov) return;
+            ov.classList.add('oculto');
+            setTimeout(function () { if (ov.parentNode) ov.style.display = 'none'; }, 450);
+        }
+
         async function iniciarApp() {
+            // Si no hay backend (modo demo local), no tiene sentido mostrar el splash de carga.
+            if (!GOOGLE_SHEETS_URL) ocultarOverlayCarga();
             try {
                 const payload = await obtenerDatos();
                 datosSheets = normalizarPayload(payload);
@@ -1196,6 +1273,7 @@
             }
             poblarSelect('nuevo-tipo', catalogos.tiposPedido);
             inicializarHospitales();
+            ocultarOverlayCarga();
         }
 
         let ordenHospitalesAsc = true;
