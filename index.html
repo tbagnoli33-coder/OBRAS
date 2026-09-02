@@ -987,7 +987,7 @@
            }
            Si "grupos" o "catalogos" no vienen, se usan los valores por defecto.
            ===================================================================== */
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxMlMaBhRTFlZHDRjE072pruomD53V9TJjCOd0zeATJOGUJHUeCJTWJkfayc4RjpVU/exec"; // URL del Web App (Apps Script del Sheet)
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxZ94NWiMfVkPAvMiZOeJQWVkVGXN46APHXuiqLx2r0JtcdQqbi_dj9F5rsWOgCS6Q/exec"; // URL del Web App (Apps Script del Sheet)
 
         const CATALOGOS_DEFECTO = {
             tiposPedido: ["Obra", "Ampliacion de dotación", "Obra Recorrida FQ", "Ampliacion Recorrida FQ"],
@@ -1146,11 +1146,36 @@
             return procesado;
         }
 
-        async function obtenerDatos() {
-            if (!GOOGLE_SHEETS_URL) return DB_ARRAY_LOCAL;
-            const respuesta = await fetch(GOOGLE_SHEETS_URL);
-            if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-            return await respuesta.json();
+        // Lectura por JSONP: Apps Script responde a un GET con un redirect 302 que el
+        // navegador bloquea por CORS cuando la app se sirve desde un dominio real (Vercel).
+        // JSONP inserta un <script src="...?callback=fn"> que NO está sujeto a CORS.
+        // Requiere que el doGet del Apps Script envuelva la respuesta cuando viene ?callback.
+        function obtenerDatos() {
+            if (!GOOGLE_SHEETS_URL) return Promise.resolve(DB_ARRAY_LOCAL);
+            return new Promise(function (resolve, reject) {
+                var cbName = 'jsonp_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
+                var script = document.createElement('script');
+                var timeoutId = setTimeout(function () {
+                    cleanup();
+                    reject(new Error("Timeout al leer del Sheets (JSONP)"));
+                }, 20000);
+                function cleanup() {
+                    clearTimeout(timeoutId);
+                    try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                }
+                window[cbName] = function (data) {
+                    cleanup();
+                    resolve(data);
+                };
+                script.onerror = function () {
+                    cleanup();
+                    reject(new Error("No se pudo cargar el script JSONP del Sheets"));
+                };
+                var sep = GOOGLE_SHEETS_URL.indexOf('?') === -1 ? '?' : '&';
+                script.src = GOOGLE_SHEETS_URL + sep + 'callback=' + cbName + '&_=' + Date.now();
+                document.body.appendChild(script);
+            });
         }
 
         function poblarSelect(id, opciones) {
@@ -1595,14 +1620,16 @@
                         expediente: c.expediente,
                         qAprobado: c.qAprobado
                     };
-                    const resp = await fetch(GOOGLE_SHEETS_URL, {
+                    // POST con mode:"no-cors": desde un dominio real (Vercel), Apps Script
+                    // redirige (302) y bloquea la lectura de la respuesta por CORS. Con no-cors
+                    // la fila se inserta igual, pero la respuesta es "opaca" (no legible).
+                    // Por eso NO validamos resp.ok/data: asumimos éxito si no hubo excepción de red.
+                    await fetch(GOOGLE_SHEETS_URL, {
                         method: "POST",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" }, // evita preflight CORS
+                        mode: "no-cors",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify(fila)
                     });
-                    if (!resp.ok) throw new Error("HTTP " + resp.status);
-                    const data = await resp.json();
-                    if (!data || data.ok !== true) throw new Error((data && data.error) || "Respuesta inválida del backend");
                     insertadas++;
                 }
                 console.log("Pedido sincronizado con el Sheet. Filas insertadas: " + insertadas + " de " + cargos.length);
