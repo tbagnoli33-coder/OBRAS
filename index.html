@@ -48,7 +48,7 @@
         }
 
         .logo-plataforma { 
-            height: 25px; 
+            height: 50px; 
             width: auto;
             object-fit: contain; 
             margin-bottom: 2px;
@@ -56,14 +56,16 @@
 
         .btn-inicio-texto {
             font-family: 'Montserrat', sans-serif;
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 18px;
+            line-height: 1;
             color: var(--blanco);
-            letter-spacing: 2px;
-            text-transform: uppercase;
             border: 1.5px solid rgba(255, 255, 255, 0.9);
-            border-radius: 50px;
-            padding: 6px 20px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             margin-top: 10px;
             transition: background-color 0.2s ease;
         }
@@ -302,7 +304,7 @@
         @media (max-width: 768px) {
             body { overflow: auto; height: auto; }
             .encabezado-superior { height: 90px; padding: 0 15px; }
-            .logo-plataforma { height: 13px; }
+            .logo-plataforma { height: 26px; }
             .contenedor-logo-inicio { margin-left: 0px; }
             .btn-inicio-texto { font-size: 9px; padding: 5px 14px; }
             .contenedor-principal { flex-direction: column; overflow: auto; height: auto; }
@@ -961,7 +963,7 @@
     <header class="encabezado-superior">
         <div class="contenedor-logo-inicio" onclick="irAlInicio()" title="Volver al inicio">
             <img src="https://res.cloudinary.com/olddxilu/image/upload/e_trim/v1786644138/SEGUIMIENTO_OBRAS_1.png" alt="Seguimiento de Obras" class="logo-plataforma" id="imagen-logo">
-            <span class="btn-inicio-texto">INICIO</span>
+            <span class="btn-inicio-texto" aria-label="Inicio" title="Inicio">🏠</span>
         </div>
         <button id="btn-abrir-busqueda"
                 onclick="abrirModalBusqueda()"
@@ -1064,7 +1066,6 @@
         };
 
         const GRUPOS_DEFECTO = {
-            "SSAPAC": { hospital: null, miembros: ["CESAC 12 - AMPLIACION DE CONSULTORIO","POSTA NUEVA 4 - CCI 3 PILETONES","CEMAR 3","CeSAC 51","CEMAR 4","CeSAC 52 - Pompeya","Centro Asistencia Ramos Mejía"] },
             "DG de Salud Mental": { hospital: "DG Salud Mental", miembros: [] }
         };
 
