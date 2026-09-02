@@ -56,17 +56,15 @@
 
         .btn-inicio-texto {
             font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
             line-height: 1;
             color: var(--blanco);
-            border: 1.5px solid rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-top: 10px;
+            border-radius: 6px;
             transition: background-color 0.2s ease;
         }
 
@@ -303,7 +301,7 @@
 
         @media (max-width: 768px) {
             body { overflow: auto; height: auto; }
-            .encabezado-superior { height: 90px; padding: 0 15px; }
+            .encabezado-superior { height: 90px; padding: 12px 15px 0 15px; align-items: flex-start; }
             .logo-plataforma { height: 20px; }
             .contenedor-logo-inicio { margin-left: 0px; }
             .btn-inicio-texto { font-size: 9px; padding: 5px 14px; }
@@ -311,7 +309,7 @@
             .columna-izquierda { width: 100%; max-height: 300px; border-right: none; border-bottom: 2px solid var(--gris-bordes); padding-bottom: 20px; }
             body.modo-zoom .columna-izquierda { display: none; }
             .columna-central { padding: 15px; overflow: visible; height: auto; }
-            .btn-crear-flotante { bottom: 30px; left: 15px; padding: 10px 16px; font-size: 12px; }
+            .btn-crear-flotante { bottom: 70px; left: 15px; padding: 10px 16px; font-size: 12px; }
             .info-inferior-fija { font-size: 9px; padding: 8px 10px; line-height: 1.5; }
             /* --- Optimizacion movil (Paso 2) --- */
             .cabecera-hospital h1 { font-size: 1.3em; margin-bottom: 12px; }
@@ -326,6 +324,12 @@
             .col-edicion label { font-size: 7px; }
             .titulo-etiquetas-inicio { font-size: 10px; }
             #btn-abrir-busqueda { padding: 5px 12px; font-size: 9px; }
+            #mensaje-inicial { font-size: 1.1em; margin-top: 20px; margin-bottom: 8px; }
+            #bloque-etiquetas-inicio { margin-top: 8px !important; }
+            .titulo-etiquetas-inicio { margin-bottom: 6px; }
+            .barra-etiquetas { margin-bottom: 8px; }
+            .columna-central { padding-bottom: 130px; }
+            .info-inferior-fija { padding: 8px 12px; }
         }
 
         /* Pantallas muy chicas (<=480px) */
