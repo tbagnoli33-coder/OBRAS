@@ -1158,7 +1158,7 @@
                 var timeoutId = setTimeout(function () {
                     cleanup();
                     reject(new Error("Timeout al leer del Sheets (JSONP)"));
-                }, 20000);
+                }, 60000);
                 function cleanup() {
                     clearTimeout(timeoutId);
                     try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
