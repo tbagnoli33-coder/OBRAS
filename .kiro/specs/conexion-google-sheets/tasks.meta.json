@@ -1,0 +1,161 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Crear el archivo fuente del Apps Script con helpers de acceso y salida": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367021591
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367035023
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367701699
+      }
+    ],
+    "2.1 Implementar `doGet(e)` con lectura, agrupación y mapeo posicional": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367022748
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367709689
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367956722
+      }
+    ],
+    "3.1 Implementar `crearFilas_(hospital, pedido)`": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367022905
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367961868
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788368099068
+      }
+    ],
+    "3.2 Implementar `doPost(e)` con ruteo por acción": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367023040
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788368103288
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788368371411
+      }
+    ],
+    "4. Checkpoint — Backend (Apps Script) completo": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367023195
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788368395494
+      }
+    ],
+    "5.1 Reemplazar el cuerpo no-op de `persistirPedidoBackend(hospital, pedido)` en `OBRAS v9.html`": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367023311
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367035963
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367704163
+      }
+    ],
+    "6.1 Verificar (sin reconstruir) la lectura y el fallback existentes": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367023425
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367037093
+      },
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367703152
+      }
+    ],
+    "6.2 Configurar la URL del Web App (TAREA MANUAL / CONFIG — la ejecuta el usuario)": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367023655
+      }
+    ],
+    "8. Checkpoint final — Entregables listos": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367023811
+      }
+    ],
+    "1. Preparar el archivo del Apps Script (Entregable A)": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367701875
+      }
+    ],
+    "5. Implementar el POST asíncrono en el Frontend (Entregable B)": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367704313
+      }
+    ],
+    "2. Implementar la lectura del backend (`doGet`)": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788367956889
+      }
+    ],
+    "3. Implementar la escritura del backend (`doPost` + `crearFilas_`)": [
+      {
+        "executionId": "56c87a7e-7d5a-4868-8da4-567979ecd5d9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1788368371577
+      }
+    ]
+  }
+}

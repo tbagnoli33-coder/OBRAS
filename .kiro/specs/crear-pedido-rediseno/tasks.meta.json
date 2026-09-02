@@ -1,0 +1,356 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Inyectar la constante global `MAPA_ESCALAFON_PUESTO` en `OBRAS v9.html`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932104730
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932130800
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932641070
+      }
+    ],
+    "1.2 Implementar las funciones puras `puestosDeEscalafon`, `esPuestoTextoLibre` y `clamp`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932105737
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932642217
+      }
+    ],
+    "2.1 Agregar al `<style>` de `OBRAS v9.html` los estilos del modal ampliado y la barra de agregar línea": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932105811
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932648871
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787933433889
+      }
+    ],
+    "2.2 Agregar los estilos de la línea de RRHH y su layout horizontal": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932105875
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787933434851
+      }
+    ],
+    "2.3 Agregar la media query `max-width: 768px` para la vista compacta": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932105968
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787933436119
+      }
+    ],
+    "3.1 Agregar la clase `cajon-creacion` al `.cajon-pedido` de `#modal-creacion` y conservar la cabecera vertical con sus ids fijos": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106038
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934656096
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934771920
+      }
+    ],
+    "3.2 Reemplazar el markup estático de una sola línea (ids `#nuevo-tipoq`, `#nuevo-escalafon`, `#nuevo-puesto`, `#nuevo-qplan`, `#nuevo-canal`, `#nuevo-qpedido`, `#nuevo-expediente`, `#nuevo-qaprobado`) por el contenedor dinámico y la barra de agregar": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106088
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934770902
+      }
+    ],
+    "4.1 Implementar `crearHtmlLineaRRHH(idLinea)`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106137
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934779389
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934931512
+      }
+    ],
+    "4.2 Implementar `poblarSelectsLineaRRHH(idLinea)`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106186
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934927995
+      }
+    ],
+    "4.3 Implementar `agregarLineasRRHH(cantidad)`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106257
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934929360
+      }
+    ],
+    "4.4 Implementar `eliminarLineaRRHH(idLinea)`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106356
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934930334
+      }
+    ],
+    "5.1 Implementar `onCambioEscalafon(idLinea)`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106420
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934937942
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935083867
+      }
+    ],
+    "6.1 Implementar `resetearModalCreacion()`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106526
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935084665
+      }
+    ],
+    "6.2 Modificar `abrirModalCreacion()`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106578
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935085702
+      }
+    ],
+    "7. Checkpoint — Verificar layout, líneas dinámicas y regla escalafón→puesto en el navegador": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106630
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935448234
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936030369
+      }
+    ],
+    "8.1 Implementar `leerLineaRRHH(idLinea)`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106679
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936036771
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936312958
+      }
+    ],
+    "8.2 Implementar `persistirPedidoBackend(hospital, pedido)` (stub)": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106739
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936038166
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936314399
+      }
+    ],
+    "8.3 Reescribir `guardarNuevoPedido()`": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106787
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936038944
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936315211
+      }
+    ],
+    "9.1 Eliminar de `iniciarApp()` el poblado de los selects de línea única obsoletos": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106836
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935145727
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935434097
+      }
+    ],
+    "10. Checkpoint — Verificar guardado y no regresión en el navegador": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932106891
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936319504
+      },
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936621821
+      }
+    ],
+    "1. Inyectar datos y funciones puras base": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787932642277
+      }
+    ],
+    "2. Agregar los estilos CSS del rediseño": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787933436298
+      }
+    ],
+    "3. Reemplazar el markup estático del Detalle de RRHH": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934771990
+      }
+    ],
+    "4. Implementar las funciones de líneas dinámicas": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787934931568
+      }
+    ],
+    "5. Implementar la regla escalafón→puesto en el DOM": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935083941
+      }
+    ],
+    "6. Implementar el reset y la apertura del modal": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935085745
+      }
+    ],
+    "9. Limpiar el poblado obsoleto de selects de línea única": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787935434170
+      }
+    ],
+    "8. Implementar la lectura y el guardado del pedido": [
+      {
+        "executionId": "9e4c227a-10ee-4657-aadf-b7bbd999b4f7",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787936315299
+      }
+    ]
+  }
+}

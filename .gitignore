@@ -1,0 +1,17 @@
+# Datos sensibles (NO subir a GitHub)
+*.csv
+Seguimiento de pedido de hospitales*.csv
+
+# Backups y versiones viejas
+*.bak.html
+OBRAS v6.html
+OBRAS v9.*.bak.html
+
+# El archivo fuente original (se sirve como index.html)
+OBRAS v9.html
+
+# Temporales / entorno
+_t1/
+*.log
+.DS_Store
+Thumbs.db

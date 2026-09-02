@@ -1,0 +1,267 @@
+# Guía de integración Backend — App de Obras ↔ Google Sheets
+
+> Versión actualizada al estado REAL del archivo `OBRAS v9.html` (revisado línea por línea).
+> Cambios respecto de versiones previas de esta guía:
+> - `persistirPedidoBackend` tiene HOY **2 parámetros**: `(hospital, pedido)`. NO existe el tercer parámetro `origen`.
+> - El módulo "CREAR PROYECTO" fue **eliminado por completo** del frontend. Ya no existe `guardarNuevoProyecto` ni ningún flujo de proyecto. El backend NO necesita distinguir "pedido" vs "proyecto": solo hay pedidos.
+> - Se documentan, como contexto, funcionalidades nuevas de frontend (cargos resueltos espejo, filtro por hospital en resultados, reglas de Tipo de Q). Ninguna cambia el contrato de datos con el Sheet.
+
+## 0. Contexto y objetivo
+La app es un único archivo `OBRAS v9.html` (HTML+CSS+JS vanilla, sin build ni librerías). Hoy usa datos demo embebidos (`DB_ARRAY_LOCAL`). Objetivo: conectarla a un Google Sheet real para:
+1. LEER (GET): traer las filas del Sheet en tiempo real y mostrarlas como cards.
+2. ESCRIBIR (POST): al crear un pedido, insertar una fila por cada cargo.
+
+No hay que reescribir el frontend. Hay exactamente DOS puntos de integración:
+- Constante `GOOGLE_SHEETS_URL` (para LEER). Hoy vale `""` (cadena vacía) → la app usa datos demo.
+- Función `persistirPedidoBackend(hospital, pedido)` (para ESCRIBIR). Hoy es un no-op intencional.
+
+Tecnología recomendada: Google Apps Script publicado como Web App.
+
+## 1. Columnas de la hoja "Seguimiento de pedido de hospitales"
+Fila 1 = encabezados; datos desde la fila 2. Cada fila es UN cargo.
+
+| Col | Encabezado          | | Col | Encabezado |
+|-----|---------------------|-|-----|------------|
+| A   | HOSPITALES          | | M   | Validar DG |
+| B   | TIPO                | | N   | VALIDADO SSAH |
+| C   | DENOMINACION        | | O   | PEDIDO A HACIENDA |
+| D   | OBRA FECHA FIN      | | P   | Q PEDIDO |
+| E   | CATEGORIA           | | Q   | Expediente |
+| F   | EJERCICIO PRESUP    | | R   | Q APROBADO HACIENDA |
+| G   | PRIORIZACION MSGC   | | S   | RESUELTO |
+| H   | TIPO DE Q           | | T   | ESTADO |
+| I   | ESCALAFON           | | U   | OBSERVACION |
+| J   | PUESTO NUEVO        | | V   | (vacía) |
+| K   | Q (planificado)     | | W   | cuenta resueltos |
+| L   | CANAL SOLICITUD     | | X   | Looker Plani |
+
+## 2. LECTURA (GET)
+
+### 2.1 JSON que espera el frontend
+```json
+{
+  "hospitales": {
+    "<NombreHospital>": [
+      { "tipo":"Obra", "detalle":"5 NUEVAS CAMAS UTI", "fecha":"28/11/26", "prioridad":"DESPRIORIZADO",
+        "cargos": [ ["POF","ENFERMERIA","ENFERMERIA",4,"Mail",4,"EX-2026-...",4,1,0] ] }
+    ]
+  },
+  "grupos":    { "<Categoria>": { "hospital": null, "miembros": ["Hosp A","Hosp B"] } },
+  "catalogos": { "tiposPedido":[], "tiposQ":[], "escalafones":[], "puestos":[] }
+}
+```
+Cada `cargo` es un ARRAY POSICIONAL en este orden exacto:
+`[tipoQ, escalafon, puesto, qPlan, canal, qPedido, expediente, qAprobado, validado(0|1), resuelto(0|1)]`
+`grupos` y `catalogos` son opcionales (si no vienen, la app usa sus valores por defecto).
+
+Notas del modelo (contexto frontend, no afectan el JSON):
+- El campo `resuelto` (último del array, 0/1) es el que dispara la lógica de "cargos resueltos": cuando un cargo tiene `resuelto=1`, el frontend lo muestra ADEMÁS en una card espejo dentro del filtro RESUELTOS. Con que el Sheet informe correctamente 0/1 en la columna S (RESUELTO), el frontend se encarga de todo. El backend NO tiene que duplicar filas ni crear cards espejo.
+- El nombre del hospital que ves en los desplegables puede diferir del texto crudo del Sheet: el frontend recorta un sufijo de proyecto (todo lo que va después de " - ", espacio-guion-espacio) SOLO para mostrar. La clave real de datos es el texto tal cual viene en la columna A. No normalices ni recortes en el backend: mandá el nombre tal como está en el Sheet.
+
+### 2.2 Cómo agrupar las filas en pedidos
+El Sheet tiene una fila por cargo, pero el JSON agrupa por PEDIDO. Un pedido = filas que comparten HOSPITAL (A) + DENOMINACION (C) + TIPO (B) + FECHA (D). Cada fila con esa clave es un elemento de `cargos`.
+
+### 2.3 doGet
+```javascript
+function doGet(e) {
+  const hoja = SpreadsheetApp.getActiveSpreadsheet()
+                 .getSheetByName('Seguimiento de pedido de hospitales');
+  const filas = hoja.getDataRange().getValues();
+  const hospitales = {};
+  for (let i = 1; i < filas.length; i++) {
+    const f = filas[i];
+    const hospital = String(f[0] || '').trim();
+    if (!hospital) continue;
+    const tipo = String(f[1]||''), detalle = String(f[2]||''), fecha = String(f[3]||'');
+    const priori = String(f[6]||'').toLowerCase() === 'despriorizado' ? 'DESPRIORIZADO' : '-';
+    const cargo = [
+      String(f[7]||''), String(f[8]||''), String(f[9]||''),
+      Number(f[10]||0), String(f[11]||''),
+      Number(f[15]||0), String(f[16]||''), Number(f[17]||0),
+      (f[13]===true || String(f[13]).toUpperCase()==='TRUE') ? 1 : 0,
+      (f[18]===true || String(f[18]).toUpperCase()==='TRUE') ? 1 : 0
+    ];
+    if (!hospitales[hospital]) hospitales[hospital] = [];
+    let pedido = hospitales[hospital].find(p => p.detalle===detalle && p.tipo===tipo && p.fecha===fecha);
+    if (!pedido) { pedido = { tipo, detalle, fecha, prioridad: priori, cargos: [] }; hospitales[hospital].push(pedido); }
+    pedido.cargos.push(cargo);
+  }
+  return ContentService.createTextOutput(JSON.stringify({ hospitales }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+## 3. ESCRITURA (POST) — crear filas
+
+### 3.1 Objeto que arma el frontend
+Al crear un pedido, el frontend construye este objeto y lo pasa a `persistirPedidoBackend(hospital, pedido)`:
+```
+hospital = "Durand"                         // string, nombre del hospital elegido
+pedido = {
+  tipo:      "Obra",                          // Tipo de pedido
+  detalle:   "5 NUEVAS CAMAS UTI",            // Denominación → columna C
+  fecha:     "28/11/26",                      // Obra fecha fin → columna D
+  prioridad: "DESPRIORIZADO" | "-",           // "-" = normal
+  cargos: [                                   // 1 objeto por cargo (N cargos = N filas)
+    { tipoQ, escalafon, puesto, qPlan, canal, qPedido, expediente, qAprobado, validado, resuelto }
+  ]
+}
+```
+Cada cargo es un OBJETO con estos campos exactos (así los arma `leerLineaRRHH`):
+`tipoQ` (string), `escalafon` (string), `puesto` (string), `qPlan` (número), `canal` (string), `qPedido` (número), `expediente` (string), `qAprobado` (número), `validado` (booleano, arranca en `false`), `resuelto` (booleano, arranca en `false`).
+
+IMPORTANTE: el frontend llama SIEMPRE con 2 argumentos: `persistirPedidoBackend(hospital, pedido)`. No existe un tercer parámetro. No hay flujo de "proyecto".
+
+### 3.2 Implementación del POST en el HTML (reemplazar el no-op)
+Hoy la función es:
+```javascript
+function persistirPedidoBackend(hospital, pedido) {
+    // No-op: aquí se enviará el pedido a la API/Google Sheets en una fase posterior.
+}
+```
+Reemplazá el cuerpo por esta versión asíncrona (espera respuesta, confirma éxito, avisa si falla, sin romper la app que ya guardó en memoria). Mantené la firma de 2 parámetros:
+```javascript
+async function persistirPedidoBackend(hospital, pedido) {
+  if (!GOOGLE_SHEETS_URL) return; // sin backend: solo memoria
+  try {
+    const resp = await fetch(GOOGLE_SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // evita preflight CORS
+      body: JSON.stringify({ accion: 'crear', hospital, pedido })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    if (!data || data.ok !== true) throw new Error((data && data.error) || 'Respuesta inesperada del backend');
+    console.log('Guardado en Sheets:', data.filas, 'fila(s) para', hospital);
+  } catch (e) {
+    console.error('persistirPedidoBackend', e);
+    alert('El pedido se guardó localmente, pero NO se pudo sincronizar con el Google Sheet.\n\n'
+        + 'Detalle: ' + (e.message || e) + '\n\nReintentá o avisá al administrador.');
+  }
+}
+```
+El llamador (`guardarNuevoPedido`) NO usa `await` (fire-and-forget); la promesa corre en segundo plano. Si querés bloquear la UI hasta confirmar, se puede await-ear desde `guardarNuevoPedido` (opcional). No hace falta cambiar `guardarNuevoPedido` para la integración básica: al pasar `function` → `async function` sigue siendo invocable igual.
+
+### 3.3 REGLA CLAVE: N cargos = N filas
+Si el pedido tiene 3 cargos, se insertan 3 filas: todas repiten la cabecera (A,B,C,D,G) y varían el cargo (H..S).
+
+### 3.4 doPost (crea filas y responde confirmación)
+```javascript
+function doPost(e) {
+  try {
+    const datos  = JSON.parse(e.postData.contents);
+    const accion = datos.accion || 'crear';
+    const hoja   = SpreadsheetApp.getActiveSpreadsheet()
+                     .getSheetByName('Seguimiento de pedido de hospitales');
+    if (accion === 'actualizar') return actualizarFilas(hoja, datos);
+
+    const hospital = datos.hospital, pedido = datos.pedido;
+    const prioriG  = (pedido.prioridad === 'DESPRIORIZADO') ? 'despriorizado' : '';
+    (pedido.cargos || []).forEach(function(c) {
+      hoja.appendRow([
+        hospital, pedido.tipo, pedido.detalle, pedido.fecha, '', '', prioriG,
+        c.tipoQ, c.escalafon, c.puesto, c.qPlan, c.canal,
+        false, c.validado === true, '', c.qPedido, c.expediente, c.qAprobado,
+        c.resuelto === true, '', '', '', '', ''
+      ]);
+    });
+    return ContentService.createTextOutput(JSON.stringify({ ok: true, filas: (pedido.cargos||[]).length }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+```
+Orden de columnas en `appendRow` (A..X): A=hospital, B=tipo, C=detalle, D=fecha, E='', F='', G=prioriG, H=tipoQ, I=escalafon, J=puesto, K=qPlan, L=canal, M=false(Validar DG), N=validado, O='', P=qPedido, Q=expediente, R=qAprobado, S=resuelto, T..X=''.
+
+## 4. ACTUALIZACIÓN (editar filas existentes)
+El usuario edita en vivo Q PEDIDO (P), Q APROBADO (R), VALIDADO (N) y RESUELTO (S). Para persistir esas ediciones se ubica la fila exacta y se modifican solo esas celdas.
+
+### 4.1 Identificar la fila
+Match por HOSPITAL(A)+DENOMINACION(C)+ESCALAFON(I)+PUESTO(J) + índice del cargo dentro del pedido. Recomendado en producción: agregar una columna oculta ROW_ID con un UUID por fila y usarla (más robusto que el match por texto).
+
+### 4.2 Contrato de actualización
+```json
+{
+  "accion": "actualizar",
+  "hospital": "Durand",
+  "detalle": "5 NUEVAS CAMAS UTI",
+  "cargo": { "escalafon":"ENFERMERIA", "puesto":"ENFERMERIA", "indice":0,
+             "qPedido":5, "qAprobado":4, "validado":true, "resuelto":false }
+}
+```
+
+### 4.3 actualizarFilas (Apps Script)
+```javascript
+function actualizarFilas(hoja, datos) {
+  const filas = hoja.getDataRange().getValues();
+  const c = datos.cargo || {};
+  let coincidencias = 0, objetivo = -1;
+  for (let i = 1; i < filas.length; i++) {
+    const f = filas[i];
+    const mismo =
+      String(f[0]).trim() === String(datos.hospital).trim() &&  // A
+      String(f[2]).trim() === String(datos.detalle).trim()  &&  // C
+      String(f[8]).trim() === String(c.escalafon).trim()    &&  // I
+      String(f[9]).trim() === String(c.puesto).trim();          // J
+    if (mismo) { if (coincidencias === (c.indice||0)) { objetivo = i+1; break; } coincidencias++; }
+  }
+  if (objetivo === -1)
+    return ContentService.createTextOutput(JSON.stringify({ ok:false, error:'Fila no encontrada' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  // Actualiza solo celdas editables (columnas 1-based): P=16, R=18, N=14, S=19
+  if (c.qPedido   !== undefined) hoja.getRange(objetivo, 16).setValue(c.qPedido);
+  if (c.qAprobado !== undefined) hoja.getRange(objetivo, 18).setValue(c.qAprobado);
+  if (c.validado  !== undefined) hoja.getRange(objetivo, 14).setValue(c.validado === true);
+  if (c.resuelto  !== undefined) hoja.getRange(objetivo, 19).setValue(c.resuelto === true);
+  return ContentService.createTextOutput(JSON.stringify({ ok:true, fila:objetivo }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+### 4.4 Gancho de actualización en el frontend (extensión futura)
+Hoy el frontend edita en memoria dentro de `interactuarCheckCargo` (checkboxes) y en los inputs de Q PEDIDO / Q APROBADO. Para sincronizar hacia el Sheet, se agregaría:
+```javascript
+async function actualizarCargoBackend(hospital, detalle, cargo) {
+  if (!GOOGLE_SHEETS_URL) return;
+  try {
+    const resp = await fetch(GOOGLE_SHEETS_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ accion: 'actualizar', hospital, detalle, cargo })
+    });
+    const data = await resp.json();
+    if (!data.ok) throw new Error(data.error || 'No se pudo actualizar');
+  } catch (e) {
+    console.error('actualizarCargoBackend', e);
+    alert('El cambio se guardó localmente pero no se sincronizó con el Sheet: ' + (e.message || e));
+  }
+}
+```
+Se llamaría desde `interactuarCheckCargo` y desde los `oninput`/`onchange` de Q PEDIDO / Q APROBADO, pasando hospital, denominación y el cargo con `indice`. Es una extensión; no es necesaria para la primera integración de crear/leer.
+
+## 5. Publicar el Web App
+1. Google Sheet → Extensiones → Apps Script.
+2. Pegá `doGet`, `doPost` y `actualizarFilas`. Ajustá el nombre de la hoja si difiere.
+3. Implementar → Nueva implementación → Aplicación web.
+4. "Ejecutar como": tu cuenta. "Quién tiene acceso": Cualquiera (o Cualquiera con el enlace).
+5. Copiá la URL del Web App (termina en `/exec`).
+6. Pegala en `OBRAS v9.html`: `const GOOGLE_SHEETS_URL = "https://script.google.com/.../exec";`
+
+## 6. CORS
+Apps Script responde con CORS permisivo para GET simple y para POST con `Content-Type: text/plain` (por eso el POST usa text/plain: evita el preflight OPTIONS que Apps Script no maneja bien). No cambies ese header.
+
+## 7. Pruebas de aceptación
+1. Lectura: con la URL puesta, Ctrl+F5 → aparecen los datos reales del Sheet como cards.
+2. Crear pedido con 3 cargos → 3 filas nuevas con A..S correctas; el frontend loguea data.filas = 3.
+3. Prioridad: despriorizado escribe "despriorizado" en G; normal deja G vacío.
+4. Booleanos: validado/resuelto escriben TRUE/FALSE en N/S.
+5. Cargos resueltos: marcar RESUELTO en una fila (columna S = TRUE) → al recargar, ese cargo aparece en el filtro RESUELTOS de la app (card espejo), sin duplicar filas en el Sheet.
+6. Actualizar: editar Q PEDIDO / Q APROBADO / checkboxes → cambian solo esas celdas de la fila correcta; si no la encuentra, responde ok:false y el front avisa.
+7. Error de red: cortar el Web App → el frontend muestra el alert de "no se pudo sincronizar" pero la app sigue usable (memoria).
+
+## 8. Qué NO tocar del frontend
+- No cambiar el formato del JSON de lectura ni el orden posicional del array `cargo`.
+- No cambiar la firma `persistirPedidoBackend(hospital, pedido)` (2 parámetros).
+- Solo tocás: `GOOGLE_SHEETS_URL` (pegar la URL) y el cuerpo de `persistirPedidoBackend` (implementar el POST async de la sección 3.2). El endpoint de actualización (sección 4) es una extensión opcional.
+- No hay módulo ni flujo de "proyecto": no esperes ni envíes un parámetro `origen`.

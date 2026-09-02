@@ -1,0 +1,734 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Declarar e inicializar el objeto `filtrosBusqueda` en el bloque de variables globales de `OBRAS v9.html`, junto a `filtrosActivos` y `hospitalActual`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855137482
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855150906
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855209470
+      }
+    ],
+    "2.1 Agregar estilos para el modal de búsqueda avanzada (`#modal-busqueda`) y el botón \"BUSCAR\" del encabezado": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855138506
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855214244
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855999215
+      }
+    ],
+    "2.2 Agregar estilos para las solapas (tabs) del modal": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855138580
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855215068
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856000176
+      }
+    ],
+    "2.3 Agregar estilos para el calendario interactivo de rango de fechas": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855138703
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855215916
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856000963
+      }
+    ],
+    "2.4 Agregar estilos para los chips de preset de fechas, checkboxes de tipo/escalafón/estado, y el pie del modal": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855138789
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855216740
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856002405
+      }
+    ],
+    "2.5 Agregar estilos para el banner de filtro activo": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855138839
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855217579
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856003259
+      }
+    ],
+    "3.1 Insertar el `<div id=\"modal-busqueda\" class=\"modal-overlay\">` con la estructura completa de cuatro solapas dentro de `OBRAS v9.html`, antes del cierre de `</body>`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855138889
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856160144
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787857645528
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787866959551
+      }
+    ],
+    "3.2 Poblar el contenido de cada tab-panel con sus controles": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855138939
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856160919
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787866963130
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867053983
+      }
+    ],
+    "3.3 Insertar el botón \"BUSCAR\" con ícono 🔍 en el extremo derecho del `<header class=\"encabezado-superior\">`, con `onclick=\"abrirModalBusqueda()\"` y `aria-label=\"Abrir búsqueda avanzada\"`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855138991
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856162053
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787866964293
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867055537
+      }
+    ],
+    "3.4 Insertar el `<div id=\"banner-filtro-activo\">` en la columna central, debajo del encabezado del hospital y antes de la grilla de pedidos": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139110
+      },
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856163024
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867069562
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867197225
+      }
+    ],
+    "4.1 Implementar `abrirModalBusqueda()`: agrega clase `abierto` al overlay, pobla dinámicamente `#lista-tipos-busqueda` con checkboxes desde `catalogos.tiposPedido` y `#lista-escalafones-busqueda` desde `catalogos.escalafones`, activa la tab \"fechas\" por defecto, y renderiza el calendario": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139215
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867213359
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867227670
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867650195
+      }
+    ],
+    "4.2 Implementar `cerrarModalBusqueda()`: quita la clase `abierto` del overlay": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139264
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867213593
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867660578
+      }
+    ],
+    "4.3 Implementar `cambiarTabBusqueda(nombreTab)`: activa la tab seleccionada y oculta las demás sin perder valores ya ingresados": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139330
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867213804
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867660848
+      }
+    ],
+    "5.1 Implementar el objeto de estado local `estadoCal` con `mesVisible`, `fechaInicio`, `fechaFin`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139382
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867214019
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867661943
+      }
+    ],
+    "5.2 Implementar `onClickDia(dia)`: primer clic establece `fechaInicio` (y limpia `fechaFin`); segundo clic establece `fechaFin` con intercambio automático si la fecha de fin es anterior al inicio; en ambos casos llama a `renderizarCalendario()`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139428
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867214337
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867663986
+      }
+    ],
+    "5.3 Implementar la navegación de mes: botones \"←\" y \"→\" modifican `estadoCal.mesVisible` (retrocede o avanza un mes) y llaman a `renderizarCalendario()`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139475
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867214581
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867665575
+      }
+    ],
+    "5.4 Implementar los chips de preset de fechas: `aplicarPreset(meses)` calcula `fechaHasta = hoy` y `fechaDesde = hoy retrocedido meses meses`, asigna a `estadoCal.fechaInicio` y `estadoCal.fechaFin`, sincroniza el mes visible al mes de `fechaDesde`, y llama a `renderizarCalendario()`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139524
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867214815
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867668187
+      }
+    ],
+    "6.1 Implementar `parsearFecha(valorFecha)`: retorna `{ desde: Date, hasta: Date }` o `null`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139572
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867215114
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867669423
+      }
+    ],
+    "6.2 Implementar `pedidoPasaFiltroFechas(pedido, fechaDesde, fechaHasta)`: retorna `true` si existe solapamiento entre `[rango.desde, rango.hasta]` del pedido y `[fechaDesde, fechaHasta]`; retorna `true` si ambas fechas de filtro son `null`; retorna `false` si `parsearFecha` retorna `null` con filtro activo": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139624
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867215324
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867672025
+      }
+    ],
+    "6.3 Implementar `pedidoPasaFiltroTipo(pedido, tiposSeleccionados)`: retorna `true` si el array está vacío o si `tiposSeleccionados.includes(pedido.tipo)`; retorna `true` también si ningún checkbox está marcado": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139687
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867215542
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867673841
+      }
+    ],
+    "6.4 Implementar `pedidoPasaFiltroEscalafon(pedido, escalafonesSeleccionados, textoPuesto)`: itera sobre `pedido.cargos` buscando al menos uno que cumpla tanto `cumpleEscalafon` como `cumplePuesto`; retorna `true` si ambos filtros están vacíos": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139758
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867215757
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867676226
+      }
+    ],
+    "6.5 Implementar `pedidoPasaFiltroEstadoCargos(pedido, estadosCargo)`: evalúa los cinco flags de `estadosCargo` con AND; retorna `true` si ningún flag está activo; retorna `false` si el pedido no tiene cargos y algún flag está activo": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139809
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867215979
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867677995
+      }
+    ],
+    "6.6 Implementar `pedidoPasaTodosLosFiltros(pedido)`: retorna `true` si `filtrosBusqueda.activo === false`; de lo contrario combina con AND las cuatro funciones de filtrado anteriores": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139858
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867216190
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867679673
+      }
+    ],
+    "7. Checkpoint — Verificar funciones de filtrado de forma aislada": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139907
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867216462
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867716707
+      }
+    ],
+    "8.1 Implementar las funciones de lectura del modal: `leerFechaDesdeModal()`, `leerFechaHastaModal()`, `leerTiposSeleccionados()`, `leerEscalafonesSeleccionados()`, `leerTextoPuesto()`, `leerEstadosCargo()`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855139957
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867216688
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867686462
+      }
+    ],
+    "8.2 Implementar `hayCriteriosActivos(fb)`: retorna `true` si al menos uno de los campos de `filtrosBusqueda` tiene un valor activo (fechas no nulas, arrays no vacíos, texto no vacío, o algún flag de estado en `true`)": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140007
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867216894
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867688472
+      }
+    ],
+    "8.3 Implementar `aplicarBusquedaAvanzada()`: llama a las funciones de lectura, construye el nuevo estado de `filtrosBusqueda`, calcula `filtrosBusqueda.activo` y `filtrosBusqueda.modoGlobal` (`hospitalActual === \"\"`), cierra el modal, y despacha la renderización": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140058
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867217115
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867690972
+      }
+    ],
+    "8.4 Modificar `entrarHospital()` en `OBRAS v9.html`: después del bloque `if (!mostrar) return;` que evalúa los chips de estado (ACTIVOS/DESPRIORIZADOS/RESUELTOS), agregar `if (!pedidoPasaTodosLosFiltros(pedido)) return;` para aplicar el filtro avanzado en serie": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140125
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867217325
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867694353
+      }
+    ],
+    "9.1 Implementar `mostrarResultadosGlobales()`: muestra la columna central con `\"Resultados de búsqueda\"` como título, oculta la barra de filtros de chips, itera sobre todos los efectores de `datosSheets`, y por cada pedido que pase `pedidoPasaTodosLosFiltros()` genera el HTML del cajón incluyendo una etiqueta con el nombre del efector": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140213
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867217509
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867697696
+      }
+    ],
+    "9.2 Modificar `entrarHospital()` para que, cuando sea llamada mientras `filtrosBusqueda.modoGlobal === true`, desactive el modo global (`filtrosBusqueda.modoGlobal = false`) y continúe el renderizado normal del hospital seleccionado con los filtros avanzados vigentes": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140265
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867217740
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867700104
+      }
+    ],
+    "10.1 Implementar `actualizarBannerFiltro()`: si `filtrosBusqueda.activo === true`, construir la descripción textual con `describirFiltroActivo(filtrosBusqueda)` (período, tipos, escalafón/puesto, estado de cargos), actualizar `#banner-descripcion-filtro`, y poner `display: flex` en `#banner-filtro-activo`; si es `false`, ocultar el banner con `display: none`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140327
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867218008
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867703490
+      }
+    ],
+    "10.2 Implementar `describirFiltroActivo(fb)`: construye el string de descripción de criterios activos (máx. 4 partes separadas por ` · `) según los campos con valores": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140385
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867218182
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867705428
+      }
+    ],
+    "10.3 Implementar `limpiarBusqueda()`: resetea `filtrosBusqueda` a todos los valores vacíos con `activo: false`; oculta el banner; si `hospitalActual !== \"\"` llama a `entrarHospital(hospitalActual)`, si no llama a `salirHospital()`; capturar errores con try/catch y notificar al usuario si la limpieza falla": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140475
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867218396
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867708222
+      }
+    ],
+    "10.4 Implementar `limpiarControlesModal()`: restablece todos los controles del modal a sus valores por defecto (checkboxes de tipo marcados todos, escalafones desmarcados todos, texto de puesto vacío, checkboxes de estado desmarcados, calendario reseteado) sin cerrar el modal y sin modificar `filtrosBusqueda.activo`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140574
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867218574
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867711044
+      }
+    ],
+    "11. Checkpoint final — Integración completa": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140663
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867218725
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867739647
+      }
+    ],
+    "12.1 Revisar y completar los atributos `aria-label` en todos los controles interactivos del modal que no los tengan aún: botones de tabs, botones de preset, botones de navegación del calendario (anterior/siguiente mes), celdas de día del calendario, checkboxes de tipo/escalafón/estado, input de puesto, botones del footer del modal, botón del banner": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140772
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867218931
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867744970
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867752515
+      }
+    ],
+    "14. Checkpoint final — Prueba end-to-end": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855140849
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867219155
+      },
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867758490
+      }
+    ],
+    "1. Inicializar el estado global `filtrosBusqueda`": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787855209560
+      }
+    ],
+    "2. Agregar estilos CSS para el modal y sus componentes": [
+      {
+        "executionId": "fb2d7b54-5d1f-4b7a-833b-440116c154ae",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787856003386
+      }
+    ],
+    "3. Insertar el HTML del modal y el botón BUSCAR": [
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867197500
+      }
+    ],
+    "4. Implementar la lógica de apertura/cierre y tabs del modal": [
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867660939
+      }
+    ],
+    "5. Implementar el calendario interactivo de rango de fechas": [
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867668338
+      }
+    ],
+    "6. Implementar las funciones de filtrado": [
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867679755
+      }
+    ],
+    "8. Implementar `aplicarBusquedaAvanzada()` y el hook en `entrarHospital()`": [
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867694441
+      }
+    ],
+    "9. Implementar `mostrarResultadosGlobales()` (modo búsqueda global)": [
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867700396
+      }
+    ],
+    "10. Implementar el banner de filtro activo y `limpiarBusqueda()`": [
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867711226
+      }
+    ],
+    "12. Completar atributos de accesibilidad": [
+      {
+        "executionId": "e7fd8a58-723a-4c94-aeae-da10b94011ed",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787867752726
+      }
+    ]
+  }
+}

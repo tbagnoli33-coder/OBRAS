@@ -1,0 +1,292 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Generalizar `agregarLineasRRHH` y `eliminarLineaRRHH` a un contenedor objetivo": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941545104
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941555479
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943512525
+      }
+    ],
+    "1.2 Eliminar el reseteo de `contadorLineasRRHH` en `resetearModalCreacion`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941545255
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943513834
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943777729
+      }
+    ],
+    "2.1 Definir estilos del botón, cajón y bloques del módulo": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941545400
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943778919
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943958037
+      }
+    ],
+    "3.1 Botón flotante \"+ CREAR PROYECTO\"": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941545564
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943959481
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944181657
+      }
+    ],
+    "3.2 Overlay, cajón, campo Nombre, asignación de hospital y contenedor de bloques": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941545700
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943960505
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944183106
+      }
+    ],
+    "4.1 Implementar `abrirModalProyecto`, `resetearModalProyecto`, `cerrarModalProyecto` y `cerrarModalProyectoAfuera`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941545857
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944184389
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944759817
+      }
+    ],
+    "5.1 Implementar `poblarSelectHospitalesProyecto`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941545980
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944201063
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944760753
+      }
+    ],
+    "5.2 Implementar `asignarHospitalProyecto` y `quitarHospitalProyecto`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941546095
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944202471
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944762157
+      }
+    ],
+    "6.1 Implementar `crearBloqueHospital`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941546226
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944203417
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944763104
+      }
+    ],
+    "6.2 Implementar `agregarLineasBloque`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941546374
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944204256
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944764223
+      }
+    ],
+    "7. Checkpoint - Verificación manual de UI, líneas y regla Escalafón → Puesto": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941546523
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944773978
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787945150745
+      }
+    ],
+    "8.1 Implementar `leerBloqueHospital`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941546689
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787945152716
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787945365037
+      }
+    ],
+    "8.2 Implementar `guardarNuevoProyecto` (validación acumulada + persistencia)": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941546844
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787945151681
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787945365969
+      }
+    ],
+    "9. Checkpoint - Verificación manual de guardado, persistencia y no regresión": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787941547006
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787945367075
+      },
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787945715258
+      }
+    ],
+    "1. Refactor compatible hacia atrás de las funciones de línea compartidas": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943777815
+      }
+    ],
+    "2. Agregar el CSS del módulo dentro de `<style>`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787943958122
+      }
+    ],
+    "3. Agregar el markup del módulo dentro de `<body>`": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944183177
+      }
+    ],
+    "4. Implementar apertura, reset y cierre del modal": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944759904
+      }
+    ],
+    "5. Implementar asignación y quita de hospitales": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944762221
+      }
+    ],
+    "6. Implementar creación de bloques de hospital y agregado de líneas": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787944764280
+      }
+    ],
+    "8. Implementar lectura de bloques, guardado y persistencia": [
+      {
+        "executionId": "8337549c-c93f-44d8-a3d4-b71b0bc0eab9",
+        "chatSessionId": "sess_83ca24b4-338f-4f07-8ab6-15d2c57c61ca",
+        "timestamp": 1787945366025
+      }
+    ]
+  }
+}
