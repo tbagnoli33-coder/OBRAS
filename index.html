@@ -48,7 +48,7 @@
         }
 
         .logo-plataforma { 
-            height: 50px; 
+            height: 38px; 
             width: auto;
             object-fit: contain; 
             margin-bottom: 2px;
@@ -304,7 +304,7 @@
         @media (max-width: 768px) {
             body { overflow: auto; height: auto; }
             .encabezado-superior { height: 90px; padding: 0 15px; }
-            .logo-plataforma { height: 26px; }
+            .logo-plataforma { height: 20px; }
             .contenedor-logo-inicio { margin-left: 0px; }
             .btn-inicio-texto { font-size: 9px; padding: 5px 14px; }
             .contenedor-principal { flex-direction: column; overflow: auto; height: auto; }
@@ -896,7 +896,6 @@
 
     <!-- OVERLAY DE CARGA: visible al iniciar mientras se traen los datos del Sheet -->
     <div id="overlay-carga" role="status" aria-live="polite" aria-label="Cargando datos">
-        <div class="spinner-carga"></div>
         <div class="titulo-carga">Cargando datos del sistema</div>
         <div class="barra-carga-cont"><div class="barra-carga-fill"></div></div>
         <div class="subtitulo-carga">Estamos trayendo la información desde el servidor. Esto puede tardar unos segundos, por favor esperá…</div>
@@ -963,7 +962,7 @@
     <header class="encabezado-superior">
         <div class="contenedor-logo-inicio" onclick="irAlInicio()" title="Volver al inicio">
             <img src="https://res.cloudinary.com/olddxilu/image/upload/e_trim/v1786644138/SEGUIMIENTO_OBRAS_1.png" alt="Seguimiento de Obras" class="logo-plataforma" id="imagen-logo">
-            <span class="btn-inicio-texto" aria-label="Inicio" title="Inicio">🏠</span>
+            <span class="btn-inicio-texto" aria-label="Inicio" title="Inicio"><svg viewBox="0 0 24 24" width="20" height="20" fill="#ffffff" aria-hidden="true"><path d="M12 3.1 3 10.2c-.5.4-.6 1.1-.2 1.6.4.5 1.1.6 1.6.2l.2-.1V19c0 1.1.9 2 2 2h2.5c.6 0 1-.4 1-1v-3.5c0-1.1.9-2 2-2s2 .9 2 2V20c0 .6.4 1 1 1H19c1.1 0 2-.9 2-2v-7.1l.2.1c.5.4 1.2.3 1.6-.2.4-.5.3-1.2-.2-1.6L12 3.1Z"/></svg></span>
         </div>
         <button id="btn-abrir-busqueda"
                 onclick="abrirModalBusqueda()"
