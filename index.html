@@ -2448,8 +2448,36 @@
         // ===================================================================
         // TASK 6.6 — Filtro combinado
         // ===================================================================
+        // ===================================================================
+        // Matching de ETIQUETAS globales (tolerante a acentos, may/min y variantes).
+        // Busca en TIPO (col A) y DENOMINACION (col C). Un pedido puede coincidir
+        // con varias etiquetas a la vez (ej: "ampliacion de dotacion - recorrida fq").
+        // ===================================================================
+        function _normTxt(s) {
+            return String(s == null ? '' : s)
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[.\-_/]+/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+        // Deteccion AMPLIA (elegida por el usuario):
+        //  - RECORRIDA FQ: cualquier mencion de "recorrida" (con o sin "fq").
+        //  - AMPLIACION DE DOTACION: mencion de "ampliacion" junto con "dotacion".
+        function _pedidoMatchEtiqueta(pedido, etiqueta) {
+            var campos = _normTxt((pedido.tipo || '') + ' ' + (pedido.detalle || ''));
+            var e = _normTxt(etiqueta);
+            if (e === 'recorrida fq') {
+                return campos.indexOf('recorrida') !== -1;
+            }
+            if (e === 'ampliacion de dotacion') {
+                return campos.indexOf('ampliacion') !== -1 && campos.indexOf('dotacion') !== -1;
+            }
+            return campos.indexOf(e) !== -1;
+        }
+
         function pedidoPasaTodosLosFiltros(pedido) {
-            if (etiquetaActiva) { var _den = (pedido.detalle || '').toUpperCase(); if (_den.indexOf(etiquetaActiva.toUpperCase()) === -1) return false; }
+            if (etiquetaActiva) { if (!_pedidoMatchEtiqueta(pedido, etiquetaActiva)) return false; }
             if (!filtrosBusqueda.activo) return true;
             var fb = filtrosBusqueda;
             if (fb.soloAnio) { var _pfa = parsearFecha(pedido.fecha); if (!_pfa || !_pfa.soloAnio) return false; }
@@ -2758,17 +2786,15 @@
         // ===================================================================
         var etiquetaActiva = null;
         var MAX_ETIQUETAS = 5;
-        var ETIQUETAS_CURADAS = ['200 CARGOS', 'RECORRIDA FQ'];
+        var ETIQUETAS_CURADAS = ['200 CARGOS', 'RECORRIDA FQ', 'AMPLIACION DE DOTACION'];
         var UMBRAL_ETIQUETA = 3;
 
         function contarPedidosPorPatron(patron) {
-            var p = String(patron).toUpperCase();
             var n = 0;
             for (var ef in datosSheets) {
                 var arr = datosSheets[ef] || [];
                 for (var i = 0; i < arr.length; i++) {
-                    var den = (arr[i].detalle || '').toUpperCase();
-                    if (den.indexOf(p) !== -1) n++;
+                    if (_pedidoMatchEtiqueta(arr[i], patron)) n++;
                 }
             }
             return n;
@@ -2795,7 +2821,13 @@
             for (var j = 0; j < candidatos.length && seleccion.length < MAX_ETIQUETAS; j++) {
                 var cand = candidatos[j];
                 if (cand.conteo < UMBRAL_ETIQUETA) break;
-                var yaEsta = seleccion.some(function(s){ var sp = s.patron.toUpperCase(); var cp = cand.patron.toUpperCase(); return sp === cp || cp.indexOf(sp) !== -1; });
+                // Descartar candidatos que ya quedan cubiertos por una etiqueta seleccionada
+                // (mismo texto, substring, o match del matcher tratando el candidato como denominacion).
+                var yaEsta = seleccion.some(function(s){
+                    var sp = s.patron.toUpperCase(); var cp = cand.patron.toUpperCase();
+                    if (sp === cp || cp.indexOf(sp) !== -1) return true;
+                    return _pedidoMatchEtiqueta({ tipo: '', detalle: cand.patron }, s.patron);
+                });
                 if (!yaEsta) seleccion.push(cand);
             }
             return seleccion.slice(0, MAX_ETIQUETAS);
