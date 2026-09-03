@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -1069,7 +1069,7 @@
         };
 
         const GRUPOS_DEFECTO = {
-            "DG de Salud Mental": { hospital: "DG Salud Mental", miembros: [] }
+            // Sin agrupadores por defecto. "DG de Salud Mental" figura como efector individual en la lista.
         };
 
         // Efectores que NO son navegables (no se dibujan como card ni cuentan como efector).
@@ -1537,7 +1537,8 @@
         // Helper interno: arma el HTML de una card de pedido para un subconjunto de cargos.
         // - listaCargosConIndice: array de { cargo, indexCargo } donde indexCargo es el índice REAL en pedido.cargos.
         // - tipoEstado: 'ACTIVO' | 'DESPRIORIZADO' | 'RESUELTO' (define estilo/etiqueta y variante de ids).
-        function armarCardPedido(nombreHospital, pedido, indexObra, listaCargosConIndice, tipoEstado) {
+        function armarCardPedido(nombreHospital, pedido, indexObra, listaCargosConIndice, tipoEstado, sufijoId) {
+            sufijoId = sufijoId || "";
             var claseCajon = "";
             var etiquetaEstadoHtml = "";
             var variante = "";
@@ -1557,8 +1558,8 @@
 
             // Ids de card/sección diferenciados por variante para evitar colisiones cuando
             // un mismo pedido genera dos cards (act/desp + res).
-            const idCargos = `cargos-${indexObra}-${variante}`;
-            const idCajon = `cajon-obra-${indexObra}-${variante}`;
+            const idCargos = `cargos-${indexObra}-${variante}${sufijoId}`;
+            const idCajon = `cajon-obra-${indexObra}-${variante}${sufijoId}`;
 
             let htmlListaCargos = "";
             // Recorremos SOLO el subconjunto recibido, usando el índice REAL en pedido.cargos
@@ -1574,7 +1575,7 @@
                 let claseResueltoItem = cargo.resuelto ? "resuelto" : "";
 
                 htmlListaCargos += `
-                    <div class="cargo-item ${claseResueltoItem}" id="cargo-item-${indexObra}-${indexCargo}">
+                    <div class="cargo-item ${claseResueltoItem}" id="cargo-item-${indexObra}-${indexCargo}${sufijoId}">
                         <div class="cargo-titulo">${cargo.puesto}</div>
                         <div class="cargo-escalafon">Escalafón: ${cargo.escalafon}</div>
                         <div style="font-size: 10px; margin-bottom: 10px; line-height: 1.4;">
@@ -1583,10 +1584,10 @@
                         </div>
                         <div class="grid-edicion">
                             <div class="col-edicion" style="flex: 1;"><label>Q PLAN</label><div style="font-weight:bold; padding: 4px; font-size: 11px;">${cargo.qPlan}</div></div>
-                            <div class="col-edicion" style="flex: 1;"><label>Q PED</label><input type="number" id="input-pedido-${indexObra}-${indexCargo}" class="input-num" value="${cargo.qPedido}" onfocus="this.select()"></div>
-                            <div class="col-edicion" style="flex: 1;"><label>Q APR</label><input type="number" id="input-aprobado-${indexObra}-${indexCargo}" class="input-num ${clAprob}" value="${valAprob}" oninput="this.classList.remove('input-prematuro')" onfocus="this.select()"></div>
-                            <div class="col-edicion" style="flex: 1;"><label title="Validado SSAH (Columna N)">VAL.</label><input type="checkbox" class="input-check" id="input-validado-${indexObra}-${indexCargo}" ${checkVal} onchange="interactuarCheckCargo('${nombreHospital}', ${indexObra}, ${indexCargo}, this, 'val')"></div>
-                            <div class="col-edicion" style="flex: 1;"><label title="Resuelto (Columna S)">RES.</label><input type="checkbox" class="input-check-res" id="input-resuelto-${indexObra}-${indexCargo}" ${checkRes} onchange="interactuarCheckCargo('${nombreHospital}', ${indexObra}, ${indexCargo}, this, 'res')"></div>
+                            <div class="col-edicion" style="flex: 1;"><label>Q PED</label><input type="number" id="input-pedido-${indexObra}-${indexCargo}${sufijoId}" class="input-num" value="${cargo.qPedido}" onfocus="this.select()"></div>
+                            <div class="col-edicion" style="flex: 1;"><label>Q APR</label><input type="number" id="input-aprobado-${indexObra}-${indexCargo}${sufijoId}" class="input-num ${clAprob}" value="${valAprob}" oninput="this.classList.remove('input-prematuro')" onfocus="this.select()"></div>
+                            <div class="col-edicion" style="flex: 1;"><label title="Validado SSAH (Columna N)">VAL.</label><input type="checkbox" class="input-check" id="input-validado-${indexObra}-${indexCargo}${sufijoId}" ${checkVal} onchange="interactuarCheckCargo('${nombreHospital}', ${indexObra}, ${indexCargo}, this, 'val')"></div>
+                            <div class="col-edicion" style="flex: 1;"><label title="Resuelto (Columna S)">RES.</label><input type="checkbox" class="input-check-res" id="input-resuelto-${indexObra}-${indexCargo}${sufijoId}" ${checkRes} onchange="interactuarCheckCargo('${nombreHospital}', ${indexObra}, ${indexCargo}, this, 'res')"></div>
                         </div>
                     </div>
                 `;
@@ -1603,8 +1604,8 @@
                     <div class="seccion-cargos" id="${idCargos}">
                         ${htmlListaCargos}
                         <div class="contenedor-botones-copiar">
-                            <button class="btn-copiar" onclick="copiarInfo(${indexObra}, 'pedido', this)">📋 Copiar PED</button>
-                            <button class="btn-copiar" onclick="copiarInfo(${indexObra}, 'aprobado', this)">📋 Copiar APR</button>
+                            <button class="btn-copiar" onclick="copiarInfo('${nombreHospital.replace(/'/g,"\\'")}', ${indexObra}, 'pedido', this, '${sufijoId}')">📋 Copiar PED</button>
+                            <button class="btn-copiar" onclick="copiarInfo('${nombreHospital.replace(/'/g,"\\'")}', ${indexObra}, 'aprobado', this, '${sufijoId}')">📋 Copiar APR</button>
                         </div>
                         <div class="btn-plegar-inferior" onclick="plegarCajon('${idCargos}', '${idCajon}')">▲ Plegar Información</div>
                     </div>
@@ -1626,18 +1627,19 @@
         function alternarDetalle(id) { document.getElementById(id).classList.toggle('abierto'); }
         function plegarCajon(idCargos, idCajon) { document.getElementById(idCargos).classList.remove('abierto'); document.getElementById(idCajon).scrollIntoView({ behavior: 'smooth', block: 'center' }); }
         function copiarUnDato(btn, texto) { navigator.clipboard.writeText(texto).then(() => { const original = btn.innerText; btn.innerText = "✅"; setTimeout(() => { btn.innerText = original; }, 1500); }); }
-        function copiarInfo(indexObra, tipoCopia, boton) {
-            const pedido = datosSheets[hospitalActual][indexObra];
-            let texto = `🏥 *Hospital:* ${hospitalActual}\n🏗️ *Obra:* ${pedido.detalle}\n`;
+        function copiarInfo(hosp, indexObra, tipoCopia, boton, sufijoId) {
+            sufijoId = sufijoId || "";
+            const pedido = datosSheets[hosp][indexObra];
+            let texto = `🏥 *Hospital:* ${hosp}\n🏗️ *Obra:* ${pedido.detalle}\n`;
             texto += tipoCopia === 'pedido' ? `📋 *ESTADO: Q PEDIDO*\n\n` : `✅ *ESTADO: Q APROBADO HACIENDA*\n\n`;
             pedido.cargos.forEach((cargo, indexCargo) => {
-                let idInput = tipoCopia === 'pedido' ? `input-pedido-${indexObra}-${indexCargo}` : `input-aprobado-${indexObra}-${indexCargo}`;
-                let idCheck = `input-validado-${indexObra}-${indexCargo}`;
+                let idInput = tipoCopia === 'pedido' ? `input-pedido-${indexObra}-${indexCargo}${sufijoId}` : `input-aprobado-${indexObra}-${indexCargo}${sufijoId}`;
+                let idCheck = `input-validado-${indexObra}-${indexCargo}${sufijoId}`;
                 let validadoTexto = document.getElementById(idCheck).checked ? "SI" : "NO";
                 texto += `- [${cargo.escalafon}] ${cargo.puesto}: *${document.getElementById(idInput).value}* (Validado: ${validadoTexto})\n`;
             });
             navigator.clipboard.writeText(texto).then(() => {
-                const original = btn.innerText; boton.innerText = "¡Copiado!"; boton.style.backgroundColor = "var(--celeste)";
+                const original = boton.innerText; boton.innerText = "¡Copiado!"; boton.style.backgroundColor = "var(--celeste)";
                 setTimeout(() => { boton.innerText = original; boton.style.backgroundColor = "var(--blanco)"; }, 2000); 
             });
         }
@@ -2581,12 +2583,14 @@
             var contFhr = document.getElementById('filtro-hospital-resultados');
             if (contFhr) contFhr.style.display = 'block';
 
-            Object.keys(datosSheets).forEach(function(nombreEfector) {
+            Object.keys(datosSheets).forEach(function(nombreEfector, idxEfector) {
                 // Filtro por hospital: si hay hospitales seleccionados, saltear los que no estén
                 if (filtrosBusqueda.hospitalesSeleccionados && filtrosBusqueda.hospitalesSeleccionados.length > 0
                     && filtrosBusqueda.hospitalesSeleccionados.indexOf(nombreEfector) === -1) return;
                 var pedidos = datosSheets[nombreEfector] || [];
-                pedidos.forEach(function(pedido) {
+                // Sufijo único por efector para evitar colisiones de ids entre hospitales.
+                var sufijoId = '-g' + idxEfector;
+                pedidos.forEach(function(pedido, indexObra) {
                     var todosResueltos = pedido.cargos.length > 0 && pedido.cargos.every(function(c) { return c.resuelto; });
                     var esDespriorizado = (pedido.prioridad === 'DESPRIORIZADO');
 
@@ -2598,21 +2602,31 @@
                     if (!pedidoPasaTodosLosFiltros(pedido)) return;
 
                     encontro = true;
-                    var etiqueta = esDespriorizado
-                        ? '<div class="etiqueta-estado-desp">DESPRIORIZADO</div>'
-                        : todosResueltos
-                            ? '<div class="etiqueta-estado-res">RESUELTO</div>'
-                            : '<div class="etiqueta-estado-activo">ACTIVO</div>';
-                    var claseCajon = esDespriorizado ? ' cajon-despriorizado' : todosResueltos ? ' cajon-resuelto' : '';
 
-                    grilla.innerHTML +=
-                        '<div class="etiqueta-efector-global" style="font-size:10px;font-weight:700;color:#153244;background:#e8f4f8;border-radius:4px;padding:3px 8px;margin-bottom:2px;margin-top:6px;">🏥 ' + nombreEfectorDisplay(nombreEfector) + '</div>' +
-                        '<div class="cajon-pedido' + claseCajon + '">' +
-                            etiqueta +
-                            '<div class="etiqueta">Tipo</div><p class="valor">' + pedido.tipo + '</p>' +
-                            '<div class="etiqueta">Denominación</div><p class="valor">' + pedido.detalle + '</p>' +
-                            '<div class="etiqueta">Fecha Fin</div><p class="valor">' + (pedido.fecha || 'SIN FECHA') + '</p>' +
-                        '</div>';
+                    // Clasificación POR CARGO conservando el índice REAL dentro de pedido.cargos,
+                    // igual que en la vista de hospital individual.
+                    var resueltos = [];
+                    var noResueltos = [];
+                    pedido.cargos.forEach(function(cargo, indexCargo) {
+                        if (cargo.resuelto === true) resueltos.push({ cargo: cargo, indexCargo: indexCargo });
+                        else noResueltos.push({ cargo: cargo, indexCargo: indexCargo });
+                    });
+                    var sinCargos = (pedido.cargos.length === 0);
+
+                    // Etiqueta del efector (se conserva el estilo inline actual).
+                    grilla.innerHTML += '<div class="etiqueta-efector-global" style="font-size:10px;font-weight:700;color:#153244;background:#e8f4f8;border-radius:4px;padding:3px 8px;margin-bottom:2px;margin-top:6px;">🏥 ' + nombreEfectorDisplay(nombreEfector) + '</div>';
+
+                    // Card(s) con armarCardPedido (incluye botón "Gestionar RRHH" y sección editable),
+                    // replicando la lógica de la vista normal y respetando filtrosActivos.
+                    if (filtrosActivos.RESUELTOS && resueltos.length > 0) {
+                        grilla.innerHTML += armarCardPedido(nombreEfector, pedido, indexObra, resueltos, 'RESUELTO', sufijoId);
+                    }
+                    if (!esDespriorizado && filtrosActivos.ACTIVOS && (noResueltos.length > 0 || sinCargos)) {
+                        grilla.innerHTML += armarCardPedido(nombreEfector, pedido, indexObra, noResueltos, 'ACTIVO', sufijoId);
+                    }
+                    if (esDespriorizado && filtrosActivos.DESPRIORIZADOS && (noResueltos.length > 0 || sinCargos)) {
+                        grilla.innerHTML += armarCardPedido(nombreEfector, pedido, indexObra, noResueltos, 'DESPRIORIZADO', sufijoId);
+                    }
                 });
             });
 
