@@ -894,9 +894,138 @@
             0%   { margin-left: -40%; }
             100% { margin-left: 100%; }
         }
+        /* ===== OVERLAY DE LOGIN (pantalla previa de acceso) ===== */
+        #overlay-login {
+            position: fixed;
+            inset: 0;
+            z-index: 6000;
+            background-color: var(--azul-oscuro);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            font-family: 'Montserrat', sans-serif;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #overlay-login.oculto { display: none; }
+        #overlay-login .login-card {
+            width: 100%;
+            max-width: 340px;
+            background-color: var(--blanco);
+            border-radius: 16px;
+            padding: 30px 26px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-sizing: border-box;
+        }
+        #overlay-login .login-titulo {
+            color: var(--azul-oscuro);
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            margin: 0;
+        }
+        #overlay-login .login-sub {
+            color: #888;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            margin: -6px 0 6px 0;
+        }
+        #overlay-login label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        #overlay-login input {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            padding: 11px 12px;
+            border: 1.5px solid var(--gris-bordes);
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 3px;
+        }
+        #overlay-login input:focus { outline: 2px solid var(--celeste); border-color: var(--celeste); }
+        #overlay-login .login-btn {
+            margin-top: 6px;
+            background-color: var(--azul-oscuro);
+            color: var(--blanco);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+        #overlay-login .login-btn:hover { filter: brightness(1.15); }
+        #overlay-login .login-error {
+            color: #c0392b;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            min-height: 16px;
+            margin: 0;
+        }
+        .btn-cerrar-sesion {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            z-index: 4000;
+            background-color: rgba(21,50,68,0.75);
+            color: var(--blanco);
+            border: none;
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .btn-cerrar-sesion:hover { opacity: 1; }
+        @media (max-width: 768px) {
+            .btn-cerrar-sesion { font-size: 9px; padding: 4px 10px; top: 6px; right: 6px; }
+        }
     </style>
 </head>
 <body>
+
+    <!-- OVERLAY DE LOGIN: pantalla previa de acceso (barrera minima) -->
+    <div id="overlay-login" role="dialog" aria-modal="true" aria-label="Acceso">
+        <form class="login-card" onsubmit="intentarLogin(event)">
+            <h1 class="login-titulo">Gestion de Obras</h1>
+            <p class="login-sub">Ingresa tus credenciales para continuar</p>
+            <div>
+                <label for="login-usuario">Usuario</label>
+                <input type="text" id="login-usuario" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Usuario">
+            </div>
+            <div>
+                <label for="login-clave">Contrase&ntilde;a</label>
+                <input type="password" id="login-clave" autocomplete="current-password" placeholder="Contrase&ntilde;a">
+            </div>
+            <p class="login-error" id="login-error"></p>
+            <button type="submit" class="login-btn">Ingresar</button>
+        </form>
+    </div>
+
+    <button class="btn-cerrar-sesion" id="btn-cerrar-sesion" onclick="cerrarSesion()" style="display:none;">Cerrar sesion</button>
 
     <!-- OVERLAY DE CARGA: visible al iniciar mientras se traen los datos del Sheet -->
     <div id="overlay-carga" role="status" aria-live="polite" aria-label="Cargando datos">
@@ -2874,11 +3003,66 @@
             }
         }
 
+        // ===================================================================
+        // LOGIN (barrera de acceso minima, con sesion recordada)
+        // NOTA DE SEGURIDAD: al ser una app estatica (sin servidor propio), estas
+        // credenciales viven en el cliente. Es una barrera para uso casual, NO una
+        // proteccion real contra alguien que inspeccione el codigo.
+        // ===================================================================
+        var LOGIN_USUARIO = 'obras';
+        var LOGIN_CLAVE = 'obras';
+        var LOGIN_STORAGE_KEY = 'obras_sesion_ok';
+
+        function sesionActiva() {
+            try { return localStorage.getItem(LOGIN_STORAGE_KEY) === '1'; }
+            catch (e) { return false; }
+        }
+
+        function mostrarAppAutenticada() {
+            var ov = document.getElementById('overlay-login');
+            if (ov) ov.classList.add('oculto');
+            var btn = document.getElementById('btn-cerrar-sesion');
+            if (btn) btn.style.display = 'block';
+            iniciarApp();
+        }
+
+        function intentarLogin(event) {
+            if (event) event.preventDefault();
+            var u = (document.getElementById('login-usuario') || {}).value || '';
+            var p = (document.getElementById('login-clave') || {}).value || '';
+            var err = document.getElementById('login-error');
+            if (u.trim().toLowerCase() === LOGIN_USUARIO && p === LOGIN_CLAVE) {
+                try { localStorage.setItem(LOGIN_STORAGE_KEY, '1'); } catch (e) {}
+                if (err) err.textContent = '';
+                mostrarAppAutenticada();
+            } else {
+                if (err) err.textContent = 'Usuario o contrasena incorrectos.';
+                var pc = document.getElementById('login-clave');
+                if (pc) { pc.value = ''; pc.focus(); }
+            }
+        }
+
+        function cerrarSesion() {
+            try { localStorage.removeItem(LOGIN_STORAGE_KEY); } catch (e) {}
+            location.reload();
+        }
+
+        function arranqueConLogin() {
+            if (sesionActiva()) {
+                mostrarAppAutenticada();
+            } else {
+                if (typeof ocultarOverlayCarga === 'function') ocultarOverlayCarga();
+                var ov = document.getElementById('overlay-login');
+                if (ov) ov.classList.remove('oculto');
+                var u = document.getElementById('login-usuario');
+                if (u) u.focus();
+            }
+        }
         // Arranque de la aplicacion: carga datos (backend o DB_ARRAY_LOCAL) y renderiza.
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', iniciarApp);
+            document.addEventListener('DOMContentLoaded', arranqueConLogin);
         } else {
-            iniciarApp();
+            arranqueConLogin();
         }
     </script>
 
