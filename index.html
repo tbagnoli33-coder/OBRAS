@@ -28,6 +28,7 @@
         body { font-family: 'Montserrat', sans-serif; margin: 0; background-color: var(--blanco); color: var(--azul-oscuro); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
         .encabezado-superior { 
+            position: relative;
             height: 135px; 
             background-color: var(--azul-oscuro); 
             border-bottom: 4px solid var(--amarillo); 
@@ -69,6 +70,61 @@
         }
 
         .contenedor-logo-inicio:hover .btn-inicio-texto { background-color: rgba(255, 255, 255, 0.15); }
+
+        /* ===== INDICADOR DE CARGA EN EL BANNER SUPERIOR ===== */
+        #indicador-carga-header {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1.5px solid var(--amarillo);
+            background-color: rgba(255, 204, 0, 0.12);
+            color: var(--amarillo);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+            white-space: nowrap;
+            max-width: 46%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: opacity 0.4s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        #indicador-carga-header.visible { display: inline-flex; }
+        #indicador-carga-header.oculto { opacity: 0; pointer-events: none; }
+        #indicador-carga-header .icono-estado {
+            width: 14px; height: 14px; flex: 0 0 auto;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        /* Spinner (estado cargando) */
+        #indicador-carga-header.estado-cargando .icono-estado {
+            border: 2px solid rgba(255, 204, 0, 0.35);
+            border-top-color: var(--amarillo);
+            border-radius: 50%;
+            animation: girar-spinner-header 0.8s linear infinite;
+        }
+        @keyframes girar-spinner-header { to { transform: rotate(360deg); } }
+        /* Estado OK (verde suave dentro de la paleta) */
+        #indicador-carga-header.estado-ok {
+            border-color: #8de2d6;
+            background-color: rgba(141, 226, 214, 0.14);
+            color: #8de2d6;
+        }
+        /* Estado ERROR (rojo, legible sobre azul oscuro) */
+        #indicador-carga-header.estado-error {
+            border-color: #ff8a80;
+            background-color: rgba(255, 138, 128, 0.14);
+            color: #ff8a80;
+        }
+        @media (max-width: 768px) {
+            #indicador-carga-header { font-size: 10px; padding: 5px 11px; gap: 6px; max-width: 60%; top: 16px; transform: translateX(-50%); }
+        }
 
         .contenedor-principal { display: flex; flex: 1; overflow: hidden; background-color: var(--blanco); position: relative; }
 
@@ -1100,6 +1156,10 @@
         <button id="btn-abrir-busqueda"
                 onclick="abrirModalBusqueda()"
                 aria-label="Abrir búsqueda avanzada">🔍 BUSCAR</button>
+        <div id="indicador-carga-header" role="status" aria-live="polite">
+            <span class="icono-estado" aria-hidden="true"></span>
+            <span class="texto-estado" id="texto-carga-header"></span>
+        </div>
     </header>
 
     <div class="contenedor-principal">
@@ -1392,16 +1452,49 @@
             setTimeout(function () { if (ov.parentNode) ov.style.display = 'none'; }, 450);
         }
 
+        var _timerOcultarIndicador = null;
+        function mostrarCargaHeader(estado, mensaje) {
+            var ind = document.getElementById('indicador-carga-header');
+            var txt = document.getElementById('texto-carga-header');
+            if (!ind) return;
+            if (_timerOcultarIndicador) { clearTimeout(_timerOcultarIndicador); _timerOcultarIndicador = null; }
+            ind.classList.remove('estado-cargando', 'estado-ok', 'estado-error', 'oculto');
+            ind.classList.add('visible');
+            var icono = ind.querySelector('.icono-estado');
+            if (estado === 'cargando') {
+                ind.classList.add('estado-cargando');
+                if (icono) icono.textContent = '';
+                if (txt) txt.textContent = mensaje || 'Cargando datos...';
+            } else if (estado === 'ok') {
+                ind.classList.add('estado-ok');
+                if (icono) icono.textContent = '\u2713';
+                if (txt) txt.textContent = mensaje || 'Datos cargados';
+                _timerOcultarIndicador = setTimeout(ocultarCargaHeader, 3500);
+            } else if (estado === 'error') {
+                ind.classList.add('estado-error');
+                if (icono) icono.textContent = '\u26A0';
+                if (txt) txt.textContent = mensaje || 'Error al cargar datos';
+            }
+        }
+        function ocultarCargaHeader() {
+            var ind = document.getElementById('indicador-carga-header');
+            if (!ind) return;
+            ind.classList.add('oculto');
+            setTimeout(function () { ind.classList.remove('visible', 'oculto', 'estado-cargando', 'estado-ok', 'estado-error'); }, 450);
+        }
+
         async function iniciarApp() {
             // Si no hay backend (modo demo local), no tiene sentido mostrar el splash de carga.
             if (!GOOGLE_SHEETS_URL) ocultarOverlayCarga();
+            mostrarCargaHeader('cargando', 'Cargando datos del sistema...');
             try {
                 const payload = await obtenerDatos();
                 datosSheets = normalizarPayload(payload);
                 if (payload && payload.grupos) gruposEfectores = payload.grupos;
                 if (payload && payload.catalogos) catalogos = Object.assign(JSON.parse(JSON.stringify(CATALOGOS_DEFECTO)), payload.catalogos);
+                mostrarCargaHeader('ok', 'Datos cargados correctamente');
             } catch (e) {
-                alert("No se pudieron cargar los datos del Sheets (" + e.message + "). Se muestran los datos locales.");
+                mostrarCargaHeader('error', 'No se pudo cargar del servidor. Mostrando datos locales.');
                 datosSheets = normalizarPayload(DB_ARRAY_LOCAL);
             }
             poblarSelect('nuevo-tipo', catalogos.tiposPedido);
