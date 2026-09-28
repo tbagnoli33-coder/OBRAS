@@ -1248,7 +1248,7 @@
            }
            Si "grupos" o "catalogos" no vienen, se usan los valores por defecto.
            ===================================================================== */
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxZ94NWiMfVkPAvMiZOeJQWVkVGXN46APHXuiqLx2r0JtcdQqbi_dj9F5rsWOgCS6Q/exec"; // URL del Web App (Apps Script del Sheet)
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwp6hHoKCZJyZN_z0VL7p7MQ4_JnI-ui7DIxZbntDd2FnyU9VM6n5BQJrsHCOZEIls/exec"; // URL del Web App (Apps Script del Sheet)
 
         const CATALOGOS_DEFECTO = {
             tiposPedido: ["Obra", "Ampliacion de dotación", "Obra Recorrida FQ", "Ampliacion Recorrida FQ"],
@@ -1410,32 +1410,85 @@
         // navegador bloquea por CORS cuando la app se sirve desde un dominio real (Vercel).
         // JSONP inserta un <script src="...?callback=fn"> que NO está sujeto a CORS.
         // Requiere que el doGet del Apps Script envuelva la respuesta cuando viene ?callback.
-        function obtenerDatos() {
+        // Lectura con reintentos escalonados. Se usa fetch (y no JSONP) porque el
+        // Web App devuelve "text/plain" con cabecera "nosniff": Chrome bloquea ese
+        // cuerpo cuando se pide como <script> (ERR_BLOCKED_BY_ORB), pero trae
+        // "Access-Control-Allow-Origin: *", así que fetch lo lee sin problemas.
+        // Google responde de forma intermitente (400/404 o lentísimo), por eso se
+        // lanzan intentos escalonados y gana el primero que responde bien.
+        function obtenerDatos(sinCache) {
             if (!GOOGLE_SHEETS_URL) return Promise.resolve(DB_ARRAY_LOCAL);
+            var base = GOOGLE_SHEETS_URL + (GOOGLE_SHEETS_URL.indexOf('?') === -1 ? '?' : '&') + 'sin_cache=' + (sinCache ? '1' : '0');
             return new Promise(function (resolve, reject) {
-                var cbName = 'jsonp_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
-                var script = document.createElement('script');
-                var timeoutId = setTimeout(function () {
-                    cleanup();
-                    reject(new Error("Timeout al leer del Sheets (JSONP)"));
-                }, 60000);
-                function cleanup() {
-                    clearTimeout(timeoutId);
-                    try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
-                    if (script.parentNode) script.parentNode.removeChild(script);
+                var terminado = false;
+                var ultimoError = null;
+                var timers = [];
+
+                function intentar() {
+                    if (terminado) return;
+                    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+                    var tAbort = setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, 20000);
+                    var url = base + '&_=' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
+                    fetch(url, { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined })
+                        .then(function (r) {
+                            if (!r.ok) throw new Error('HTTP ' + r.status);
+                            return r.json();
+                        })
+                        .then(function (data) {
+                            clearTimeout(tAbort);
+                            if (terminado) return;
+                            if (!data || data.ok === false) throw new Error((data && data.error) || 'El servidor devolvió un error');
+                            terminado = true;
+                            limpiar();
+                            resolve(data);
+                        })
+                        .catch(function (e) {
+                            clearTimeout(tAbort);
+                            if (terminado) return;
+                            ultimoError = (e && e.message) ? e.message : String(e);
+                            if (e && e.name === 'AbortError') ultimoError = 'El servidor no respondió en 20 s';
+                        });
                 }
-                window[cbName] = function (data) {
-                    cleanup();
-                    resolve(data);
-                };
-                script.onerror = function () {
-                    cleanup();
-                    reject(new Error("No se pudo cargar el script JSONP del Sheets"));
-                };
-                var sep = GOOGLE_SHEETS_URL.indexOf('?') === -1 ? '?' : '&';
-                script.src = GOOGLE_SHEETS_URL + sep + 'callback=' + cbName + '&_=' + Date.now();
-                document.body.appendChild(script);
+                function limpiar() { for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]); }
+
+                intentar();
+                [7000, 16000, 28000].forEach(function (ms, idx) {
+                    timers.push(setTimeout(function () {
+                        if (terminado) return;
+                        if (typeof mostrarCargaHeader === 'function') mostrarCargaHeader('cargando', 'Reintentando lectura (' + (idx + 2) + ')...');
+                        intentar();
+                    }, ms));
+                });
+                timers.push(setTimeout(function () {
+                    if (terminado) return;
+                    terminado = true;
+                    reject(new Error(ultimoError || 'El servidor no respondió en 45 s'));
+                }, 45000));
             });
+        }
+
+        // Copia local del último payload real: si el servidor no responde, se usa
+        // esa copia en vez de los datos demo (evita "no levanta datos" para siempre).
+        var CLAVE_COPIA_DATOS = 'obras_copia_datos';
+        function guardarCopiaDatos_(payload) {
+            try {
+                localStorage.setItem(CLAVE_COPIA_DATOS, JSON.stringify({ ts: Date.now(), payload: payload }));
+            } catch (e) { /* sin localStorage o sin espacio: se ignora */ }
+        }
+        function leerCopiaDatos_() {
+            try {
+                var bruto = localStorage.getItem(CLAVE_COPIA_DATOS);
+                if (!bruto) return null;
+                var obj = JSON.parse(bruto);
+                if (!obj || !obj.payload) return null;
+                return obj;
+            } catch (e) { return null; }
+        }
+        function fechaCorta_(ts) {
+            try {
+                return new Date(ts).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                    + ' ' + new Date(ts).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+            } catch (e) { return ''; }
         }
 
         function poblarSelect(id, opciones) {
@@ -1453,10 +1506,11 @@
         }
 
         var _timerOcultarIndicador = null;
-        function mostrarCargaHeader(estado, mensaje) {
+        function mostrarCargaHeader(estado, mensaje, detalle) {
             var ind = document.getElementById('indicador-carga-header');
             var txt = document.getElementById('texto-carga-header');
             if (!ind) return;
+            if (ind.title !== undefined) ind.title = detalle || mensaje || '';
             if (_timerOcultarIndicador) { clearTimeout(_timerOcultarIndicador); _timerOcultarIndicador = null; }
             ind.classList.remove('estado-cargando', 'estado-ok', 'estado-error', 'oculto');
             ind.classList.add('visible');
@@ -1487,15 +1541,39 @@
             // Si no hay backend (modo demo local), no tiene sentido mostrar el splash de carga.
             if (!GOOGLE_SHEETS_URL) ocultarOverlayCarga();
             mostrarCargaHeader('cargando', 'Cargando datos del sistema...');
+            var payload = null, motivo = '';
             try {
-                const payload = await obtenerDatos();
-                datosSheets = normalizarPayload(payload);
-                if (payload && payload.grupos) gruposEfectores = payload.grupos;
-                if (payload && payload.catalogos) catalogos = Object.assign(JSON.parse(JSON.stringify(CATALOGOS_DEFECTO)), payload.catalogos);
-                mostrarCargaHeader('ok', 'Datos cargados correctamente');
+                payload = await obtenerDatos();
+                if (payload && payload.ok === false) {
+                    motivo = payload.error || 'El servidor devolvió un error';
+                    payload = null;
+                }
             } catch (e) {
-                mostrarCargaHeader('error', 'No se pudo cargar del servidor. Mostrando datos locales.');
-                datosSheets = normalizarPayload(DB_ARRAY_LOCAL);
+                motivo = (e && e.message) ? e.message : 'error desconocido';
+                payload = null;
+            }
+            if (payload) {
+                datosSheets = normalizarPayload(payload);
+                if (payload.grupos) gruposEfectores = payload.grupos;
+                if (payload.catalogos) catalogos = Object.assign(JSON.parse(JSON.stringify(CATALOGOS_DEFECTO)), payload.catalogos);
+                guardarCopiaDatos_(payload);
+                mostrarCargaHeader('ok', 'Datos cargados correctamente');
+            } else {
+                // 1er respaldo: copia local del último payload real que se pudo leer.
+                var copia = leerCopiaDatos_();
+                if (copia) {
+                    datosSheets = normalizarPayload(copia.payload);
+                    if (copia.payload.grupos) gruposEfectores = copia.payload.grupos;
+                    if (copia.payload.catalogos) catalogos = Object.assign(JSON.parse(JSON.stringify(CATALOGOS_DEFECTO)), copia.payload.catalogos);
+                    mostrarCargaHeader('error',
+                        'Servidor sin respuesta. Mostrando datos del ' + fechaCorta_(copia.ts) + '.',
+                        'No se pudieron leer los datos del Google Sheet: ' + motivo);
+                } else {
+                    // Último respaldo: datos demo embebidos.
+                    datosSheets = normalizarPayload(DB_ARRAY_LOCAL);
+                    mostrarCargaHeader('error', 'Servidor sin respuesta. Datos locales.',
+                        'No se pudieron leer los datos del Google Sheet: ' + motivo);
+                }
             }
             poblarSelect('nuevo-tipo', catalogos.tiposPedido);
             inicializarHospitales();
@@ -1899,48 +1977,114 @@
 
         // === Persistencia en backend (Apps Script del Google Sheet) ===
         // El backend inserta UNA fila por request (action:"insert"), así que enviamos
-        // un POST por cada cargo del pedido. Firma de 2 parámetros; async por dentro
-        // pero el llamador la invoca sin await (fire-and-forget): el pedido ya está en
-        // memoria, por eso ante error solo se avisa y la app sigue operable.
+        // Envía el pedido COMPLETO en UN solo POST (acción "crear"): el backend
+        // crea una fila por cargo en la misma petición. Firma de 2 parámetros;
+        // async por dentro pero el llamador la invoca sin await (fire-and-forget).
+        // Se intenta PRIMERO en modo "cors" para poder leer la confirmación del
+        // servidor ({ ok:true, filas:1 }). Si el navegador bloquea la lectura por el
+        // redirect de Apps Script, se reintenta en "no-cors": la fila se escribe
+        // igual, pero la respuesta queda opaca y NO se puede verificar — en ese caso
+        // se avisa explícitamente en lugar de asumir éxito en silencio.
+
+        // Devuelve true si el servidor confirmó la escritura; false si quedó opaca.
+        async function enviarFilaBackend_(cuerpo) {
+            var opciones = {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" }, // evita preflight CORS
+                body: cuerpo
+            };
+            var resp;
+            try {
+                resp = await fetch(GOOGLE_SHEETS_URL, Object.assign({}, opciones, { mode: "cors" }));
+            } catch (eCors) {
+                // CORS/redirect: no se pudo leer la respuesta -> reenviar en no-cors.
+                try {
+                    await fetch(GOOGLE_SHEETS_URL, Object.assign({}, opciones, { mode: "no-cors" }));
+                } catch (eNoCors) {
+                    throw new Error((eNoCors && eNoCors.message) ? eNoCors.message : "sin conexión con el servidor");
+                }
+                return false;
+            }
+            if (resp && resp.type === "opaque") return false; // no se puede verificar
+            var data = null;
+            try { data = await resp.json(); } catch (eJson) { data = null; }
+            if (!resp.ok) throw new Error("HTTP " + resp.status);
+            if (!data || data.ok !== true) throw new Error((data && data.error) || "Respuesta inválida del backend");
+            return true;
+        }
+
+        // Si un POST no se pudo confirmar, consulta al servidor (sin caché) si la
+        // fila llegó igual: así se reintenta sin riesgo de duplicar filas.
+        async function verificarPedidoEnBackend_(hospital, detalle) {
+            try {
+                var payload = await obtenerDatos(true);
+                if (!payload || payload.ok === false) return null;
+                var pedidos = payload.hospitales && payload.hospitales[hospital];
+                if (!Array.isArray(pedidos)) return false;
+                for (var i = 0; i < pedidos.length; i++) {
+                    if (Array.isArray(pedidos[i]) && pedidos[i][1] === detalle) return true;
+                }
+                return false;
+            } catch (e) { return null; }
+        }
+
         async function persistirPedidoBackend(hospital, pedido) {
             if (!GOOGLE_SHEETS_URL) return; // sin backend configurado: no-op silencioso
-            var priorizacion = (pedido.prioridad === 'DESPRIORIZADO') ? 'despriorizado' : '';
             var cargos = pedido.cargos || [];
-            try {
-                var insertadas = 0;
-                for (var i = 0; i < cargos.length; i++) {
-                    var c = cargos[i];
-                    var fila = {
-                        action: 'insert',
-                        hospital: hospital,
-                        tipo: pedido.tipo,
-                        denominacion: pedido.detalle,
-                        fechaFin: pedido.fecha,
-                        priorizacion: priorizacion,
-                        tipoQ: c.tipoQ,
-                        escalafon: c.escalafon,
-                        puesto: c.puesto,
-                        qPlan: c.qPlan,
-                        canal: c.canal,
-                        qPedido: c.qPedido,
-                        expediente: c.expediente,
-                        qAprobado: c.qAprobado
-                    };
-                    // POST con mode:"no-cors": desde un dominio real (Vercel), Apps Script
-                    // redirige (302) y bloquea la lectura de la respuesta por CORS. Con no-cors
-                    // la fila se inserta igual, pero la respuesta es "opaca" (no legible).
-                    // Por eso NO validamos resp.ok/data: asumimos éxito si no hubo excepción de red.
-                    await fetch(GOOGLE_SHEETS_URL, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(fila)
-                    });
-                    insertadas++;
+            // UN solo POST por pedido (el backend crea una fila por cargo en la
+            // misma petición): menos requests importa porque Google limita la
+            // frecuencia de llamadas al Web App.
+            var cuerpo = JSON.stringify({
+                accion: 'crear',
+                hospital: hospital,
+                pedido: {
+                    tipo: pedido.tipo,
+                    detalle: pedido.detalle,
+                    fecha: pedido.fecha,
+                    prioridad: (pedido.prioridad === 'DESPRIORIZADO') ? 'DESPRIORIZADO' : '-',
+                    cargos: cargos.map(function (c) {
+                        return {
+                            tipoQ: c.tipoQ,
+                            escalafon: c.escalafon,
+                            puesto: c.puesto,
+                            qPlan: c.qPlan,
+                            canal: c.canal,
+                            qPedido: c.qPedido,
+                            expediente: c.expediente,
+                            qAprobado: c.qAprobado,
+                            validado: c.validado === true,
+                            resuelto: c.resuelto === true
+                        };
+                    })
                 }
-                console.log("Pedido sincronizado con el Sheet. Filas insertadas: " + insertadas + " de " + cargos.length);
+            });
+            try {
+                var confirmado = false;
+                var ultimoError = null;
+                for (var intento = 1; intento <= 2 && !confirmado; intento++) {
+                    try {
+                        confirmado = await enviarFilaBackend_(cuerpo);
+                    } catch (eErr) {
+                        ultimoError = eErr;
+                    }
+                    if (confirmado) break;
+                    // No se pudo confirmar: ¿realmente no llegó la fila?
+                    var esta = await verificarPedidoEnBackend_(hospital, pedido.detalle);
+                    if (esta === true) { confirmado = true; break; }   // llegó: no reenviar
+                    if (esta === false && intento < 2) continue;        // no llegó: reintentar una vez
+                    break;                                              // null: sin verificación posible
+                }
+                if (confirmado) {
+                    console.log("Pedido sincronizado con el Sheet. Filas: " + cargos.length);
+                } else {
+                    alert("Se envió el pedido (" + cargos.length + " fila(s)) al servidor, pero NO se pudo confirmar la escritura en el Google Sheet"
+                        + (ultimoError && ultimoError.message ? " (" + ultimoError.message + ")" : "") + ".\n\n"
+                        + "Revisá en el Sheet que hayan aparecido antes de dar por bueno el pedido.");
+                }
             } catch (e) {
-                alert("El pedido se guardó localmente, pero no se pudo sincronizar con el Google Sheet (" + (e.message || e) + ").");
+                alert("El pedido se guardó localmente, pero NO se pudo sincronizar con el Google Sheet ("
+                    + (e.message || e) + ").\n\nFilas no enviadas: " + cargos.length
+                    + ".\nReintentá o avisá al administrador.");
             }
         }
 
