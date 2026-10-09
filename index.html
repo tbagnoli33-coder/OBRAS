@@ -484,7 +484,9 @@
             color: var(--azul-oscuro);
             border-bottom: 2px solid var(--amarillo);
         }
-        .hist-modal-cuerpo { padding: 18px 24px; overflow: auto; }
+        /* Variables escalables del módulo (ajustables por JS para screenshots). */
+        #modal-sm { --hist-modal-pad: 24px; --hist-tabla-pad-y: 7px; --hist-tabla-pad-x: 9px; }
+        .hist-modal-cuerpo { padding: var(--hist-modal-pad) var(--hist-modal-pad); overflow: auto; }
         .hist-modal-footer {
             display: flex; justify-content: flex-end; gap: 10px;
             padding: 14px 24px; border-top: 1px solid var(--gris-bordes);
@@ -507,11 +509,28 @@
             font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 6px 8px;
             border: 1px solid var(--gris-bordes); border-radius: 4px; color: var(--azul-oscuro);
         }
+        /* Barra de exportación + ajuste de márgenes */
+        .hist-controles-export {
+            background: var(--gris-claro); border: 1px solid var(--gris-bordes);
+            border-radius: 8px; padding: 8px 12px; gap: 8px;
+        }
+        .hist-btn-mini {
+            font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; line-height: 1;
+            min-width: 28px; padding: 5px 9px; border-radius: 6px; cursor: pointer;
+            border: 1.5px solid var(--azul-oscuro); background: var(--blanco); color: var(--azul-oscuro);
+        }
+        .hist-btn-mini:hover { background: var(--celeste); }
+        .hist-val-chip {
+            font-size: 11px; font-weight: 700; color: var(--azul-oscuro);
+            min-width: 42px; text-align: center; display: inline-block;
+            background: var(--blanco); border: 1px solid var(--gris-bordes); border-radius: 4px; padding: 3px 6px;
+        }
+        .hist-sep { width: 1px; align-self: stretch; background: var(--gris-bordes); margin: 0 2px; }
 
         /* Tabla del dashboard */
         .hist-tabla-wrap { overflow: auto; max-height: 62vh; border: 1px solid var(--gris-bordes); border-radius: 8px; }
         table.hist-tabla { border-collapse: collapse; width: 100%; font-size: 11px; }
-        table.hist-tabla th, table.hist-tabla td { padding: 7px 9px; text-align: center; white-space: nowrap; }
+        table.hist-tabla th, table.hist-tabla td { padding: var(--hist-tabla-pad-y, 7px) var(--hist-tabla-pad-x, 9px); text-align: center; white-space: nowrap; }
         table.hist-tabla thead th {
             position: sticky; top: 0; z-index: 1;
             background-color: var(--azul-oscuro); color: var(--blanco);
@@ -1329,10 +1348,35 @@
                     <div class="hist-controles">
                         <label>Vista:</label>
                         <button class="hist-chip-vista activa" data-vista="tabla" onclick="cambiarVistaSM('tabla')">Tabla por efector</button>
+                        <button class="hist-chip-vista" data-vista="por-especialidad" onclick="cambiarVistaSM('por-especialidad')">Por especialidad</button>
                         <button class="hist-chip-vista" data-vista="por-anio" onclick="cambiarVistaSM('por-anio')">Por año / período</button>
                         <button class="hist-chip-vista" data-vista="barras-efector" onclick="cambiarVistaSM('barras-efector')">Ranking por efector</button>
                         <button class="hist-chip-vista" data-vista="barras-keyword" onclick="cambiarVistaSM('barras-keyword')">Barras por rol</button>
                     </div>
+
+                    <!-- Barra de EXPORTACIÓN + AJUSTE DE MÁRGENES (para sacar screenshots) -->
+                    <div class="hist-controles hist-controles-export">
+                        <label>Exportar:</label>
+                        <button class="hist-btn hist-btn-secundario" onclick="exportarVistaSM('pdf')" title="Descarga la vista actual como PDF">⬇ PDF</button>
+                        <button class="hist-btn hist-btn-secundario" onclick="exportarVistaSM('jpg')" title="Descarga la vista actual como imagen JPG">⬇ JPG</button>
+
+                        <span class="hist-sep"></span>
+
+                        <label title="Espaciado interno de celdas de la tabla">Densidad tabla:</label>
+                        <button class="hist-btn hist-btn-mini" onclick="ajustarMargenSM('tabla', -1)" title="Más compacta">−</button>
+                        <span id="hist-tabla-pad-val" class="hist-val-chip">6px</span>
+                        <button class="hist-btn hist-btn-mini" onclick="ajustarMargenSM('tabla', 1)" title="Más aireada">+</button>
+
+                        <span class="hist-sep"></span>
+
+                        <label title="Margen interno del modal (padding del cuerpo)">Margen modal:</label>
+                        <button class="hist-btn hist-btn-mini" onclick="ajustarMargenSM('modal', -1)" title="Menos margen">−</button>
+                        <span id="hist-modal-pad-val" class="hist-val-chip">24px</span>
+                        <button class="hist-btn hist-btn-mini" onclick="ajustarMargenSM('modal', 1)" title="Más margen">+</button>
+
+                        <button class="hist-btn hist-btn-mini" onclick="resetMargenSM()" title="Restaurar valores por defecto">⟲ Reset</button>
+                    </div>
+
                     <div id="hist-sm-resumen" class="hist-resumen"></div>
                     <div id="hist-sm-vista"></div>
                 </section>
@@ -1553,6 +1597,7 @@
                 keywordsDe: keywordsDe,
                 denomEsSM: denomEsSM,
                 efectorEsSM: efectorEsSM,
+                puestoEsSM: puestoEsSM,
                 filaCuenta: filaCuenta
             };
         })();
@@ -2905,6 +2950,36 @@
                 return grupos; // { hist2426:{...}, hist2223:{...} }
             }
 
+            // ---- Agregador por ESPECIALIDAD (puesto): recorre SOLO _datos, aplica la
+            //      misma regla A && (B1 || B2 || B3) y agrupa por especialidad CANÓNICA.
+            //      "Canónica" = puesto normalizado (minúsculas, sin acentos, espacios
+            //      colapsados), de modo que especialidades que "se llaman igual" aunque
+            //      difieran en mayúsculas/acentos/espacios caen en la MISMA fila.
+            //      Para cada especialidad devuelve: q2426, q2223 y combinado (suma).
+            //      La etiqueta visible (label) es la primera grafía original encontrada.
+            function agregarPorEspecialidad() {
+                const mapa = {}; // claveNorm -> { label, q2426, q2223, combinado }
+                _datos.forEach(function (r) {
+                    const hosp = r.hospital || '';
+                    const denom = r.denominacion || '';
+                    const puesto = r.puesto || '';
+                    const kws = H.filaCuenta(hosp, denom, puesto);
+                    if (!kws) return;
+                    const clave = norm(puesto);
+                    if (!clave) return;
+                    if (!mapa[clave]) {
+                        mapa[clave] = { label: String(puesto).trim() || clave, q2426: 0, q2223: 0, combinado: 0 };
+                    }
+                    const aprob = Number(r.qAprobado) || 0;
+                    if (r._origen === 'hist2223') mapa[clave].q2223 += aprob;
+                    else mapa[clave].q2426 += aprob;
+                    mapa[clave].combinado += aprob;
+                });
+                // Devuelve array ordenado por combinado desc.
+                return Object.keys(mapa).map(function (k) { return mapa[k]; })
+                    .sort(function (a, b) { return b.combinado - a.combinado; });
+            }
+
             // ---- Agregador por AÑO/PERÍODO: suma qAprobado por _anio x keyword,
             //      aplicando la misma regla A && (B1 || B2). "2022-2023" es un período único.
             function agregarPorAnio() {
@@ -2936,6 +3011,7 @@
             H.totalRegistros = totalRegistros;
             H.agregarDashboard = agregarDashboard;
             H.agregarPorAnio = agregarPorAnio;
+            H.agregarPorEspecialidad = agregarPorEspecialidad;
             H.TEMPLATES = TEMPLATES;
         })(HIST);
 
@@ -2953,6 +3029,23 @@
 
         // Años/períodos canónicos del eje temporal (2022-2023 es un único período).
         var HIST_ANIOS = ['2022-2023', '2024', '2025', '2026'];
+
+        // Fila FIJA "Programa Casas Vinculares" — números tomados TAL CUAL del cuadro
+        // azul del equipo (imagen), NO calculados desde los CSV. Casas Vinculares sigue
+        // excluido del cálculo automático (DENOM_EXCLUIR); esto es un dato manual aparte.
+        // Mapea cada columna del cuadro a la especialidad/keyword del módulo.
+        // Subtotal = 30 según el cuadro (la suma del desglose da 28; se respeta el cuadro).
+        var HIST_CASAS_VINCULARES = {
+            label: 'Programa Casas Vinculares (del cuadro)',
+            porEspecialidad: {
+                'M. Clínico': 2,
+                'Psicología': 2,
+                'Enfermería': 18,
+                'Farmacéutico': 2,
+                'Promotor': 4
+            },
+            subtotal: 30
+        };
 
         function _histEsc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
 
@@ -3085,9 +3178,75 @@
             }
 
             if (_histVista === 'tabla') { cont.innerHTML = _histVistaTabla(grupos, totalPeriodo); return; }
+            if (_histVista === 'por-especialidad') { cont.innerHTML = _histVistaPorEspecialidad(grupos); return; }
             if (_histVista === 'barras-efector') { cont.innerHTML = _histVistaBarrasEfector(grupos); return; }
             if (_histVista === 'barras-keyword') { cont.innerHTML = _histVistaBarrasKeyword(grupos); return; }
             if (_histVista === 'por-anio') { cont.innerHTML = _histVistaPorAnio(); return; }
+        }
+
+        // VISTA 'Por especialidad': muestra las DOS tablas por efector diferenciadas
+        // (2024-2026 y 2022-2023, reusando _histVistaTabla) + una TABLA COMBINADA que
+        // agrupa por especialidad (puesto) matcheando las que se llaman igual, con
+        // columnas Q 2024-2026 | Q 2022-2023 | Q combinado.
+        function _histVistaPorEspecialidad(grupos) {
+            var totalPeriodo = grupos.hist2426.totalAprobado + grupos.hist2223.totalAprobado;
+            // 1) Las dos tablas por efector, diferenciadas (igual que la vista "Tabla por efector").
+            var bloqueTablas = _histVistaTabla(grupos, totalPeriodo);
+
+            // 2) Conteo combinado por especialidad.
+            var filas = HIST.agregarPorEspecialidad();
+            var t2426 = 0, t2223 = 0, tComb = 0;
+            filas.forEach(function (f) { t2426 += f.q2426; t2223 += f.q2223; tComb += f.combinado; });
+
+            var comb = '<h4 class="hist-subtitulo" style="margin-top:22px;">Conteo combinado por especialidad (ambas tablas agrupadas)</h4>';
+            comb += '<div class="hist-nota" style="margin-bottom:12px;">' +
+                '<strong>Criterio de conteo (importante para comparar con otras tablas):</strong> este módulo cuenta ' +
+                '<strong>cargo por cargo</strong>. Un cargo suma sólo si su puesto es de una disciplina de Salud Mental ' +
+                '(psiquiatría, psicología, psicopedagogía, musicoterapia, acompañante terapéutico), o si está en un efector ' +
+                'de SM (Borda, Moyano, Alvear, Tobar) o en un servicio con denominación de SM. Métrica: <strong>Q aprobado por Hacienda</strong>. ' +
+                'Otras tablas (p. ej. la del cuadro de 470) cuentan <strong>por proyecto</strong>: si una obra está rotulada como de ' +
+                'Salud Mental, suman <em>todos</em> sus cargos (enfermería, pediatría, administrativos, etc.). Por eso dan más alto: ' +
+                'la mayor parte de esa diferencia es enfermería de salas de internación y cargos de CeSAC/CEMAR que acá no se cuentan ' +
+                'como SM salvo que el puesto sea de la disciplina. Además, para igualar el total hay que tener importados los cuatro ' +
+                'períodos (2022-2023, 2024, 2025 y 2026).</div>';
+            if (!filas.length) {
+                comb += '<div class="hist-vacio">Sin especialidades que cuenten con el filtro actual.</div>';
+            } else {
+                comb += '<div class="hist-tabla-wrap"><table class="hist-tabla">' +
+                    '<thead><tr>' +
+                    '<th class="hist-col-hosp">Especialidad / Puesto</th>' +
+                    '<th>Q 2024-2026</th>' +
+                    '<th>Q 2022-2023</th>' +
+                    '<th class="hist-total">Q combinado</th>' +
+                    '</tr></thead><tbody>';
+                filas.forEach(function (f) {
+                    comb += '<tr>' +
+                        '<td class="hist-col-hosp">' + _histEsc(f.label) + '</td>' +
+                        '<td class="' + (f.q2426 === 0 ? 'cero' : '') + '">' + f.q2426 + '</td>' +
+                        '<td class="' + (f.q2223 === 0 ? 'cero' : '') + '">' + f.q2223 + '</td>' +
+                        '<td class="hist-total">' + f.combinado + '</td>' +
+                        '</tr>';
+                });
+                // Fila FIJA "Programa Casas Vinculares" — valores del cuadro azul (manual).
+                var cv = HIST_CASAS_VINCULARES;
+                var cvDet = Object.keys(cv.porEspecialidad).map(function (k) {
+                    return _histEsc(k) + ' ' + cv.porEspecialidad[k];
+                }).join(', ');
+                comb += '<tr title="Dato tomado tal cual del cuadro azul del equipo (no se calcula desde los CSV)">' +
+                    '<td class="hist-col-hosp">' + _histEsc(cv.label) +
+                    '<span style="display:block;font-weight:400;font-size:9px;color:#777;white-space:normal;">' + cvDet + '</span></td>' +
+                    '<td class="cero">–</td>' +
+                    '<td class="cero">–</td>' +
+                    '<td class="hist-total">' + cv.subtotal + '</td>' +
+                    '</tr>';
+                comb += '</tbody><tfoot><tr>' +
+                    '<td class="hist-col-hosp">TOTAL (incluye Casas Vinculares del cuadro)</td>' +
+                    '<td>' + t2426 + '</td>' +
+                    '<td>' + t2223 + '</td>' +
+                    '<td>' + (tComb + cv.subtotal) + '</td>' +
+                    '</tr></tfoot></table></div>';
+            }
+            return bloqueTablas + comb;
         }
 
         // VISTA 1: tabla por efector (dos grupos) + consolidado.
@@ -3170,6 +3329,220 @@
             HIST_ANIOS.forEach(function (a) { h += _histBarra(a, porAnio[a] ? porAnio[a].total : 0, maxAnio); });
             h += '</div>';
             return h;
+        }
+
+        // =====================================================================
+        // EXPORTACIÓN (PDF / JPG) y AJUSTE DE MÁRGENES — sin librerías externas.
+        // La captura se hace con SVG <foreignObject> -> canvas, por lo que funciona
+        // offline. El PDF se arma a mano embebiendo el JPEG resultante.
+        // =====================================================================
+
+        // Rasteriza un nodo DOM a un <canvas> clonando su HTML dentro de un SVG.
+        // escala: factor de supersampling para nitidez (2 = retina).
+        function _histNodoACanvas(nodo, escala) {
+            return new Promise(function (resolve, reject) {
+                try {
+                    escala = escala || 2;
+                    var rect = nodo.getBoundingClientRect();
+                    var w = Math.ceil(rect.width);
+                    var h = Math.ceil(nodo.scrollHeight || rect.height);
+                    if (!w || !h) { reject(new Error('La vista no tiene contenido visible para exportar.')); return; }
+
+                    // Clona el nodo e inyecta los estilos computados inline para que el
+                    // render dentro del SVG respete colores/espaciados.
+                    var clon = nodo.cloneNode(true);
+                    _histInlineEstilos(nodo, clon);
+                    // El wrapper scrolleable debe mostrarse completo (sin scroll) al exportar.
+                    _histExpandirScroll(clon);
+
+                    var cont = document.createElement('div');
+                    cont.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+                    cont.style.background = '#ffffff';
+                    cont.style.display = 'inline-block';
+                    cont.style.padding = '12px';
+                    cont.appendChild(clon);
+
+                    var serial = new XMLSerializer().serializeToString(cont);
+                    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '">' +
+                        '<foreignObject width="100%" height="100%">' + serial + '</foreignObject></svg>';
+
+                    var img = new Image();
+                    var svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+                    var url = URL.createObjectURL(svgBlob);
+                    img.onload = function () {
+                        var canvas = document.createElement('canvas');
+                        canvas.width = w * escala;
+                        canvas.height = h * escala;
+                        var ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.scale(escala, escala);
+                        ctx.drawImage(img, 0, 0);
+                        URL.revokeObjectURL(url);
+                        resolve(canvas);
+                    };
+                    img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('No se pudo rasterizar la vista.')); };
+                    img.src = url;
+                } catch (e) { reject(e); }
+            });
+        }
+
+        // Copia estilos computados relevantes de origen a destino, recursivamente.
+        function _histInlineEstilos(origen, destino) {
+            var cs = window.getComputedStyle(origen);
+            var props = ['color', 'background-color', 'background', 'font-family', 'font-size', 'font-weight',
+                'text-align', 'text-transform', 'letter-spacing', 'border', 'border-top', 'border-bottom',
+                'border-left', 'border-right', 'border-radius', 'border-collapse', 'padding', 'margin',
+                'line-height', 'white-space', 'width', 'display', 'vertical-align'];
+            var decl = '';
+            props.forEach(function (p) { var v = cs.getPropertyValue(p); if (v) decl += p + ':' + v + ';'; });
+            destino.setAttribute('style', (destino.getAttribute('style') || '') + decl);
+            var oh = origen.children, dh = destino.children;
+            for (var i = 0; i < oh.length && i < dh.length; i++) { _histInlineEstilos(oh[i], dh[i]); }
+        }
+
+        // Quita límites de scroll para que la imagen muestre toda la tabla.
+        function _histExpandirScroll(clon) {
+            var wraps = clon.querySelectorAll('.hist-tabla-wrap');
+            for (var i = 0; i < wraps.length; i++) {
+                wraps[i].style.maxHeight = 'none';
+                wraps[i].style.overflow = 'visible';
+            }
+        }
+
+        // Dispara la descarga de un dataURL.
+        function _histDescargar(dataURL, nombre) {
+            var a = document.createElement('a');
+            a.href = dataURL; a.download = nombre;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+
+        // Nombre de archivo según vista + fecha.
+        function _histNombreExport(ext) {
+            var d = new Date();
+            var p = function (n) { return (n < 10 ? '0' : '') + n; };
+            var sello = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes());
+            return 'salud-mental-' + (_histVista || 'vista') + '-' + sello + '.' + ext;
+        }
+
+        // Construye un PDF de una sola página a partir de un JPEG (dataURL) sin librerías.
+        function _histJpegAPdf(jpegDataURL, wPx, hPx) {
+            // Pasa el JPEG a bytes.
+            var b64 = jpegDataURL.split(',')[1];
+            var bin = atob(b64);
+            var jpg = new Uint8Array(bin.length);
+            for (var i = 0; i < bin.length; i++) jpg[i] = bin.charCodeAt(i);
+
+            // Página A4 vertical en puntos (72 dpi): 595.28 x 841.89. Escala la imagen
+            // para que entre con un margen, preservando proporción.
+            var pw = 595.28, ph = 841.89, margen = 24;
+            var maxW = pw - margen * 2, maxH = ph - margen * 2;
+            var ratio = Math.min(maxW / wPx, maxH / hPx);
+            var dw = wPx * ratio, dh = hPx * ratio;
+            var ox = (pw - dw) / 2, oy = ph - margen - dh; // arriba
+
+            var objs = [];
+            objs[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+            objs[2] = '<< /Type /Pages /Kids [3 0 R] /Count 1 >>';
+            objs[3] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + pw + ' ' + ph + '] ' +
+                '/Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>';
+            var stream = 'q ' + dw.toFixed(2) + ' 0 0 ' + dh.toFixed(2) + ' ' + ox.toFixed(2) + ' ' + oy.toFixed(2) + ' cm /Im0 Do Q';
+            objs[4] = '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream';
+            // obj 5: la imagen JPEG (DCTDecode).
+            var imgHeader = '<< /Type /XObject /Subtype /Image /Width ' + wPx + ' /Height ' + hPx +
+                ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + jpg.length + ' >>\nstream\n';
+            var imgTail = '\nendstream';
+
+            // Ensambla el archivo como bytes (para poder meter el binario del JPEG).
+            var enc = new TextEncoder();
+            var partes = [];
+            var offsets = [];
+            var pos = 0;
+            function push(bytes) { partes.push(bytes); pos += bytes.length; }
+            function pushStr(s) { push(enc.encode(s)); }
+
+            pushStr('%PDF-1.4\n');
+            for (var n = 1; n <= 5; n++) {
+                offsets[n] = pos;
+                if (n === 5) {
+                    pushStr(n + ' 0 obj\n' + imgHeader);
+                    push(jpg);
+                    pushStr(imgTail + '\nendobj\n');
+                } else {
+                    pushStr(n + ' 0 obj\n' + objs[n] + '\nendobj\n');
+                }
+            }
+            var xrefPos = pos;
+            var xref = 'xref\n0 6\n0000000000 65535 f \n';
+            for (var m = 1; m <= 5; m++) {
+                var off = String(offsets[m]); while (off.length < 10) off = '0' + off;
+                xref += off + ' 00000 n \n';
+            }
+            pushStr(xref);
+            pushStr('trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF');
+
+            var total = 0; partes.forEach(function (p) { total += p.length; });
+            var out = new Uint8Array(total); var o = 0;
+            partes.forEach(function (p) { out.set(p, o); o += p.length; });
+            return new Blob([out], { type: 'application/pdf' });
+        }
+
+        // Exporta la vista actual del módulo. formato: 'pdf' | 'jpg'.
+        function exportarVistaSM(formato) {
+            var nodo = document.getElementById('hist-sm-vista');
+            if (!nodo || !nodo.innerHTML.trim()) {
+                _histEstado('No hay nada para exportar. Importá datos y generá una vista primero.', 'err');
+                return;
+            }
+            _histEstado('Generando ' + formato.toUpperCase() + '…', '');
+            _histNodoACanvas(nodo, 2).then(function (canvas) {
+                var jpeg = canvas.toDataURL('image/jpeg', 0.92);
+                if (formato === 'jpg') {
+                    _histDescargar(jpeg, _histNombreExport('jpg'));
+                    _histEstado('JPG descargado.', 'ok');
+                } else {
+                    var blob = _histJpegAPdf(jpeg, canvas.width, canvas.height);
+                    var url = URL.createObjectURL(blob);
+                    _histDescargar(url, _histNombreExport('pdf'));
+                    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+                    _histEstado('PDF descargado.', 'ok');
+                }
+            }).catch(function (err) {
+                _histEstado('No se pudo exportar: ' + (err && err.message ? err.message : err), 'err');
+            });
+        }
+
+        // ---- Ajuste de márgenes/densidad (para screenshots) ----
+        // Pasos discretos para cada control; el índice se guarda y se clampea.
+        var _histPadTablaPasos = [2, 3, 4, 5, 6, 7, 9, 12, 16, 20];   // padding-x base de celda
+        var _histPadModalPasos = [0, 6, 12, 18, 24, 32, 40, 56, 72];  // padding del cuerpo del modal
+        var _histIdxTabla = 5; // -> 7px (default aprox. original)
+        var _histIdxModal = 4; // -> 24px (default original)
+
+        function _histAplicarMargenes() {
+            var modal = document.getElementById('modal-sm'); if (!modal) return;
+            var px = _histPadTablaPasos[_histIdxTabla];
+            var py = Math.max(2, Math.round(px * 0.8));
+            modal.style.setProperty('--hist-tabla-pad-x', px + 'px');
+            modal.style.setProperty('--hist-tabla-pad-y', py + 'px');
+            var pm = _histPadModalPasos[_histIdxModal];
+            modal.style.setProperty('--hist-modal-pad', pm + 'px');
+            var vt = document.getElementById('hist-tabla-pad-val'); if (vt) vt.textContent = px + 'px';
+            var vm = document.getElementById('hist-modal-pad-val'); if (vm) vm.textContent = pm + 'px';
+        }
+
+        function ajustarMargenSM(cual, delta) {
+            if (cual === 'tabla') {
+                _histIdxTabla = Math.min(_histPadTablaPasos.length - 1, Math.max(0, _histIdxTabla + delta));
+            } else if (cual === 'modal') {
+                _histIdxModal = Math.min(_histPadModalPasos.length - 1, Math.max(0, _histIdxModal + delta));
+            }
+            _histAplicarMargenes();
+        }
+
+        function resetMargenSM() {
+            _histIdxTabla = 5; _histIdxModal = 4;
+            _histAplicarMargenes();
         }
     </script>
 
