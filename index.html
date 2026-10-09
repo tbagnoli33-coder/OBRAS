@@ -420,7 +420,7 @@
             border-radius: 50px;
             padding: 6px 20px;
             cursor: pointer;
-            margin-left: auto;
+            margin-left: 10px;
             transition: background-color 0.2s ease;
             display: flex;
             align-items: center;
@@ -435,6 +435,139 @@
         #btn-abrir-busqueda:focus {
             outline: 2px solid var(--amarillo);
             outline-offset: 3px;
+        }
+
+        /* =====================================================================
+           MÓDULO HISTÓRICO — estilos (aditivos). Botones del header con el mismo
+           aspecto que #btn-abrir-busqueda, y tabla del dashboard con la paleta.
+           ===================================================================== */
+        .btn-header-hist {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--blanco);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: none;
+            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50px;
+            padding: 6px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        /* El botón del módulo toma el margin-left:auto para empujar el grupo a la derecha. */
+        #btn-abrir-sm { margin-left: auto; }
+        .btn-header-hist:hover { background-color: rgba(255, 255, 255, 0.15); }
+        .btn-header-hist:focus { outline: 2px solid var(--amarillo); outline-offset: 3px; }
+
+        /* Contenido del modal del módulo (adaptable al contenido, regla del contrato). */
+        .hist-modal-contenido {
+            background-color: var(--blanco);
+            border-radius: 10px;
+            border-top: 5px solid var(--amarillo);
+            width: min(1100px, 94vw);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(21, 50, 68, 0.35);
+        }
+        .hist-modal-contenido h2 {
+            margin: 0;
+            padding: 18px 24px 12px 24px;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--azul-oscuro);
+            border-bottom: 2px solid var(--amarillo);
+        }
+        .hist-modal-cuerpo { padding: 18px 24px; overflow: auto; }
+        .hist-modal-footer {
+            display: flex; justify-content: flex-end; gap: 10px;
+            padding: 14px 24px; border-top: 1px solid var(--gris-bordes);
+        }
+        .hist-btn {
+            font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase; border-radius: 50px;
+            padding: 8px 20px; cursor: pointer; border: 1.5px solid var(--azul-oscuro);
+        }
+        .hist-btn-primario { background-color: var(--azul-oscuro); color: var(--blanco); }
+        .hist-btn-secundario { background-color: var(--blanco); color: #555; border-color: #ccc; }
+        .hist-nota {
+            font-size: 11px; color: #555; background: var(--gris-claro);
+            border-left: 3px solid var(--celeste); padding: 8px 12px; border-radius: 4px;
+            margin-bottom: 14px; line-height: 1.4;
+        }
+        .hist-controles { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 14px; }
+        .hist-controles label { font-size: 11px; font-weight: 600; color: var(--azul-oscuro); }
+        .hist-controles select, .hist-controles input[type=file] {
+            font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 6px 8px;
+            border: 1px solid var(--gris-bordes); border-radius: 4px; color: var(--azul-oscuro);
+        }
+
+        /* Tabla del dashboard */
+        .hist-tabla-wrap { overflow: auto; max-height: 62vh; border: 1px solid var(--gris-bordes); border-radius: 8px; }
+        table.hist-tabla { border-collapse: collapse; width: 100%; font-size: 11px; }
+        table.hist-tabla th, table.hist-tabla td { padding: 7px 9px; text-align: center; white-space: nowrap; }
+        table.hist-tabla thead th {
+            position: sticky; top: 0; z-index: 1;
+            background-color: var(--azul-oscuro); color: var(--blanco);
+            font-weight: 700; text-transform: uppercase; letter-spacing: .5px; font-size: 10px;
+        }
+        table.hist-tabla th.hist-col-hosp, table.hist-tabla td.hist-col-hosp {
+            text-align: left; position: sticky; left: 0; background-color: var(--blanco); font-weight: 600;
+        }
+        table.hist-tabla thead th.hist-col-hosp { background-color: var(--azul-oscuro); z-index: 2; }
+        table.hist-tabla tbody tr:nth-child(even) td { background-color: #f6fbfa; }
+        table.hist-tabla tbody tr:nth-child(even) td.hist-col-hosp { background-color: #f6fbfa; }
+        table.hist-tabla td.hist-total, table.hist-tabla th.hist-total {
+            font-weight: 700; background-color: rgba(141, 226, 214, 0.25);
+        }
+        table.hist-tabla tfoot td {
+            font-weight: 700; background-color: var(--celeste); color: var(--azul-oscuro);
+            position: sticky; bottom: 0;
+        }
+        table.hist-tabla td.cero { color: #bbb; }
+        .hist-resumen { font-size: 12px; color: var(--azul-oscuro); margin-bottom: 10px; font-weight: 600; }
+        .hist-resumen-sub { font-size: 11px; font-weight: 500; color: #555; margin-bottom: 6px; }
+        /* Módulo SALUD MENTAL 22-26 */
+        .hist-modal-grande { width: min(1180px, 96vw); }
+        .hist-badge { font-size: 9px; font-weight: 600; letter-spacing: 0; text-transform: none;
+            color: #1b7f6b; background: rgba(141, 226, 214, 0.3); padding: 3px 8px; border-radius: 50px; margin-left: 8px; }
+        .hist-seccion { margin-bottom: 18px; }
+        .hist-fuentes { margin-top: 8px; }
+        .hist-fuentes-tit { font-size: 11px; font-weight: 600; color: var(--azul-oscuro); margin-bottom: 4px; }
+        .hist-fuente-chip { display: inline-block; font-size: 10px; background: var(--gris-claro);
+            border: 1px solid var(--gris-bordes); border-radius: 50px; padding: 3px 10px; margin: 0 5px 5px 0; color: var(--azul-oscuro); }
+        .hist-chip-vista { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .5px; border: 1.5px solid var(--gris-bordes);
+            background: var(--blanco); color: #666; border-radius: 50px; padding: 5px 14px; cursor: pointer; }
+        .hist-chip-vista.activa { background: var(--azul-oscuro); color: var(--blanco); border-color: var(--azul-oscuro); }
+        .hist-consolidado { margin-top: 14px; font-size: 13px; color: var(--azul-oscuro);
+            background: rgba(255, 204, 0, 0.14); border-left: 4px solid var(--amarillo); padding: 10px 14px; border-radius: 4px; }
+        /* Barras horizontales (sin librerías) */
+        .hist-barras { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+        .hist-barra-fila { display: grid; grid-template-columns: 190px 1fr 56px; align-items: center; gap: 10px; }
+        .hist-barra-label { font-size: 11px; color: var(--azul-oscuro); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hist-barra-track { background: var(--gris-claro); border-radius: 50px; height: 16px; overflow: hidden; }
+        .hist-barra-fill { height: 100%; background: linear-gradient(90deg, var(--celeste), var(--azul-oscuro)); border-radius: 50px; min-width: 2px; }
+        .hist-barra-val { font-size: 11px; font-weight: 700; color: var(--azul-oscuro); text-align: right; }
+        @media (max-width: 768px) { .hist-barra-fila { grid-template-columns: 110px 1fr 44px; } }
+        .hist-subtitulo {
+            font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--azul-oscuro);
+            margin: 6px 0 4px 0; padding-bottom: 4px; border-bottom: 2px solid var(--celeste);
+        }
+        .hist-vacio { font-size: 12px; color: #888; font-style: italic; padding: 10px 2px; }
+        .hist-estado-import { font-size: 12px; margin-top: 10px; min-height: 18px; }
+        .hist-estado-ok { color: #1b7f6b; }
+        .hist-estado-err { color: #c0392b; }
+
+        @media (max-width: 768px) {
+            .btn-header-hist { padding: 5px 12px; font-size: 9px; letter-spacing: 1px; }
+            .hist-modal-contenido { width: 96vw; }
         }
 
         /* Overlay del modal de búsqueda */
@@ -1147,12 +1280,79 @@
         </div>
     </div>
 
+    <!-- =====================================================================
+         MÓDULO SALUD MENTAL 22-26 — AISLADO del visualizador.
+         Importa CSV a su propio almacén (HIST._datos). NO toca datosSheets.
+         ===================================================================== -->
+    <div class="modal-overlay" id="modal-sm" onclick="cerrarModuloSMAfuera(event)"
+         role="dialog" aria-modal="true" aria-label="Salud Mental 2022-2026">
+        <div class="hist-modal-contenido hist-modal-grande">
+            <h2>🧠 Salud Mental 22-26 <span class="hist-badge">módulo aparte · no modifica el visualizador</span></h2>
+            <div class="hist-modal-cuerpo">
+
+                <!-- ---- SECCIÓN IMPORTAR ---- -->
+                <section class="hist-seccion">
+                    <h3 class="hist-subtitulo">1 · Importar datos (CSV)</h3>
+                    <div class="hist-nota">
+                        Subí los CSV por año (<strong>2022-2023</strong>, <strong>2024</strong>, <strong>2025</strong>,
+                        <strong>2026</strong>). El año se toma del nombre del archivo y se valida con los headers.
+                        Los datos quedan <strong>sólo dentro de este módulo</strong> (no se cargan en el visualizador
+                        ni se escriben en el Google Sheet). Nombrá el archivo con el año para autodetección.
+                    </div>
+                    <div class="hist-controles">
+                        <label for="hist-template">Formato:</label>
+                        <select id="hist-template">
+                            <option value="auto" selected>Autodetectar (por nombre/headers)</option>
+                            <option value="2025">2025 / 2026</option>
+                            <option value="2024">2024</option>
+                            <option value="2022-2023">2022-2023</option>
+                        </select>
+                        <label for="hist-file">Archivo:</label>
+                        <input type="file" id="hist-file" accept=".csv,text/csv" onchange="previsualizarImport()">
+                        <button class="hist-btn hist-btn-primario" id="hist-btn-importar" onclick="confirmarImport()" disabled>AGREGAR AL MÓDULO</button>
+                        <button class="hist-btn hist-btn-secundario" onclick="limpiarModuloSM()" title="Vacía los datos cargados en el módulo">VACIAR</button>
+                    </div>
+                    <div id="hist-import-estado" class="hist-estado-import"></div>
+                    <div id="hist-fuentes" class="hist-fuentes"></div>
+                </section>
+
+                <!-- ---- SECCIÓN VISUALIZAR ---- -->
+                <section class="hist-seccion">
+                    <h3 class="hist-subtitulo">2 · Visualizar</h3>
+                    <div class="hist-nota">
+                        Métrica: <strong>suma de cantidad aprobada por Hacienda</strong>. Un cargo suma si su
+                        puesto/especialidad contiene alguna palabra clave <em>(partial match)</em> <strong>y</strong>
+                        el pedido es de contexto Salud Mental (denominación con salud mental / casa de medio camino /
+                        cuidados paliativos / crónico, o efector Tobar/Borda/Alvear/Moyano).
+                        Dos grupos por formato de origen: <strong>2024-2026</strong> y <strong>2022-2023</strong>.
+                    </div>
+                    <div class="hist-controles">
+                        <label>Vista:</label>
+                        <button class="hist-chip-vista activa" data-vista="tabla" onclick="cambiarVistaSM('tabla')">Tabla por efector</button>
+                        <button class="hist-chip-vista" data-vista="por-anio" onclick="cambiarVistaSM('por-anio')">Por año / período</button>
+                        <button class="hist-chip-vista" data-vista="barras-efector" onclick="cambiarVistaSM('barras-efector')">Ranking por efector</button>
+                        <button class="hist-chip-vista" data-vista="barras-keyword" onclick="cambiarVistaSM('barras-keyword')">Barras por rol</button>
+                    </div>
+                    <div id="hist-sm-resumen" class="hist-resumen"></div>
+                    <div id="hist-sm-vista"></div>
+                </section>
+
+            </div>
+            <div class="hist-modal-footer">
+                <button class="hist-btn hist-btn-secundario" onclick="cerrarModuloSM()">CERRAR</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ENCABEZADO FIJO CON LOGO AMPLIADO -->
     <header class="encabezado-superior">
         <div class="contenedor-logo-inicio" onclick="irAlInicio()" title="Volver al inicio">
             <img src="https://res.cloudinary.com/olddxilu/image/upload/e_trim/v1786644138/SEGUIMIENTO_OBRAS_1.png" alt="Seguimiento de Obras" class="logo-plataforma" id="imagen-logo">
             <span class="btn-inicio-texto" aria-label="Inicio" title="Inicio"><svg viewBox="0 0 24 24" width="20" height="20" fill="#ffffff" aria-hidden="true"><path d="M12 3.1 3 10.2c-.5.4-.6 1.1-.2 1.6.4.5 1.1.6 1.6.2l.2-.1V19c0 1.1.9 2 2 2h2.5c.6 0 1-.4 1-1v-3.5c0-1.1.9-2 2-2s2 .9 2 2V20c0 .6.4 1 1 1H19c1.1 0 2-.9 2-2v-7.1l.2.1c.5.4 1.2.3 1.6-.2.4-.5.3-1.2-.2-1.6L12 3.1Z"/></svg></span>
         </div>
+        <button id="btn-abrir-sm" class="btn-header-hist"
+                onclick="abrirModuloSM()"
+                aria-label="Abrir módulo Salud Mental 22-26">🧠 SALUD MENTAL 22-26</button>
         <button id="btn-abrir-busqueda"
                 onclick="abrirModalBusqueda()"
                 aria-label="Abrir búsqueda avanzada">🔍 BUSCAR</button>
@@ -1260,6 +1460,102 @@
         const GRUPOS_DEFECTO = {
             // Sin agrupadores por defecto. "DG de Salud Mental" figura como efector individual en la lista.
         };
+
+        // =====================================================================
+        // MÓDULO HISTÓRICO (aditivo, no altera el visualizador existente)
+        // Importador de CSV 2024/2025 (etapa 2: 2022-2023) + Dashboard Salud Mental.
+        // Todo lo de este módulo vive namespaced bajo window.HIST para no colisionar.
+        // =====================================================================
+        const HIST = (function () {
+            // ---- Keywords del dashboard (Paso A): partial match, case-insensitive, sin acentos.
+            const KEYWORDS = ['clinic', 'pediatr', 'psicolog', 'psiquiatr', 'trabajador social',
+                'terap', 'ocupacional', 'enfermer', 'farmac', 'promotor', 'fonoaudiolog'];
+
+            // ---- Paso B1: raíces en DENOMINACIÓN que marcan contexto de Salud Mental.
+            //      Ampliado (A): además de mental/casa de medio camino/cuidados paliativos/cronico,
+            //      se suman raíces psi inequívocas en la denominación (p. ej. "Programa
+            //      Neurodesarrollo", servicios de psiquiatría/psicología).
+            const DENOM_SM = ['mental', 'casa de medio camino', 'cuidados paliativos', 'cronico', 'crónico',
+                'neurodesarrollo', 'psiquiatr', 'psicolog', 'psicopedagog'];
+
+            // ---- Paso B2: efectores de Salud Mental (lista EXTENSIBLE: incluye variantes
+            //      cortas de 24/25/26 y nombres completos que aparecen en 22-23).
+            // Raíces por 'includes' sobre el nombre normalizado: cubren tanto las formas
+            // cortas de 24/25/26 ('Borda','Alvear','Moyano','Tobar') como los nombres
+            // completos de 22-23 ('JOSE TIBURCIO BORDA','BRAULIO A. MOYANO','ALVEAR',
+            // 'TOBAR GARCIA'). 'borda'/'alvear'/'moyano'/'tobar' matchean ambas variantes.
+            const EFECTORES_SM = ['tobar', 'borda', 'alvear', 'moyano'];
+
+            // ---- Paso B3 (Lectura 2): puestos/especialidades inequívocamente de Salud
+            //      Mental. Si el PUESTO del cargo matchea alguna de estas raíces, la fila
+            //      es contexto SM por sí misma, sin importar denominación ni efector.
+            const PUESTO_SM = ['psiquiatr', 'psicolog', 'psicopedagog', 'musicoterap', 'acompañante terapeutico'];
+
+            // ---- Exclusiones DURAS: filas cuya denominación contenga alguna de estas
+            //      raíces NO cuentan nunca, aunque pasen A y B. (Pedido expreso.)
+            const DENOM_EXCLUIR = ['casas vinculares'];
+
+            // Normaliza texto para comparación: minúsculas, sin acentos, espacios colapsados.
+            function norm(s) {
+                return String(s == null ? '' : s)
+                    .toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            }
+
+            // Paso A: ¿el puesto/especialidad matchea alguna keyword? Devuelve las que matchean.
+            function keywordsDe(puesto) {
+                const p = norm(puesto);
+                if (!p) return [];
+                return KEYWORDS.filter(function (kw) { return p.indexOf(norm(kw)) !== -1; });
+            }
+            // Paso B1
+            function denomEsSM(denom) {
+                const d = norm(denom);
+                if (!d) return false;
+                return DENOM_SM.some(function (t) { return d.indexOf(norm(t)) !== -1; });
+            }
+            // Paso B2
+            function efectorEsSM(hosp) {
+                const h = norm(hosp);
+                if (!h) return false;
+                return EFECTORES_SM.some(function (e) { return h.indexOf(norm(e)) !== -1; });
+            }
+            // Paso B3: ¿el puesto es inequívocamente de Salud Mental?
+            function puestoEsSM(puesto) {
+                const p = norm(puesto);
+                if (!p) return false;
+                return PUESTO_SM.some(function (t) { return p.indexOf(norm(t)) !== -1; });
+            }
+            // Exclusión dura por denominación.
+            function denomExcluida(denom) {
+                const d = norm(denom);
+                if (!d) return false;
+                return DENOM_EXCLUIR.some(function (t) { return d.indexOf(norm(t)) !== -1; });
+            }
+            // Regla completa: NO excluida && A && (B1 || B2 || B3)
+            function filaCuenta(hosp, denom, puesto) {
+                if (denomExcluida(denom)) return null;          // exclusión dura (p. ej. Casas Vinculares)
+                const kws = keywordsDe(puesto);
+                if (kws.length === 0) return null;              // no pasa Paso A
+                if (!(denomEsSM(denom) || efectorEsSM(hosp) || puestoEsSM(puesto))) return null; // no pasa Paso B (1/2/3)
+                return kws;                                     // cuenta
+            }
+
+            // Expone la API pública del módulo. La parte 2 (parser/dashboard) se
+            // adjunta más abajo con (function (H) { ... })(HIST).
+            return {
+                KEYWORDS: KEYWORDS,
+                DENOM_SM: DENOM_SM,
+                EFECTORES_SM: EFECTORES_SM,
+                norm: norm,
+                keywordsDe: keywordsDe,
+                denomEsSM: denomEsSM,
+                efectorEsSM: efectorEsSM,
+                filaCuenta: filaCuenta
+            };
+        })();
 
         // Efectores que NO son navegables (no se dibujan como card ni cuentan como efector).
         // Sus datos siguen en datosSheets para que la vista global (etiquetas) los cuente.
@@ -2333,6 +2629,547 @@
             // PUNTO DE INTEGRACIÓN BACKEND: persistir datosSheets[nombre] y/o gruposEfectores[nombre] via API
             inicializarHospitales();
             cerrarModalCategoria();
+        }
+
+        // =====================================================================
+        // MÓDULO HISTÓRICO — parte 2: parser CSV, templates, transformador y dashboard.
+        // Se adjunta al objeto HIST ya creado arriba (todo aditivo).
+        // =====================================================================
+        (function (H) {
+            // ---- Parser CSV RFC-4180: comillas dobles, comas y saltos de línea embebidos, CRLF.
+            function parseCSV(texto) {
+                const filas = [];
+                let campo = '', fila = [], enComillas = false;
+                const s = String(texto == null ? '' : texto);
+                // Quita BOM inicial si existe.
+                let i = 0;
+                if (s.charCodeAt(0) === 0xFEFF) i = 1;
+                for (; i < s.length; i++) {
+                    const c = s[i];
+                    if (enComillas) {
+                        if (c === '"') {
+                            if (s[i + 1] === '"') { campo += '"'; i++; } // comilla escapada ""
+                            else enComillas = false;
+                        } else { campo += c; }
+                    } else {
+                        if (c === '"') { enComillas = true; }
+                        else if (c === ',') { fila.push(campo); campo = ''; }
+                        else if (c === '\n') { fila.push(campo); filas.push(fila); fila = []; campo = ''; }
+                        else if (c === '\r') { /* ignora; el \n cierra la fila */ }
+                        else { campo += c; }
+                    }
+                }
+                // Último campo/fila si el archivo no termina en salto de línea.
+                if (campo !== '' || fila.length > 0) { fila.push(campo); filas.push(fila); }
+                return filas;
+            }
+
+            // ---- Normalizador de headers: uppercase, colapsa \n y espacios, trim.
+            function normHeader(s) {
+                return String(s == null ? '' : s)
+                    .toUpperCase()
+                    .replace(/\r\n|\n|\r/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            }
+
+            // ---- Templates: mapeo header-normalizado -> campo del modelo 2026.
+            // Modelo destino (igual que payload.data del backend):
+            //   hospital, tipo, denominacion, fechaFin, priorizacion, tipoQ,
+            //   escalafon, puesto, qPlan, canal, qPedido, expediente, qAprobado,
+            //   validadoSSAH, resuelto
+            const TEMPLATES = {
+                '2025': {
+                    etiqueta: '2025',
+                    origen: 'hist2426',
+                    // Keywords que confirman que una fila de headers es la correcta.
+                    headerKeywords: ['HOSPITALES', 'PUESTO NUEVO', 'ESCALAFON'],
+                    alias: {
+                        'HOSPITALES': 'hospital',
+                        'TIPO': 'tipo',
+                        'DENOMINACION': 'denominacion',
+                        'OBRA FECHA FIN': 'fechaFin',
+                        'CATEGORIA': 'categoria',
+                        'PRIORIZACION MSGC': 'priorizacion',
+                        'TIPO DE Q': 'tipoQ',
+                        'ESCALAFON': 'escalafon',
+                        'PUESTO NUEVO': 'puesto',
+                        'Q': 'qPlan',
+                        'CANAL SOLICITUD': 'canal',
+                        'Q PEDIDO': 'qPedido',
+                        'EXPEDIENTE': 'expediente',
+                        'Q APROBADO HACIENDA': 'qAprobado',
+                        'RESUELTO': 'resuelto',
+                        'ESTADO': 'estado',
+                        'OBSERVACION': 'observacion'
+                    }
+                },
+                '2024': {
+                    etiqueta: '2024',
+                    origen: 'hist2426',
+                    headerKeywords: ['EFECTOR', 'PUESTO', 'ESCALAFON'],
+                    alias: {
+                        'EFECTOR': 'hospital',
+                        'TIPO': 'tipo',
+                        'DENOMINACION': 'denominacion',
+                        'OBRA FECHA FIN': 'fechaFin',
+                        'CATEGORIA': 'categoria',
+                        'PRIORIZACION MSGC': 'priorizacion',
+                        'TIPO DE Q': 'tipoQ',
+                        'ESCALAFON': 'escalafon',
+                        'PUESTO': 'puesto',
+                        'Q': 'qPlan',
+                        'CANAL SOLICITUD': 'canal',
+                        'Q PEDIDO': 'qPedido',
+                        'EXPEDIENTE': 'expediente',
+                        'Q APROBADO HACIENDA': 'qAprobado',
+                        'RESUELTO': 'resuelto',
+                        'ESTADO': 'estado',
+                        'OBSERVACION': 'observacion'
+                    }
+                },
+                '2022-2023': {
+                    etiqueta: '2022-2023',
+                    origen: 'hist2223',
+                    // Headers reales en fila 3 (índice 2). Filas 1-2 son agrupadores/vacías.
+                    headerKeywords: ['EFECTOR/HOSPITAL', 'SERVICIO', 'ESPECIALIDAD'],
+                    alias: {
+                        'EFECTOR/HOSPITAL': 'hospital',
+                        'SERVICIO': 'denominacion',   // SERVICIO es la "denominación"/contexto en 22-23
+                        'TIPO ACCION': 'tipoQ',
+                        'ESCALAFON': 'escalafon',
+                        'ESPECIALIDAD': 'puesto',     // ESPECIALIDAD cumple el rol de puesto
+                        'Q PLANI': 'qPlan',
+                        'Q PEDIDOS': 'qPedido',
+                        'Q APROBADOS': 'qAprobado',
+                        'OBRA (SI - NO )': 'obra',
+                        'PEDIDO A HACIENDA (SI - NO)': 'pedidoHacienda',
+                        'ESTADO': 'estado',
+                        'EJERCICIO PRESUP': 'ejercicio',
+                        'FECHA INCORPORACION AGENTE / FIN DE OBRA': 'fechaFin',
+                        'OBSERVACIONES': 'observacion'
+                    }
+                }
+            };
+
+            // Verdadero (TRUE / SI / X / 1) en celdas booleanas.
+            function esVerdadero(v) {
+                const t = String(v == null ? '' : v).trim().toUpperCase();
+                return t === 'TRUE' || t === 'SI' || t === 'SÍ' || t === 'X' || t === '1';
+            }
+            function aNumero(v) {
+                const n = parseInt(String(v == null ? '' : v).replace(/[^\d\-]/g, ''), 10);
+                return isNaN(n) ? 0 : n;
+            }
+
+            // ---- Detección: encuentra la fila de headers y el template.
+            // Devuelve { idxHeader, template, headersNorm } o null si no se reconoce.
+            function detectar(filas, templateForzado) {
+                const candidatos = templateForzado && TEMPLATES[templateForzado]
+                    ? [templateForzado]
+                    : Object.keys(TEMPLATES);
+                // Busca en las primeras ~8 filas la que mejor matchee algún template.
+                const maxScan = Math.min(filas.length, 8);
+                let mejor = null;
+                for (let r = 0; r < maxScan; r++) {
+                    const headersNorm = (filas[r] || []).map(normHeader);
+                    const setH = new Set(headersNorm);
+                    for (const key of candidatos) {
+                        const tpl = TEMPLATES[key];
+                        const hits = tpl.headerKeywords.filter(function (k) { return setH.has(k); }).length;
+                        if (hits === tpl.headerKeywords.length) {
+                            return { idxHeader: r, template: key, headersNorm: headersNorm };
+                        }
+                        if (!mejor || hits > mejor.hits) mejor = { idxHeader: r, template: key, headersNorm: headersNorm, hits: hits };
+                    }
+                }
+                // Si se forzó un template, acepta el mejor parcial encontrado.
+                if (templateForzado && mejor && mejor.hits > 0) {
+                    return { idxHeader: mejor.idxHeader, template: templateForzado, headersNorm: mejor.headersNorm };
+                }
+                return null;
+            }
+
+            // Deriva un template sugerido a partir del nombre de archivo (pista del usuario).
+            // '2022-2023' -> '2022-2023'; '2024'/'2025' -> ese; si no, null (autodetección).
+            function templateDesdeNombre(nombreArchivo) {
+                const n = String(nombreArchivo || '').toLowerCase();
+                if (/22\s*[-_ ]?\s*23|2022\s*[-_ ]?\s*2023|2022|2023/.test(n)) return '2022-2023';
+                // 2026 comparte estructura de headers con 2025 -> usa el template '2025'.
+                if (/2026|(^|[^0-9])26($|[^0-9])/.test(n)) return '2025';
+                if (/2025|(^|[^0-9])25($|[^0-9])/.test(n)) return '2025';
+                if (/2024|(^|[^0-9])24($|[^0-9])/.test(n)) return '2024';
+                return null;
+            }
+
+            // ---- Transforma texto CSV -> { ok, data:[...], info } compatible con normalizarPayload.
+            // templateForzado: '2025'|'2024'|'2022-2023'|'auto'. nombreArchivo: pista opcional.
+            function csvAPayload(texto, templateForzado, nombreArchivo) {
+                const filas = parseCSV(texto);
+                if (!filas.length) return { ok: false, error: 'El archivo está vacío.' };
+                // Prioridad: template forzado explícito > pista por nombre > autodetección.
+                let forz = (templateForzado && templateForzado !== 'auto') ? templateForzado : null;
+                if (!forz) forz = templateDesdeNombre(nombreArchivo);
+                const det = detectar(filas, forz);
+                if (!det) return { ok: false, error: 'No se reconoció el formato (headers 2022-2023 / 2024 / 2025). Probá seleccionar el template manualmente.' };
+
+                const tpl = TEMPLATES[det.template];
+                const origen = tpl.origen || 'hist2426';
+                const headers = det.headersNorm;
+                // Índice de columna -> campo del modelo, según alias del template.
+                const colCampo = headers.map(function (h) { return tpl.alias[h] || null; });
+
+                const data = [];
+                for (let r = det.idxHeader + 1; r < filas.length; r++) {
+                    const fila = filas[r] || [];
+                    const obj = {
+                        hospital: '', tipo: '', denominacion: '', fechaFin: '', categoria: '',
+                        priorizacion: '', tipoQ: '', escalafon: '', puesto: '', qPlan: 0,
+                        canal: '', qPedido: 0, expediente: '', qAprobado: 0,
+                        validadoSSAH: false, resuelto: false, estado: '', observacion: '',
+                        obra: '', pedidoHacienda: '', ejercicio: '', _origen: origen
+                    };
+                    for (let c = 0; c < fila.length; c++) {
+                        const campo = colCampo[c];
+                        if (!campo) continue;
+                        const val = fila[c];
+                        if (campo === 'qPlan' || campo === 'qPedido' || campo === 'qAprobado') obj[campo] = aNumero(val);
+                        else if (campo === 'resuelto') obj[campo] = esVerdadero(val);
+                        else obj[campo] = String(val == null ? '' : val).trim();
+                    }
+                    if (!obj.hospital) continue;        // saltea filas vacías / de relleno
+                    data.push(obj);
+                }
+                return { ok: true, data: data, info: { template: det.template, origen: origen, filaHeaders: det.idxHeader + 1, filas: data.length } };
+            }
+
+            // =============================================================
+            // ALMACÉN PROPIO DEL MÓDULO — AISLADO del visualizador.
+            // NUNCA toca datosSheets. El visualizador no lee nada de acá.
+            // _datos: array plano de registros {hospital, denominacion, puesto,
+            //         qAprobado, _origen, _anio, ...} importados desde CSV.
+            // =============================================================
+            const _datos = [];
+            const _fuentes = []; // metadatos de cada import: {nombre, template, origen, filas, ts}
+
+            // Importa un payload {data:[...]} al almacén del módulo (no al visualizador).
+            function importar(payload, nombreArchivo, etiquetaAnio) {
+                if (!payload || !Array.isArray(payload.data)) return 0;
+                payload.data.forEach(function (r) {
+                    r._anio = etiquetaAnio || '';
+                    _datos.push(r);
+                });
+                _fuentes.push({
+                    nombre: nombreArchivo || '(sin nombre)',
+                    anio: etiquetaAnio || '',
+                    filas: payload.data.length,
+                    ts: Date.now()
+                });
+                return payload.data.length;
+            }
+            function limpiar() { _datos.length = 0; _fuentes.length = 0; }
+            function fuentes() { return _fuentes.slice(); }
+            function totalRegistros() { return _datos.length; }
+
+            // ---- Agregador: recorre SOLO _datos (nada del visualizador) y SUMA la
+            //      cantidad APROBADA POR HACIENDA (qAprobado) por efector x keyword,
+            //      aplicando la regla A && (B1 || B2). Separa en dos grupos por origen:
+            //      'hist2426' (2024/2025/2026) y 'hist2223' (2022-2023).
+            function agregarDashboard() {
+                function nuevoAcum() {
+                    const tot = {};
+                    H.KEYWORDS.forEach(function (k) { tot[k] = 0; });
+                    return { porHospital: {}, totales: tot, totalAprobado: 0 };
+                }
+                const grupos = { hist2426: nuevoAcum(), hist2223: nuevoAcum() };
+
+                _datos.forEach(function (r) {
+                    const hosp = r.hospital || '';
+                    const denom = r.denominacion || '';
+                    const kws = H.filaCuenta(hosp, denom, r.puesto);
+                    if (!kws) return;
+                    const origen = (r._origen === 'hist2223') ? 'hist2223' : 'hist2426';
+                    const acum = grupos[origen];
+                    const aprob = Number(r.qAprobado) || 0;   // SOLO cantidad aprobada por Hacienda
+                    if (!acum.porHospital[hosp]) {
+                        acum.porHospital[hosp] = { _total: 0 };
+                        H.KEYWORDS.forEach(function (k) { acum.porHospital[hosp][k] = 0; });
+                    }
+                    kws.forEach(function (kw) {
+                        acum.porHospital[hosp][kw] += aprob;
+                        acum.totales[kw] += aprob;
+                    });
+                    acum.porHospital[hosp]._total += aprob;
+                    acum.totalAprobado += aprob;
+                });
+                return grupos; // { hist2426:{...}, hist2223:{...} }
+            }
+
+            // ---- Agregador por AÑO/PERÍODO: suma qAprobado por _anio x keyword,
+            //      aplicando la misma regla A && (B1 || B2). "2022-2023" es un período único.
+            function agregarPorAnio() {
+                const res = {}; // { anio: { total, porKeyword:{...} } }
+                function asegura(a) {
+                    if (!res[a]) { res[a] = { total: 0, porKeyword: {} }; H.KEYWORDS.forEach(function (k) { res[a].porKeyword[k] = 0; }); }
+                    return res[a];
+                }
+                _datos.forEach(function (r) {
+                    const kws = H.filaCuenta(r.hospital || '', r.denominacion || '', r.puesto);
+                    if (!kws) return;
+                    const anio = r._anio || (r._origen === 'hist2223' ? '2022-2023' : 'sin año');
+                    const acum = asegura(anio);
+                    const aprob = Number(r.qAprobado) || 0;
+                    kws.forEach(function (kw) { acum.porKeyword[kw] += aprob; });
+                    acum.total += aprob;
+                });
+                return res;
+            }
+
+            // Exponer en HIST.
+            H.parseCSV = parseCSV;
+            H.normHeader = normHeader;
+            H.csvAPayload = csvAPayload;
+            H.templateDesdeNombre = templateDesdeNombre;
+            H.importar = importar;
+            H.limpiar = limpiar;
+            H.fuentes = fuentes;
+            H.totalRegistros = totalRegistros;
+            H.agregarDashboard = agregarDashboard;
+            H.agregarPorAnio = agregarPorAnio;
+            H.TEMPLATES = TEMPLATES;
+        })(HIST);
+
+        // =====================================================================
+        // MÓDULO HISTÓRICO — parte 3: controladores de UI (globales para onclick).
+        // =====================================================================
+
+        // =====================================================================
+        // CONTROLADORES DE UI DEL MÓDULO "SALUD MENTAL 22-26" (aislado).
+        // Todo opera sobre el almacén propio de HIST; NUNCA toca el visualizador.
+        // =====================================================================
+        var _histPayloadPrevio = null;   // payload previsualizado (entre elegir archivo y agregar)
+        var _histAnioPrevio = '';        // año/período del archivo previsualizado
+        var _histVista = 'tabla';        // vista activa
+
+        // Años/períodos canónicos del eje temporal (2022-2023 es un único período).
+        var HIST_ANIOS = ['2022-2023', '2024', '2025', '2026'];
+
+        function _histEsc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
+
+        // Deriva la etiqueta de año/período para el eje temporal, a partir del
+        // nombre de archivo y del origen de formato detectado.
+        function _histAnioDe(nombre, origen) {
+            var n = String(nombre || '').toLowerCase();
+            if (origen === 'hist2223' || /2022|2023|22\s*[-_ ]?\s*23/.test(n)) return '2022-2023';
+            if (/2026|(^|[^0-9])26($|[^0-9])/.test(n)) return '2026';
+            if (/2025|(^|[^0-9])25($|[^0-9])/.test(n)) return '2025';
+            if (/2024|(^|[^0-9])24($|[^0-9])/.test(n)) return '2024';
+            return 'sin año';
+        }
+
+        // ---- Abrir / cerrar el módulo ----
+        function abrirModuloSM() {
+            renderFuentesSM();
+            renderVistaSM();
+            document.getElementById('modal-sm').classList.add('abierto');
+        }
+        function cerrarModuloSM() { document.getElementById('modal-sm').classList.remove('abierto'); }
+        function cerrarModuloSMAfuera(ev) { if (ev.target && ev.target.id === 'modal-sm') cerrarModuloSM(); }
+
+        function _histEstado(msg, tipo) {
+            var est = document.getElementById('hist-import-estado');
+            if (!est) return;
+            est.textContent = msg;
+            est.className = 'hist-estado-import' + (tipo === 'ok' ? ' hist-estado-ok' : (tipo === 'err' ? ' hist-estado-err' : ''));
+        }
+
+        // ---- Importación ----
+        function previsualizarImport() {
+            _histPayloadPrevio = null; _histAnioPrevio = '';
+            var btn = document.getElementById('hist-btn-importar'); if (btn) btn.disabled = true;
+            var input = document.getElementById('hist-file');
+            if (!input || !input.files || !input.files[0]) { _histEstado('', ''); return; }
+            var tpl = (document.getElementById('hist-template') || {}).value || 'auto';
+            var nombre = input.files[0].name || '';
+            var lector = new FileReader();
+            lector.onload = function (e) {
+                try {
+                    var res = HIST.csvAPayload(String(e.target.result || ''), tpl, nombre);
+                    if (!res.ok) { _histEstado('⚠️ ' + res.error, 'err'); return; }
+                    if (!res.data.length) { _histEstado('El archivo no tiene filas con efector válido.', 'err'); return; }
+                    _histPayloadPrevio = { data: res.data };
+                    _histAnioPrevio = _histAnioDe(nombre, res.info.origen);
+                    _histEstado('✓ Formato ' + res.info.template + ' · período ' + _histAnioPrevio +
+                        ' · headers en fila ' + res.info.filaHeaders + ' · ' + res.info.filas +
+                        ' filas listas para agregar al módulo.', 'ok');
+                    if (btn) btn.disabled = false;
+                } catch (err) {
+                    _histEstado('Error al leer el CSV: ' + (err && err.message ? err.message : err), 'err');
+                }
+            };
+            lector.onerror = function () { _histEstado('No se pudo leer el archivo.', 'err'); };
+            lector.readAsText(input.files[0], 'UTF-8');
+        }
+
+        // Agrega al almacén PROPIO del módulo (no al visualizador, no al Sheet).
+        function confirmarImport() {
+            if (!_histPayloadPrevio) return;
+            try {
+                var n = HIST.importar(_histPayloadPrevio, (document.getElementById('hist-file') || {}).value || '', _histAnioPrevio);
+                _histEstado('✓ ' + n + ' registros agregados al módulo (período ' + _histAnioPrevio + ').', 'ok');
+                _histPayloadPrevio = null; _histAnioPrevio = '';
+                var f = document.getElementById('hist-file'); if (f) f.value = '';
+                var btn = document.getElementById('hist-btn-importar'); if (btn) btn.disabled = true;
+                renderFuentesSM();
+                renderVistaSM();
+            } catch (err) {
+                _histEstado('Error al agregar: ' + (err && err.message ? err.message : err), 'err');
+            }
+        }
+
+        function limpiarModuloSM() {
+            HIST.limpiar();
+            _histEstado('Módulo vaciado. Importá CSV para visualizar.', '');
+            renderFuentesSM();
+            renderVistaSM();
+        }
+
+        // Lista de archivos ya cargados en el módulo.
+        function renderFuentesSM() {
+            var cont = document.getElementById('hist-fuentes'); if (!cont) return;
+            var fs = HIST.fuentes();
+            if (!fs.length) { cont.innerHTML = '<span class="hist-vacio">Sin archivos cargados.</span>'; return; }
+            var html = '<div class="hist-fuentes-tit">Cargado en el módulo (' + HIST.totalRegistros() + ' registros):</div>';
+            fs.forEach(function (f) {
+                html += '<span class="hist-fuente-chip">' + _histEsc(f.anio || '?') + ' · ' + f.filas + ' filas</span>';
+            });
+            cont.innerHTML = html;
+        }
+
+        // ---- Cambiar vista ----
+        function cambiarVistaSM(v) {
+            _histVista = v;
+            var chips = document.querySelectorAll('.hist-chip-vista');
+            for (var i = 0; i < chips.length; i++) {
+                chips[i].className = 'hist-chip-vista' + (chips[i].getAttribute('data-vista') === v ? ' activa' : '');
+            }
+            renderVistaSM();
+        }
+
+        // Barra horizontal (sin librerías): devuelve HTML de una fila "etiqueta | barra | valor".
+        function _histBarra(label, valor, max) {
+            var pct = max > 0 ? Math.round((valor / max) * 100) : 0;
+            return '<div class="hist-barra-fila">' +
+                '<div class="hist-barra-label" title="' + _histEsc(label) + '">' + _histEsc(label) + '</div>' +
+                '<div class="hist-barra-track"><div class="hist-barra-fill" style="width:' + pct + '%"></div></div>' +
+                '<div class="hist-barra-val">' + valor + '</div></div>';
+        }
+
+        // ---- Render principal según la vista activa ----
+        function renderVistaSM() {
+            var cont = document.getElementById('hist-sm-vista');
+            var resumen = document.getElementById('hist-sm-resumen');
+            if (!cont) return;
+
+            var grupos = HIST.agregarDashboard();
+            var totalPeriodo = grupos.hist2426.totalAprobado + grupos.hist2223.totalAprobado;
+
+            if (HIST.totalRegistros() === 0) {
+                cont.innerHTML = '<div class="hist-vacio">Importá uno o más CSV (sección 1) para ver los datos.</div>';
+                if (resumen) resumen.textContent = '';
+                return;
+            }
+            if (resumen) {
+                resumen.textContent = 'Métrica: suma de cantidad APROBADA POR HACIENDA (filtro Salud Mental). ' +
+                    'Total del período: ' + totalPeriodo + '.';
+            }
+
+            if (_histVista === 'tabla') { cont.innerHTML = _histVistaTabla(grupos, totalPeriodo); return; }
+            if (_histVista === 'barras-efector') { cont.innerHTML = _histVistaBarrasEfector(grupos); return; }
+            if (_histVista === 'barras-keyword') { cont.innerHTML = _histVistaBarrasKeyword(grupos); return; }
+            if (_histVista === 'por-anio') { cont.innerHTML = _histVistaPorAnio(); return; }
+        }
+
+        // VISTA 1: tabla por efector (dos grupos) + consolidado.
+        function _histVistaTabla(grupos, totalPeriodo) {
+            function tablaGrupo(acum, etiqueta) {
+                var kws = HIST.KEYWORDS;
+                var hospitales = Object.keys(acum.porHospital).sort(function (a, b) { return acum.porHospital[b]._total - acum.porHospital[a]._total; });
+                if (!hospitales.length) return '<div class="hist-vacio">Sin datos de ' + _histEsc(etiqueta) + ' cargados.</div>';
+                var h = '<div class="hist-tabla-wrap"><table class="hist-tabla"><thead><tr><th class="hist-col-hosp">Efector</th>';
+                kws.forEach(function (k) { h += '<th>' + _histEsc(k) + '</th>'; });
+                h += '<th class="hist-total">Total aprob.</th></tr></thead><tbody>';
+                hospitales.forEach(function (hp) {
+                    var f = acum.porHospital[hp];
+                    h += '<tr><td class="hist-col-hosp">' + _histEsc(hp) + '</td>';
+                    kws.forEach(function (k) { var v = f[k] || 0; h += '<td class="' + (v === 0 ? 'cero' : '') + '">' + v + '</td>'; });
+                    h += '<td class="hist-total">' + f._total + '</td></tr>';
+                });
+                h += '</tbody><tfoot><tr><td class="hist-col-hosp">TOTAL</td>';
+                kws.forEach(function (k) { h += '<td>' + (acum.totales[k] || 0) + '</td>'; });
+                h += '<td>' + acum.totalAprobado + '</td></tr></tfoot></table></div>';
+                return h;
+            }
+            return '<h4 class="hist-subtitulo">Grupo 2024 / 2025 / 2026</h4>' + tablaGrupo(grupos.hist2426, '2024-2026') +
+                '<h4 class="hist-subtitulo" style="margin-top:18px;">Grupo 2022 / 2023</h4>' + tablaGrupo(grupos.hist2223, '2022-2023') +
+                '<div class="hist-consolidado">Consolidado de todo el período: <strong>' + totalPeriodo + '</strong> cargos aprobados.</div>';
+        }
+
+        // VISTA 2: ranking de barras por efector (todo el período combinado).
+        function _histVistaBarrasEfector(grupos) {
+            var acumHosp = {};
+            [grupos.hist2426, grupos.hist2223].forEach(function (g) {
+                Object.keys(g.porHospital).forEach(function (h) { acumHosp[h] = (acumHosp[h] || 0) + g.porHospital[h]._total; });
+            });
+            var orden = Object.keys(acumHosp).sort(function (a, b) { return acumHosp[b] - acumHosp[a]; });
+            if (!orden.length) return '<div class="hist-vacio">Sin datos para graficar.</div>';
+            var max = acumHosp[orden[0]];
+            var html = '<div class="hist-barras">';
+            orden.forEach(function (h) { html += _histBarra(h, acumHosp[h], max); });
+            html += '</div>';
+            return html;
+        }
+
+        // VISTA 3: barras por rol (keyword), todo el período combinado.
+        function _histVistaBarrasKeyword(grupos) {
+            var tot = {};
+            HIST.KEYWORDS.forEach(function (k) { tot[k] = (grupos.hist2426.totales[k] || 0) + (grupos.hist2223.totales[k] || 0); });
+            var orden = HIST.KEYWORDS.slice().sort(function (a, b) { return tot[b] - tot[a]; });
+            var max = tot[orden[0]] || 0;
+            var html = '<div class="hist-barras">';
+            orden.forEach(function (k) { html += _histBarra(k, tot[k], max); });
+            html += '</div>';
+            return html;
+        }
+
+        // VISTA 4: evolución por año/período (serie temporal) + total.
+        function _histVistaPorAnio() {
+            var porAnio = HIST.agregarPorAnio();
+            var kws = HIST.KEYWORDS;
+            var totalPeriodo = 0;
+            HIST_ANIOS.forEach(function (a) { totalPeriodo += (porAnio[a] ? porAnio[a].total : 0); });
+            // Tabla años x keyword + total por año.
+            var h = '<div class="hist-tabla-wrap"><table class="hist-tabla"><thead><tr><th class="hist-col-hosp">Período</th>';
+            kws.forEach(function (k) { h += '<th>' + _histEsc(k) + '</th>'; });
+            h += '<th class="hist-total">Total año</th></tr></thead><tbody>';
+            HIST_ANIOS.forEach(function (a) {
+                var d = porAnio[a] || { total: 0, porKeyword: {} };
+                h += '<tr><td class="hist-col-hosp">' + a + '</td>';
+                kws.forEach(function (k) { var v = d.porKeyword[k] || 0; h += '<td class="' + (v === 0 ? 'cero' : '') + '">' + v + '</td>'; });
+                h += '<td class="hist-total">' + d.total + '</td></tr>';
+            });
+            h += '</tbody><tfoot><tr><td class="hist-col-hosp">TODO EL PERÍODO</td>';
+            kws.forEach(function (k) {
+                var s = 0; HIST_ANIOS.forEach(function (a) { s += (porAnio[a] ? (porAnio[a].porKeyword[k] || 0) : 0); });
+                h += '<td>' + s + '</td>';
+            });
+            h += '<td>' + totalPeriodo + '</td></tr></tfoot></table></div>';
+            // Barras de total por año (evolución).
+            var maxAnio = 0; HIST_ANIOS.forEach(function (a) { maxAnio = Math.max(maxAnio, porAnio[a] ? porAnio[a].total : 0); });
+            h += '<h4 class="hist-subtitulo" style="margin-top:16px;">Evolución del total por período</h4><div class="hist-barras">';
+            HIST_ANIOS.forEach(function (a) { h += _histBarra(a, porAnio[a] ? porAnio[a].total : 0, maxAnio); });
+            h += '</div>';
+            return h;
         }
     </script>
 
