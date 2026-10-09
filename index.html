@@ -1349,6 +1349,7 @@
                         <label>Vista:</label>
                         <button class="hist-chip-vista activa" data-vista="tabla" onclick="cambiarVistaSM('tabla')">Tabla por efector</button>
                         <button class="hist-chip-vista" data-vista="por-especialidad" onclick="cambiarVistaSM('por-especialidad')">Por especialidad</button>
+                        <button class="hist-chip-vista" data-vista="por-proyecto" onclick="cambiarVistaSM('por-proyecto')">Por proyecto (cuadro)</button>
                         <button class="hist-chip-vista" data-vista="por-anio" onclick="cambiarVistaSM('por-anio')">Por año / período</button>
                         <button class="hist-chip-vista" data-vista="barras-efector" onclick="cambiarVistaSM('barras-efector')">Ranking por efector</button>
                         <button class="hist-chip-vista" data-vista="barras-keyword" onclick="cambiarVistaSM('barras-keyword')">Barras por rol</button>
@@ -3047,6 +3048,44 @@
             subtotal: 30
         };
 
+        // ---- VISTA "POR PROYECTO" (criterio del compañero, cuadro 511) ----
+        // Lista CURADA de proyectos de Salud Mental, con desglose por especialidad
+        // tomado TAL CUAL del cuadro azul (PDF). Criterio POR PROYECTO: suma TODOS
+        // los cargos aprobados de cada obra rotulada SM (enfermería, pediatría,
+        // administrativos, etc.), no sólo las disciplinas psi. Es el método que da ~511.
+        // Columnas del cuadro (en orden): M. Clínico, Pediatría, Psicología, Psiquiatría,
+        // Trabajador Social, TO, Enfermería, Farmacéutico, Promotor, Fonoaudiología, Psicopedagogía.
+        var HIST_PROY_COLUMNAS = ['M. Clínico', 'Pediatría', 'Psicología', 'Psiquiatría',
+            'Trabajador Social', 'TO', 'Enfermería', 'Farmacéutico', 'Promotor', 'Fonoaudiología', 'Psicopedagogía'];
+        // Cada fila: [nombre, periodo, {col:valor,...}, subtotalDelCuadro].
+        // Los valores son los del cuadro (Q aprobado por Hacienda, criterio por proyecto).
+        var HIST_PROYECTOS_SM = [
+            ['Ampliaciones Especiales para DI', '—', { 'Psicología': 30, 'Psiquiatría': 13 }, 43],
+            ['Programa Casas Vinculares', '—', { 'M. Clínico': 2, 'Psicología': 2, 'Enfermería': 18, 'Farmacéutico': 2, 'Promotor': 4 }, 30],
+            ['Programa Neurodesarrollo', '—', { 'Pediatría': 13, 'Psicología': 6, 'Psiquiatría': 3, 'TO': 6, 'Fonoaudiología': 12 }, 40],
+            ['Borda - Servicio Crónico 30 Camas', '2023', { 'M. Clínico': 3, 'Enfermería': 25 }, 28],
+            ['DGSaM - CMC Alvarez Thomas', '2023', { 'Psicología': 1, 'Psiquiatría': 1, 'Trabajador Social': 1, 'TO': 1, 'Enfermería': 6 }, 10],
+            ['Durand - 10 Camas Internación Salud Mental', '2023', { 'Psicología': 2, 'Psiquiatría': 2, 'Trabajador Social': 1, 'TO': 1, 'Enfermería': 12 }, 18],
+            ['Grierson - Ampliación 40 Camas', '2023', { 'Psicología': 2, 'Psiquiatría': 1, 'Enfermería': 30 }, 33],
+            ['Rivadavia - 10 Camas Int. SM Hombres', '2023', { 'Psicología': 2, 'Psiquiatría': 2, 'Trabajador Social': 1, 'TO': 1, 'Enfermería': 12 }, 18],
+            ['Rivadavia - Guardia Nueva', '2023', { 'Psiquiatría': 7, 'Enfermería': 10 }, 17],
+            ['Alvear - Ampliación Guardia 2024', '2024', { 'Psiquiatría': 6, 'Enfermería': 8 }, 14],
+            ['SSAPAC - Cesac 49', '2024', { 'Psicología': 1, 'Psiquiatría': 1, 'Enfermería': 3 }, 5],
+            ['Tornú - 10 Camas Internación SM', '2024', { 'Psicología': 1, 'Psiquiatría': 8, 'TO': 1, 'Enfermería': 12 }, 22],
+            ['Rivadavia - Sala de Salud Mental Mujeres', '2025', { 'Psicología': 2, 'Psiquiatría': 2, 'Enfermería': 18 }, 22],
+            ['SSAPAC - CEMAR 1', '2025', { 'Psiquiatría': 1 }, 1],
+            ['SSAPAC - CEMAR 3', '2025', { 'Psicología': 5, 'Psiquiatría': 4, 'Trabajador Social': 1, 'TO': 3, 'Enfermería': 6, 'Psicopedagogía': 2 }, 19],
+            ['SSAPAC - Cesac 42', '2025', { 'Psicología': 2, 'Psiquiatría': 1, 'Trabajador Social': 2, 'Enfermería': 5, 'Fonoaudiología': 1 }, 11],
+            ['SSAPAC - Cesac 50', '2025', { 'Psicología': 4, 'Trabajador Social': 2, 'Enfermería': 2 }, 8],
+            ['DGSaM - CMC Ruy Diaz', '2026', { 'Psicología': 2, 'Psiquiatría': 1, 'Trabajador Social': 1, 'TO': 2, 'Enfermería': 16 }, 22],
+            ['Moyano 15 camas nuevas internación agudos', '2026', { 'Enfermería': 24 }, 24],
+            ['Salas de Internación Borda y Moyano', '2026', { 'Psicología': 3, 'Psiquiatría': 5, 'Trabajador Social': 2, 'Enfermería': 72 }, 82],
+            ['SSAPAC - CCI 3 Piletones', '2026', { 'Psiquiatría': 1, 'Enfermería': 3 }, 4],
+            ['SSAPAC - CEMAR 4', '2026', { 'Psicología': 3, 'Psiquiatría': 2, 'TO': 1, 'Enfermería': 6 }, 12],
+            ['SSAPAC - Cesac 51', '2026', { 'Psicología': 3, 'Psiquiatría': 1, 'Trabajador Social': 2, 'Enfermería': 6 }, 12],
+            ['Santojanni - Sala Internación SM 10 Camas', '2026', { 'Enfermería': 16 }, 16]
+        ];
+
         function _histEsc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
 
         // Deriva la etiqueta de año/período para el eje temporal, a partir del
@@ -3167,6 +3206,13 @@
             var grupos = HIST.agregarDashboard();
             var totalPeriodo = grupos.hist2426.totalAprobado + grupos.hist2223.totalAprobado;
 
+            // La vista "por proyecto" usa datos CURADOS del cuadro (no depende de CSV importados).
+            if (_histVista === 'por-proyecto') {
+                if (resumen) resumen.textContent = 'Criterio POR PROYECTO (cuadro del equipo). Métrica: Q aprobado por Hacienda, sumando todos los cargos de cada obra SM.';
+                cont.innerHTML = _histVistaPorProyecto();
+                return;
+            }
+
             if (HIST.totalRegistros() === 0) {
                 cont.innerHTML = '<div class="hist-vacio">Importá uno o más CSV (sección 1) para ver los datos.</div>';
                 if (resumen) resumen.textContent = '';
@@ -3182,6 +3228,50 @@
             if (_histVista === 'barras-efector') { cont.innerHTML = _histVistaBarrasEfector(grupos); return; }
             if (_histVista === 'barras-keyword') { cont.innerHTML = _histVistaBarrasKeyword(grupos); return; }
             if (_histVista === 'por-anio') { cont.innerHTML = _histVistaPorAnio(); return; }
+        }
+
+        // VISTA 'Por proyecto (cuadro)': replica el criterio del equipo (cuadro ~511).
+        // Lista curada de proyectos SM x especialidad, con subtotales del cuadro.
+        // Suma TODOS los cargos de cada obra rotulada SM. Datos del PDF (no de los CSV).
+        function _histVistaPorProyecto() {
+            var cols = HIST_PROY_COLUMNAS;
+            var proy = HIST_PROYECTOS_SM;
+
+            var h = '<div class="hist-nota" style="margin-bottom:12px;">' +
+                '<strong>Criterio POR PROYECTO (el del cuadro del equipo).</strong> A diferencia de la vista ' +
+                '"Por especialidad" (que cuenta cargo por cargo con filtro de disciplina), acá cada fila es una ' +
+                '<strong>obra/proyecto rotulado como Salud Mental</strong> y se suman <em>todos</em> sus cargos aprobados ' +
+                '(incluida enfermería, pediatría y administrativos). Los números son los del cuadro (Q aprobado por Hacienda). ' +
+                'Este es el método que da el total alto (~511).</div>';
+
+            h += '<div class="hist-tabla-wrap"><table class="hist-tabla"><thead><tr>' +
+                '<th class="hist-col-hosp">Proyecto</th><th>Período</th>';
+            cols.forEach(function (c) { h += '<th>' + _histEsc(c) + '</th>'; });
+            h += '<th class="hist-total">Subtotal</th></tr></thead><tbody>';
+
+            var totCol = {}; cols.forEach(function (c) { totCol[c] = 0; });
+            var totGeneral = 0;
+
+            proy.forEach(function (p) {
+                var nombre = p[0], periodo = p[1], vals = p[2], sub = p[3];
+                h += '<tr><td class="hist-col-hosp">' + _histEsc(nombre) + '</td>' +
+                    '<td>' + _histEsc(periodo) + '</td>';
+                cols.forEach(function (c) {
+                    var v = vals[c] || 0;
+                    totCol[c] += v;
+                    h += '<td class="' + (v === 0 ? 'cero' : '') + '">' + (v === 0 ? '–' : v) + '</td>';
+                });
+                h += '<td class="hist-total">' + sub + '</td></tr>';
+                totGeneral += sub;
+            });
+
+            h += '</tbody><tfoot><tr><td class="hist-col-hosp">TOTAL</td><td></td>';
+            cols.forEach(function (c) { h += '<td>' + totCol[c] + '</td>'; });
+            h += '<td>' + totGeneral + '</td></tr></tfoot></table></div>';
+
+            h += '<div class="hist-consolidado">Total por criterio de proyecto: <strong>' + totGeneral + '</strong> cargos aprobados ' +
+                '(' + proy.length + ' proyectos de Salud Mental).</div>';
+            return h;
         }
 
         // VISTA 'Por especialidad': muestra las DOS tablas por efector diferenciadas
