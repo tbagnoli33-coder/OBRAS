@@ -3048,6 +3048,46 @@
             subtotal: 30
         };
 
+        // URL de la Web App de Apps Script del Sheet "Proyectos SM" (tabla por proyecto en vivo).
+        // Pegá acá la URL /exec que te da Apps Script al implementar. Dejala vacía para
+        // usar sólo los datos del cuadro (fallback HIST_PROYECTOS_SM).
+        var HIST_PROYECTOS_URL = 'https://script.google.com/macros/s/AKfycbx2m6XA5eQ7KE8fjZLT_6fSrnrq4slsDRxK5PalgUQ4KmWkme7KN2BV5calsw1t7ViC8Q/exec';
+
+        // Cache en memoria de lo último traído del Sheet (null = aún no cargado / sin URL).
+        var _histProyectosLive = null;
+        var _histProyectosEstado = ''; // '', 'cargando', 'ok', 'error'
+
+        // Carga la tabla por proyecto desde el Sheet vía JSONP (evita CORS; sirve en
+        // Preview y en Vercel por igual). Al terminar, re-renderiza si la vista activa
+        // es 'por-proyecto'.
+        function cargarProyectosSM() {
+            if (!HIST_PROYECTOS_URL) { _histProyectosEstado = ''; return; }
+            _histProyectosEstado = 'cargando';
+            var cb = '_histProyCb_' + Date.now();
+            var limpiar = function () {
+                try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+                if (s && s.parentNode) s.parentNode.removeChild(s);
+            };
+            window[cb] = function (data) {
+                limpiar();
+                if (data && data.ok && data.proyectos) {
+                    _histProyectosLive = data;
+                    _histProyectosEstado = 'ok';
+                } else {
+                    _histProyectosEstado = 'error';
+                }
+                if (_histVista === 'por-proyecto') renderVistaSM();
+            };
+            var sep = HIST_PROYECTOS_URL.indexOf('?') === -1 ? '?' : '&';
+            var s = document.createElement('script');
+            s.src = HIST_PROYECTOS_URL + sep + 'callback=' + cb + '&_=' + Date.now();
+            s.onerror = function () {
+                limpiar(); _histProyectosEstado = 'error';
+                if (_histVista === 'por-proyecto') renderVistaSM();
+            };
+            document.head.appendChild(s);
+        }
+
         // ---- VISTA "POR PROYECTO" (criterio del compañero, cuadro 511) ----
         // Lista CURADA de proyectos de Salud Mental, con desglose por especialidad
         // tomado TAL CUAL del cuadro azul (PDF). Criterio POR PROYECTO: suma TODOS
@@ -3234,15 +3274,30 @@
         // Lista curada de proyectos SM x especialidad, con subtotales del cuadro.
         // Suma TODOS los cargos de cada obra rotulada SM. Datos del PDF (no de los CSV).
         function _histVistaPorProyecto() {
-            var cols = HIST_PROY_COLUMNAS;
-            var proy = HIST_PROYECTOS_SM;
+            // Fuente de datos: en vivo del Sheet si está cargado; si no, el cuadro hardcodeado.
+            var cols, filas, origen;
+            if (_histProyectosLive && _histProyectosLive.proyectos) {
+                cols = _histProyectosLive.columnas || HIST_PROY_COLUMNAS;
+                // Normaliza al formato [nombre, periodo, valores, subtotal].
+                filas = _histProyectosLive.proyectos.map(function (p) {
+                    return [p.nombre, p.periodo || '—', p.valores || {}, Number(p.subtotal) || 0];
+                });
+                origen = 'vivo';
+            } else {
+                cols = HIST_PROY_COLUMNAS;
+                filas = HIST_PROYECTOS_SM;
+                origen = 'cuadro';
+            }
+
+            // Si hay URL configurada y aún no cargamos, disparamos la carga una vez.
+            if (HIST_PROYECTOS_URL && _histProyectosEstado === '') { cargarProyectosSM(); }
 
             var h = '<div class="hist-nota" style="margin-bottom:12px;">' +
                 '<strong>Criterio POR PROYECTO (el del cuadro del equipo).</strong> A diferencia de la vista ' +
                 '"Por especialidad" (que cuenta cargo por cargo con filtro de disciplina), acá cada fila es una ' +
                 '<strong>obra/proyecto rotulado como Salud Mental</strong> y se suman <em>todos</em> sus cargos aprobados ' +
-                '(incluida enfermería, pediatría y administrativos). Los números son los del cuadro (Q aprobado por Hacienda). ' +
-                'Este es el método que da el total alto (~511).</div>';
+                '(incluida enfermería, pediatría y administrativos). Métrica: Q aprobado por Hacienda.' +
+                _histProyFuenteLeyenda(origen) + '</div>';
 
             h += '<div class="hist-tabla-wrap"><table class="hist-tabla"><thead><tr>' +
                 '<th class="hist-col-hosp">Proyecto</th><th>Período</th>';
@@ -3252,7 +3307,7 @@
             var totCol = {}; cols.forEach(function (c) { totCol[c] = 0; });
             var totGeneral = 0;
 
-            proy.forEach(function (p) {
+            filas.forEach(function (p) {
                 var nombre = p[0], periodo = p[1], vals = p[2], sub = p[3];
                 h += '<tr><td class="hist-col-hosp">' + _histEsc(nombre) + '</td>' +
                     '<td>' + _histEsc(periodo) + '</td>';
@@ -3270,8 +3325,32 @@
             h += '<td>' + totGeneral + '</td></tr></tfoot></table></div>';
 
             h += '<div class="hist-consolidado">Total por criterio de proyecto: <strong>' + totGeneral + '</strong> cargos aprobados ' +
-                '(' + proy.length + ' proyectos de Salud Mental).</div>';
+                '(' + filas.length + ' proyectos de Salud Mental).' +
+                (HIST_PROYECTOS_URL ? ' <button class="hist-btn hist-btn-mini" onclick="refrescarProyectosSM()" title="Volver a leer el Sheet">⟳ Actualizar del Sheet</button>' : '') +
+                '</div>';
             return h;
+        }
+
+        // Leyenda del origen de datos (vivo del Sheet vs cuadro fijo).
+        function _histProyFuenteLeyenda(origen) {
+            if (!HIST_PROYECTOS_URL) {
+                return ' <em>(datos del cuadro; sin Sheet conectado)</em>';
+            }
+            if (_histProyectosEstado === 'cargando') return ' <em>(cargando datos del Sheet…)</em>';
+            if (_histProyectosEstado === 'error') return ' <em style="color:#b00;">(no se pudo leer el Sheet; mostrando el cuadro fijo)</em>';
+            if (origen === 'vivo') {
+                var fecha = _histProyectosLive && _histProyectosLive.actualizado ? _histProyectosLive.actualizado : '';
+                return ' <em style="color:#1b7f6b;">(en vivo del Sheet' + (fecha ? ', ' + _histEsc(fecha) : '') + ')</em>';
+            }
+            return '';
+        }
+
+        // Fuerza relectura del Sheet (botón "Actualizar del Sheet").
+        function refrescarProyectosSM() {
+            _histProyectosEstado = '';
+            _histProyectosLive = null;
+            cargarProyectosSM();
+            if (_histVista === 'por-proyecto') renderVistaSM();
         }
 
         // VISTA 'Por especialidad': muestra las DOS tablas por efector diferenciadas
