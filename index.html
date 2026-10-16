@@ -5015,9 +5015,9 @@
             var cont = document.getElementById(contId); if (!cont) return;
             var filtroTxt = _qcNorm((document.getElementById(buscarId) || {}).value || '');
 
-            // Opción B: las listas dependen SOLO del año (no se achican entre sí).
-            // Cada filtro muestra todas sus opciones del/los año(s) elegido(s).
-            var base = _qcTodos().filter(_qcPasaAnio);
+            // Opción B (todo condiciona a todo): cada lista muestra sólo valores
+            // coherentes con TODOS los demás filtros activos (excepto el propio).
+            var base = _qcFiltrados(campo);
             var valores = {};
             base.forEach(function (r) { var v = (r[campo] || '').trim(); if (v) valores[v] = true; });
             var lista = Object.keys(valores).sort(function (a, b) { return a.localeCompare(b); });
@@ -5043,9 +5043,12 @@
         function qcToggleOpcion(campo, valor) {
             if (_qcFiltros[campo][valor]) delete _qcFiltros[campo][valor];
             else _qcFiltros[campo][valor] = true;
-            // Opción B: las listas NO se achican entre sí; sólo cambia el resultado.
-            // (El checkbox tocado ya queda marcado por el navegador; no re-renderizamos
-            //  las listas para no perder scroll ni dar sensación de "memoria".)
+            // Opción B (todo condiciona a todo): recalcular las OTRAS listas para que
+            // sólo muestren valores coherentes con lo elegido. La propia NO se re-renderiza
+            // (así no se pierde el scroll ni el checkbox recién tocado).
+            ['efector', 'obra', 'escalafon', 'especialidad'].forEach(function (c) {
+                if (c !== campo) qcRenderOpciones(c);
+            });
             qcRenderResultado();
         }
 
