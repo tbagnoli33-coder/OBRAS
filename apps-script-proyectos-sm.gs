@@ -1,20 +1,23 @@
 /**
  * Apps Script — Tabla "Por proyecto (Salud Mental)" en vivo.
- * Lee la pestaña `Proyectos` del Sheet y la devuelve como JSON para el módulo
- * SALUD MENTAL 22-26. La misma Web App URL sirve para Preview y para Vercel.
+ * Lee la pestaña `Proyectos` del Sheet y la devuelve como JSON / JSONP.
+ * La misma Web App URL sirve para Preview y para Vercel.
  *
- * DESPLIEGUE:
- *  1) Extensiones -> Apps Script, pegar este archivo.
- *  2) Implementar -> Nueva implementación -> tipo "Aplicación web".
- *  3) Ejecutar como: "Yo". Quién tiene acceso: "Cualquiera".
- *  4) Copiar la URL /exec y pegarla en index.html (HIST_PROYECTOS_URL).
- *  Al editar el Sheet, el endpoint devuelve los datos nuevos sin re-desplegar.
+ * Robusto frente a: rango ampliado, filas vacías, fila(s) TOTAL,
+ * columnas extra a la derecha y celdas con fórmulas.
+ *
+ * DESPLIEGUE (IMPORTANTE si editás este archivo):
+ *  1) Implementar -> Gestionar implementaciones -> (lápiz) Editar
+ *     -> Versión: "Nueva versión" -> Implementar.
+ *     (Si creás "Nueva implementación" te cambia la URL; usá "Editar"
+ *      para conservar la misma URL /exec.)
+ *  2) Ejecutar como: "Yo".  Quién tiene acceso: "Cualquiera".
+ *  Los DATOS del Sheet se leen en cada request (no requieren re-desplegar);
+ *  sólo re-desplegás si cambiás este CÓDIGO.
  */
 
-// Nombre EXACTO de la pestaña que contiene la tabla por proyecto.
 var HOJA_PROYECTOS = 'Proyectos';
 
-// Encabezados esperados (fila 1). El orden de las especialidades es el del cuadro.
 var COL_PROYECTO  = 'Proyecto';
 var COL_PERIODO   = 'Periodo';
 var COL_SUBTOTAL  = 'Subtotal';
@@ -22,10 +25,12 @@ var ESPECIALIDADES = ['M. Clínico', 'Pediatría', 'Psicología', 'Psiquiatría'
   'Trabajador Social', 'TO', 'Enfermería', 'Farmacéutico', 'Promotor',
   'Fonoaudiología', 'Psicopedagogía'];
 
+// Palabras en la columna Proyecto que marcan filas que NO son proyectos (se saltan).
+var FILAS_IGNORAR = ['total', 'subtotal', 'totales'];
+
 function doGet(e) {
   try {
-    var payload = construirPayload_();
-    return responder_(payload, e);
+    return responder_(construirPayload_(), e);
   } catch (err) {
     return responder_({ ok: false, error: String(err && err.message ? err.message : err) }, e);
   }
@@ -34,17 +39,18 @@ function doGet(e) {
 function construirPayload_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var hoja = ss.getSheetByName(HOJA_PROYECTOS);
-  if (!hoja) {
-    throw new Error('No existe la pestaña "' + HOJA_PROYECTOS + '". Revisá el nombre.');
-  }
+  if (!hoja) throw new Error('No existe la pestaña "' + HOJA_PROYECTOS + '".');
 
-  var rango = hoja.getDataRange().getValues();
-  if (rango.length < 2) {
+  // Leer SOLO el bloque real de datos, no el rango inflado por formato/fórmulas.
+  var ultFila = hoja.getLastRow();
+  var ultCol  = hoja.getLastColumn();
+  if (ultFila < 2 || ultCol < 1) {
     return { ok: true, columnas: ESPECIALIDADES, proyectos: [], total: 0, actualizado: new Date().toISOString() };
   }
+  // Tope defensivo de columnas (la tabla llega hasta ~N/O): leemos hasta ultCol.
+  var valores = hoja.getRange(1, 1, ultFila, ultCol).getValues();
 
-  // Mapear encabezados -> índice de columna (tolerante a mayúsculas/espacios/acentos).
-  var headers = rango[0].map(function (h) { return normalizar_(h); });
+  var headers = valores[0].map(function (h) { return normalizar_(h); });
   function idx(nombre) { return headers.indexOf(normalizar_(nombre)); }
 
   var iProy = idx(COL_PROYECTO);
@@ -57,19 +63,18 @@ function construirPayload_() {
   var proyectos = [];
   var total = 0;
 
-  for (var r = 1; r < rango.length; r++) {
-    var fila = rango[r];
+  for (var r = 1; r < valores.length; r++) {
+    var fila = valores[r];
     var nombre = String(fila[iProy] == null ? '' : fila[iProy]).trim();
-    if (!nombre) continue; // saltar filas vacías
+    if (!nombre) continue;                                   // fila vacía
+    if (FILAS_IGNORAR.indexOf(normalizar_(nombre)) !== -1) continue; // fila TOTAL/SUBTOTAL
 
     var vals = {};
     ESPECIALIDADES.forEach(function (c, k) {
       var col = idxEsp[k];
-      var v = (col === -1) ? 0 : Number(fila[col]) || 0;
-      vals[c] = v;
+      vals[c] = (col === -1) ? 0 : (Number(fila[col]) || 0);
     });
 
-    // Subtotal: usa la columna del Sheet si existe; si no, suma las especialidades.
     var sub;
     if (iSub !== -1 && fila[iSub] !== '' && fila[iSub] != null) {
       sub = Number(fila[iSub]) || 0;
@@ -88,11 +93,11 @@ function construirPayload_() {
     columnas: ESPECIALIDADES,
     proyectos: proyectos,
     total: total,
+    filas: proyectos.length,
     actualizado: new Date().toISOString()
   };
 }
 
-// Normaliza para comparar encabezados: minúsculas, sin acentos, espacios colapsados.
 function normalizar_(s) {
   return String(s == null ? '' : s)
     .toLowerCase()
@@ -101,16 +106,13 @@ function normalizar_(s) {
     .trim();
 }
 
-// Devuelve JSON. Soporta JSONP (?callback=) para evitar problemas de CORS en el navegador.
 function responder_(obj, e) {
   var json = JSON.stringify(obj);
   var cb = e && e.parameter && e.parameter.callback;
   if (cb) {
-    return ContentService
-      .createTextOutput(cb + '(' + json + ');')
+    return ContentService.createTextOutput(cb + '(' + json + ');')
       .setMimeType(ContentService.MimeType.JAVASCRIPT);
   }
-  return ContentService
-    .createTextOutput(json)
+  return ContentService.createTextOutput(json)
     .setMimeType(ContentService.MimeType.JSON);
 }
