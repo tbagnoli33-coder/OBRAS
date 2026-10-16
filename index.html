@@ -164,6 +164,13 @@
         .grupo-header .nombre-grupo:hover { text-decoration: underline; text-underline-offset: 3px; }
         .grupo-vacio { font-size: 10px; color: #999999; font-style: italic; padding: 6px 8px; text-align: center; }
 
+        /* Resultados de búsqueda: título de sección y tarjeta de obra con su ubicación */
+        .nav-grupo-titulo { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #888; margin: 10px 2px 4px; }
+        .nav-grupo-titulo:first-child { margin-top: 0; }
+        .caja-obra { display: flex; flex-direction: column; gap: 2px; margin-bottom: 4px; }
+        .caja-obra .obra-nombre { font-weight: 700; font-size: 12px; }
+        .caja-obra .obra-ubicacion { font-size: 10px; font-weight: 600; color: #1b7f6b; }
+        .caja-obra:hover .obra-ubicacion { color: var(--celeste); }
         .caja-hospital { background-color: var(--blanco); border: 1.5px solid var(--gris-bordes); border-radius: 6px; padding: 8px 12px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.3s; }
         .caja-hospital:hover { background-color: var(--azul-oscuro); color: var(--blanco); border-color: var(--amarillo); transform: translateX(3px); }
         .grupo-cuerpo .caja-hospital { border: 1.5px solid var(--gris-bordes); margin-bottom: 2px; }
@@ -461,6 +468,8 @@
         }
         /* El botón del módulo toma el margin-left:auto para empujar el grupo a la derecha. */
         #btn-abrir-sm { margin-left: auto; }
+        /* Separación entre los botones del grupo del header (SM · Q Cargos · Buscar). */
+        #btn-abrir-qc, #btn-abrir-busqueda { margin-left: 10px; }
         .btn-header-hist:hover { background-color: rgba(255, 255, 255, 0.15); }
         .btn-header-hist:focus { outline: 2px solid var(--amarillo); outline-offset: 3px; }
 
@@ -486,7 +495,9 @@
         }
         /* Variables escalables del módulo (ajustables por JS para screenshots). */
         #modal-sm { --hist-modal-pad: 24px; --hist-tabla-pad-y: 7px; --hist-tabla-pad-x: 9px; }
-        .hist-modal-cuerpo { padding: var(--hist-modal-pad) var(--hist-modal-pad); overflow: auto; }
+        #modal-qc { --hist-modal-pad: 24px; --hist-tabla-pad-y: 7px; --hist-tabla-pad-x: 9px; }
+        /* Fallback 24px: si el modal no define la variable, igual tiene margen prolijo. */
+        .hist-modal-cuerpo { padding: var(--hist-modal-pad, 24px); overflow: auto; }
         .hist-modal-footer {
             display: flex; justify-content: flex-end; gap: 10px;
             padding: 14px 24px; border-top: 1px solid var(--gris-bordes);
@@ -542,13 +553,20 @@
         table.hist-tabla thead th.hist-col-hosp { background-color: var(--azul-oscuro); z-index: 2; }
         table.hist-tabla tbody tr:nth-child(even) td { background-color: #f6fbfa; }
         table.hist-tabla tbody tr:nth-child(even) td.hist-col-hosp { background-color: #f6fbfa; }
+        /* Columna de total: fondo SÓLIDO (opaco) para que se lea bien y no se
+           transparente con las filas de abajo al scrollear (es sticky). */
         table.hist-tabla td.hist-total, table.hist-tabla th.hist-total {
-            font-weight: 700; background-color: rgba(141, 226, 214, 0.25);
+            font-weight: 700; background-color: #cfeee7; color: var(--azul-oscuro);
         }
+        table.hist-tabla thead th.hist-total { background-color: var(--azul-oscuro); color: var(--blanco); }
+        /* Fila par: el total mantiene su color opaco (no el gris de la fila par). */
+        table.hist-tabla tbody tr:nth-child(even) td.hist-total { background-color: #c2e8e0; }
         table.hist-tabla tfoot td {
-            font-weight: 700; background-color: var(--celeste); color: var(--azul-oscuro);
+            font-weight: 700; background-color: #8de2d6; color: var(--azul-oscuro);
             position: sticky; bottom: 0;
         }
+        /* El total del pie, más marcado y opaco. */
+        table.hist-tabla tfoot td.hist-total { background-color: #5fd0bf; }
         table.hist-tabla td.cero { color: #bbb; }
         .hist-resumen { font-size: 12px; color: var(--azul-oscuro); margin-bottom: 10px; font-weight: 600; }
         .hist-resumen-sub { font-size: 11px; font-weight: 500; color: #555; margin-bottom: 6px; }
@@ -584,7 +602,40 @@
         .hist-estado-ok { color: #1b7f6b; }
         .hist-estado-err { color: #c0392b; }
 
+        /* ===== Módulo Q CARGOS ===== */
+        .qc-filtro-bloque { margin-bottom: 14px; }
+        .qc-filtro-tit { font-size: 12px; font-weight: 700; color: var(--azul-oscuro); margin-bottom: 6px; }
+        .qc-tit-sub { font-size: 10px; font-weight: 500; color: #888; text-transform: none; }
+        .qc-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .qc-chip {
+            font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700;
+            padding: 6px 16px; border-radius: 50px; cursor: pointer;
+            border: 1.5px solid var(--gris-bordes); background: var(--gris-claro); color: #666;
+            transition: all .2s;
+        }
+        .qc-chip.activo { background: var(--azul-oscuro); color: var(--blanco); border-color: var(--azul-oscuro); }
+        .qc-chip:hover { border-color: var(--azul-oscuro); }
+        .qc-input {
+            width: 100%; box-sizing: border-box; font-family: 'Montserrat', sans-serif; font-size: 12px;
+            padding: 6px 10px; border: 1px solid var(--gris-bordes); border-radius: 6px; color: var(--azul-oscuro);
+            margin-bottom: 6px;
+        }
+        .qc-lista-check {
+            max-height: 150px; overflow-y: auto; border: 1px solid var(--gris-bordes);
+            border-radius: 6px; padding: 6px; background: var(--blanco);
+        }
+        .qc-lista-check label {
+            display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--azul-oscuro);
+            padding: 3px 4px; cursor: pointer; border-radius: 4px;
+        }
+        .qc-lista-check label:hover { background: var(--gris-claro); }
+        .qc-lista-check input { flex: none; }
+        .qc-opcion-txt { flex: 1; }
+        .qc-opciones-conteo { font-size: 10px; color: #999; font-weight: 600; padding: 2px 4px 6px; }
+        .qc-dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .qc-vacio-check { font-size: 10px; color: #999; font-style: italic; padding: 6px; text-align: center; }
         @media (max-width: 768px) {
+            .qc-dos-col { grid-template-columns: 1fr; }
             .btn-header-hist { padding: 5px 12px; font-size: 9px; letter-spacing: 1px; }
             .hist-modal-contenido { width: 96vw; }
         }
@@ -1389,6 +1440,80 @@
         </div>
     </div>
 
+    <!-- =====================================================================
+         MÓDULO Q CARGOS — AISLADO del visualizador y de Salud Mental.
+         Enumera cargos APROBADOS POR HACIENDA. Fuente: 2022-23/2024/2025
+         embebidos (QCARGOS_HISTORICO) + 2026 en vivo del Sheet del visualizador.
+         Filtros combinables y todos opcionales: Año, Efector, Obra, Escalafón/Especialidad.
+         ===================================================================== -->
+    <div class="modal-overlay" id="modal-qc" onclick="cerrarModuloQCAfuera(event)"
+         role="dialog" aria-modal="true" aria-label="Q Cargos">
+        <div class="hist-modal-contenido hist-modal-grande" id="qc-modal-contenido">
+            <h2>📊 Q Cargos <span class="hist-badge">cargos aprobados por Hacienda · módulo aparte</span></h2>
+            <div class="hist-modal-cuerpo">
+
+                <section class="hist-seccion">
+                    <div class="hist-nota">
+                        Enumera los <strong>cargos aprobados por Hacienda</strong> (Q aprobado ≥ 1) de los períodos
+                        <strong>2022, 2023, 2024, 2025</strong> (precargados) y <strong>2026</strong> (en vivo del sistema).
+                        Los filtros se combinan para achicar la búsqueda, pero <strong>todos son opcionales</strong>:
+                        podés aplicar uno, dos o los tres.
+                    </div>
+
+                    <!-- AÑO (chips multi-selección) -->
+                    <div class="qc-filtro-bloque">
+                        <div class="qc-filtro-tit">Año</div>
+                        <div id="qc-chips-anio" class="qc-chips"></div>
+                    </div>
+
+                    <!-- EFECTOR -->
+                    <div class="qc-filtro-bloque">
+                        <div class="qc-filtro-tit">Efectores <span class="qc-tit-sub">(incluye SSAH y SSAPAC)</span></div>
+                        <input type="text" id="qc-buscar-efector" class="qc-input" placeholder="Filtrar efectores..." oninput="qcRenderOpciones('efector')">
+                        <div id="qc-lista-efector" class="qc-lista-check"></div>
+                    </div>
+
+                    <!-- OBRA -->
+                    <div class="qc-filtro-bloque">
+                        <div class="qc-filtro-tit">Obras <span class="qc-tit-sub">(incluye Proyectos)</span></div>
+                        <input type="text" id="qc-buscar-obra" class="qc-input" placeholder="Filtrar obras..." oninput="qcRenderOpciones('obra')">
+                        <div id="qc-lista-obra" class="qc-lista-check"></div>
+                    </div>
+
+                    <!-- ESCALAFÓN Y ESPECIALIDAD -->
+                    <div class="qc-filtro-bloque">
+                        <div class="qc-filtro-tit">Escalafón y Especialidad</div>
+                        <div class="qc-dos-col">
+                            <div>
+                                <input type="text" id="qc-buscar-escalafon" class="qc-input" placeholder="Filtrar escalafón..." oninput="qcRenderOpciones('escalafon')">
+                                <div id="qc-lista-escalafon" class="qc-lista-check"></div>
+                            </div>
+                            <div>
+                                <input type="text" id="qc-buscar-especialidad" class="qc-input" placeholder="Filtrar especialidad..." oninput="qcRenderOpciones('especialidad')">
+                                <div id="qc-lista-especialidad" class="qc-lista-check"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hist-controles" style="margin-top:4px;">
+                        <button class="hist-btn hist-btn-secundario" onclick="qcLimpiarFiltros()">LIMPIAR FILTROS</button>
+                        <span class="hist-sep"></span>
+                        <label>Exportar:</label>
+                        <button class="hist-btn hist-btn-secundario" onclick="exportarVistaQC('pdf')" title="Descargar tabla como PDF">⬇ PDF</button>
+                        <button class="hist-btn hist-btn-secundario" onclick="exportarVistaQC('jpg')" title="Descargar tabla como imagen JPG">⬇ JPG</button>
+                    </div>
+
+                    <div id="qc-resumen" class="hist-resumen"></div>
+                    <div id="qc-vista"></div>
+                </section>
+
+            </div>
+            <div class="hist-modal-footer">
+                <button class="hist-btn hist-btn-secundario" onclick="cerrarModuloQC()">CERRAR</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ENCABEZADO FIJO CON LOGO AMPLIADO -->
     <header class="encabezado-superior">
         <div class="contenedor-logo-inicio" onclick="irAlInicio()" title="Volver al inicio">
@@ -1398,6 +1523,9 @@
         <button id="btn-abrir-sm" class="btn-header-hist"
                 onclick="abrirModuloSM()"
                 aria-label="Abrir módulo Salud Mental 22-26">🧠 SALUD MENTAL 22-26</button>
+        <button id="btn-abrir-qc" class="btn-header-hist"
+                onclick="abrirModuloQC()"
+                aria-label="Abrir módulo Q Cargos">📊 Q CARGOS</button>
         <button id="btn-abrir-busqueda"
                 onclick="abrirModalBusqueda()"
                 aria-label="Abrir búsqueda avanzada">🔍 BUSCAR</button>
@@ -1413,11 +1541,11 @@
         <div class="columna-izquierda">
             <div class="panel-izq-contenido">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h2 style="margin: 0; font-size: 14px; text-transform: uppercase;">HOSPITALES</h2>
+                    <h2 style="margin: 0; font-size: 14px; text-transform: uppercase;">EFECTORES</h2>
                     <button onclick="toggleOrdenHospitales()" id="btn-orden-hosp" style="background: none; border: none; cursor: pointer; font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase;" title="Ordenar A-Z / Z-A">⬇️ A-Z</button>
                 </div>
                 <!-- BUSCADOR ESTILIZADO -->
-                <input type="text" id="filtro-hosp-nav" class="input-busqueda-estilizado" placeholder="Buscar hospital..." oninput="filtrarHospitalesNav()">
+                <input type="text" id="filtro-hosp-nav" class="input-busqueda-estilizado" placeholder="Buscar efector u obra..." oninput="filtrarHospitalesNav()">
                 
                 <div id="lista-hospitales-nav"></div>
             </div>
@@ -1985,6 +2113,17 @@
             renderizarHospitalesNav();
         }
 
+        // Escapes para inyectar texto en HTML y en atributos (onclick) de forma segura.
+        function _escHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+            });
+        }
+        function _escAttr(s) {
+            // Para usar dentro de onclick="entrarHospital('...')": escapa comilla simple y barra.
+            return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
         function renderizarHospitalesNav() {
             const listaNav = document.getElementById('lista-hospitales-nav');
             listaNav.innerHTML = '';
@@ -1993,12 +2132,69 @@
             const filtroTexto = document.getElementById('filtro-hosp-nav').value.toLowerCase();
 
             if (filtroTexto) {
-                let filtrados = allHosp.filter(h => h.toLowerCase().includes(filtroTexto) && esEfectorNavegable(h));
-                filtrados.sort();
-                if (!ordenHospitalesAsc) filtrados.reverse();
-                filtrados.forEach(hosp => {
-                    listaNav.innerHTML += `<div class="caja-hospital" onclick="entrarHospital('${hosp}')">${nombreEfectorDisplay(hosp)}</div>`;
+                // Matcheo TOLERANTE: sin acentos/may, y exige que TODAS las palabras
+                // buscadas aparezcan (en el nombre del efector o en la obra). Así
+                // "cesac 52" encuentra "CeSAC 52 - Pompeya" y "casas vinculares"
+                // encuentra "Equipo Casas Vinculares 5 y 6".
+                const palabras = _normTxt(filtroTexto).split(' ').filter(Boolean);
+                const matchTexto = (txt) => {
+                    const t = _normTxt(txt);
+                    return palabras.every(p => t.indexOf(p) !== -1);
+                };
+                // Mapa efector -> grupo al que pertenece (para mostrar "· en SSAPAC").
+                const grupoDe = {};
+                for (let g in gruposEfectores) {
+                    (gruposEfectores[g].miembros || []).forEach(m => { grupoDe[m] = g; });
+                }
+
+                // (1) EFECTORES que matchean por su nombre.
+                let efectores = allHosp.filter(h => esEfectorNavegable(h) && matchTexto(h));
+                efectores.sort();
+                if (!ordenHospitalesAsc) efectores.reverse();
+
+                // (2) OBRAS (denominaciones) que matchean, dentro de cualquier efector.
+                let obras = [];
+                allHosp.forEach(hosp => {
+                    if (!esEfectorNavegable(hosp)) return;
+                    const pedidos = datosSheets[hosp] || [];
+                    pedidos.forEach(p => {
+                        const det = (p.detalle || '').trim();
+                        if (!det) return;
+                        if (matchTexto(det)) {
+                            obras.push({ efector: hosp, detalle: det });
+                        }
+                    });
                 });
+                // Dedupe por efector+detalle (una obra puede repetirse en varios pedidos).
+                const vistos = new Set();
+                obras = obras.filter(o => {
+                    const k = o.efector + '||' + o.detalle;
+                    if (vistos.has(k)) return false;
+                    vistos.add(k); return true;
+                });
+                obras.sort((a, b) => a.detalle.localeCompare(b.detalle));
+
+                let html = '';
+                if (efectores.length) {
+                    html += `<div class="nav-grupo-titulo">Efectores</div>`;
+                    efectores.forEach(hosp => {
+                        html += `<div class="caja-hospital" onclick="entrarHospital('${_escAttr(hosp)}')">${nombreEfectorDisplay(hosp)}</div>`;
+                    });
+                }
+                if (obras.length) {
+                    html += `<div class="nav-grupo-titulo">Obras / proyectos</div>`;
+                    obras.forEach(o => {
+                        const grupo = grupoDe[o.efector];
+                        const ubic = grupo ? `${nombreEfectorDisplay(o.efector)} · en ${grupo}` : `en ${nombreEfectorDisplay(o.efector)}`;
+                        html += `
+                            <div class="caja-hospital caja-obra" onclick="entrarHospital('${_escAttr(o.efector)}')" title="Abrir ${_escAttr(o.efector)}">
+                                <div class="obra-nombre">${_escHtml(o.detalle)}</div>
+                                <div class="obra-ubicacion">↳ ${_escHtml(ubic)}</div>
+                            </div>`;
+                    });
+                }
+                if (!html) html = `<div class="grupo-vacio" style="padding:12px;">Sin resultados para "${_escHtml(filtroTexto)}".</div>`;
+                listaNav.innerHTML = html;
                 return;
             }
 
@@ -4680,6 +4876,552 @@
         } else {
             arranqueConLogin();
         }
+    </script>
+
+    <!-- MODULO Q CARGOS - datos embebidos + logica (aislado) -->
+    <script>
+        // Historico 2022/2023/2024/2025 (cargos aprobados por Hacienda, Q>=1).
+        // Generado desde los CSV con _gen_qcargos.js. 2026 se levanta en vivo.
+        const QCARGOS_HISTORICO = [{"anio":"2025","efector":"Alvear","obra":"AMPLIACION CAMAS GUARDIAS - RECORRIDAS FQ","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":4},{"anio":"2025","efector":"Alvear","obra":"AMPLIACION CAMAS GUARDIAS - RECORRIDAS FQ","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA ATP","q":4},{"anio":"2025","efector":"Maria Curie","obra":"ACELERADOR LINEAL","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":8},{"anio":"2025","efector":"Maria Curie","obra":"ACELERADOR LINEAL","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":3},{"anio":"2025","efector":"Maria Curie","obra":"ACELERADOR LINEAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"EXPERTOS EN FISICA RADIANTE","q":3},{"anio":"2025","efector":"Maria Curie","obra":"ACELERADOR LINEAL","escalafon":"LOYS","especialidad":"EXPERTO EN FISICA RADIANTE (DENTRO DE 471)","q":3},{"anio":"2025","efector":"Maria Curie","obra":"ACELERADOR LINEAL","escalafon":"CPH MEDICO PLANTA","especialidad":"ONCOLOGO RADIOTERAPIA O TERAPIA RADIANTE","q":6},{"anio":"2025","efector":"Maria Curie","obra":"ACELERADOR LINEAL","escalafon":"SERVICIOS GRALES. ANEXO II","especialidad":"CAMILLERO","q":3},{"anio":"2025","efector":"Maria Curie","obra":"ACELERADOR LINEAL","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":9},{"anio":"2025","efector":"Rivadavia","obra":"NUEVA SALA SALUD MENTAL MUJERES","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":18},{"anio":"2025","efector":"Rivadavia","obra":"NUEVA SALA SALUD MENTAL MUJERES","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA","q":2},{"anio":"2025","efector":"Rivadavia","obra":"NUEVA SALA SALUD MENTAL MUJERES","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGIA CLINICA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":5},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CETPS","especialidad":"TEC. EN FARMACIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CETPS","especialidad":"TEC. EN LABORATORIO","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LIC. EN NUTRICION","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOPEDAGOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICINA GENERAL Y/O FAMILIAR","q":4},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH MEDICO PLANTA","especialidad":"PEDIATRIA","q":4},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH MEDICO PLANTA","especialidad":"TOCOGINECOLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH NO MEDICO PLANTA","especialidad":"ODONTOLOGIA GENERAL","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FARMACIA HOSPITALARIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FONOAUDIOLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH NO MEDICO PLANTA","especialidad":"OBSTETRICA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGIA CLINICA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 42","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TRABAJO SOCIAL Y SERVICIO SOCIAL","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"NEUMONOLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"NEUROLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"ENDOCRINOLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":3},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":3},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CETPS","especialidad":"TEC. EN FARMACIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 50 - DEVOTO","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICINA GENERAL Y/O FAMILIAR","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 50 - DEVOTO","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TRABAJO SOCIAL Y SERVICIO SOCIAL","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 50 - DEVOTO","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGIA CLINICA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 50 - DEVOTO","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FARMACIA HOSPITALARIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 50 - DEVOTO","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":4},{"anio":"2025","efector":"SSAPAC","obra":"CESAC 50 - DEVOTO","escalafon":"CETPS","especialidad":"TEC. EN LABORATORIO","q":1},{"anio":"2025","efector":"Tornú","obra":"SALA DE CUIDADOS ESPECIALES - HOGAR SAN MARTIN","escalafon":"CPH MEDICO PLANTA","especialidad":"CLINICA MEDICA","q":2},{"anio":"2025","efector":"Tornú","obra":"SALA DE CUIDADOS ESPECIALES - HOGAR SAN MARTIN","escalafon":"CPH NO MEDICO PLANTA","especialidad":"KINESIOLOGIA","q":2},{"anio":"2025","efector":"Tornú","obra":"SALA DE CUIDADOS ESPECIALES - HOGAR SAN MARTIN","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":12},{"anio":"2025","efector":"Tornú","obra":"SALA DE CUIDADOS ESPECIALES - HOGAR SAN MARTIN","escalafon":"SERVICIOS GRALES. ANEXO II","especialidad":"CAMILLERO","q":2},{"anio":"2025","efector":"Tornú","obra":"SALA DE CUIDADOS ESPECIALES - HOGAR SAN MARTIN","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FONOAUDIOLOGIA","q":1},{"anio":"2025","efector":"Durand","obra":"TOMOGRAFO Y RESONADOR","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":18},{"anio":"2025","efector":"Durand","obra":"TOMOGRAFO Y RESONADOR","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":2},{"anio":"2025","efector":"Durand","obra":"TOMOGRAFO Y RESONADOR","escalafon":"SERVICIOS GRALES. ANEXO II","especialidad":"CAMILLERO","q":1},{"anio":"2025","efector":"Argerich","obra":"6 CAMAS UCO","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":4},{"anio":"2025","efector":"Argerich","obra":"6 CAMAS UCO","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA ATP","q":4},{"anio":"2025","efector":"SSAH","obra":"Programa Neurodesarrollo","escalafon":"CPH MEDICO PLANTA","especialidad":"PEDIATRIA","q":8},{"anio":"2025","efector":"SSAH","obra":"Programa Neurodesarrollo","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA INFANTO JUVENIL","q":3},{"anio":"2025","efector":"SSAH","obra":"Programa Neurodesarrollo","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FONOAUDIOLOGIA","q":5},{"anio":"2025","efector":"SSAPAC","obra":"Programa Neurodesarrollo","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TERAPIA OCUPACIONAL","q":6},{"anio":"2025","efector":"SSAPAC","obra":"Programa Neurodesarrollo","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FONOAUDIOLOGIA","q":7},{"anio":"2025","efector":"SSAPAC","obra":"Programa Neurodesarrollo","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGIA INFANTIL","q":6},{"anio":"2025","efector":"SSAPAC","obra":"Programa Neurodesarrollo","escalafon":"CPH MEDICO PLANTA","especialidad":"PEDIATRIA","q":5},{"anio":"2025","efector":"Borda","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":12},{"anio":"2025","efector":"Borda","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA ATP","q":12},{"anio":"2025","efector":"Grierson","obra":"RECORRIDA FQ - 6 CAMAS PEDIATRIA","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":15},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":6},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CETPS","especialidad":"TEC. EN LABORATORIO","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":3},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CETPS","especialidad":"TEC. EN FARMACIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CETPS","especialidad":"TEC. EN PRACTICAS CARDIOLOGICAS","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":3},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":3},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"CARDIOLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"CARDIOLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"CLINICA MEDICA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"DERMATOLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":4},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":4},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"ENDOCRINOLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"NEUMONOLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"OFTALMOLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA INFANTO JUVENIL","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"CIRUGIA CARDIOVASCULAR","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"HEMATOLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"INFECTOLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"NEUROLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"NEUROLOGIA INFANTIL","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"OTORRINOLARINGOLOGIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH MEDICO PLANTA","especialidad":"PEDIATRIA","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGIA CLINICA","q":5},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FARMACIA HOSPITALARIA","q":3},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FONOAUDIOLOGIA","q":3},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH NO MEDICO PLANTA","especialidad":"KINESIOLOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOPEDAGOGIA","q":2},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TERAPIA OCUPACIONAL","q":3},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TRABAJO SOCIAL Y SERVICIO SOCIAL","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"CPH NO MEDICO PLANTA","especialidad":"ODONTOLOGIA GENERAL","q":3},{"anio":"2025","efector":"Pirovano","obra":"Obra ampliacion Guardia","escalafon":"CPH MEDICO GUARDIA","especialidad":"EMERGENTOLOGIA","q":7},{"anio":"2025","efector":"Pirovano","obra":"Obra ampliacion Guardia","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"KINESIOLOGIA","q":7},{"anio":"2025","efector":"Pirovano","obra":"Obra ampliacion Guardia","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":24},{"anio":"2025","efector":"Pirovano","obra":"Obra ampliacion Guardia","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA ATP","q":4},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"JEFE DE DIVISION","especialidad":"DIVISION","q":1},{"anio":"2025","efector":"SSAPAC","obra":"CEMAR 3","escalafon":"JEFE DE SECCION","especialidad":"SECCION","q":1},{"anio":"2024","efector":"Grierson","obra":"TOMOGRAFO","escalafon":"CPH MEDICO GUARDIA","especialidad":"DIAGNOSTICO POR IMAGENES","q":7},{"anio":"2024","efector":"Grierson","obra":"TOMOGRAFO","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":14},{"anio":"2024","efector":"Gutierrez","obra":"NUEVO ESPACIO DE ESTERILIZACION","escalafon":"CETPS","especialidad":"TEC. EN ESTERILIZACION","q":2},{"anio":"2024","efector":"MarIa Curie","obra":"","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":1},{"anio":"2024","efector":"NIVEL CENTRAL","obra":"ABASTECIMIENTO","escalafon":"ESCALAFON GRAL.","especialidad":"OPERARIO DE CARGA Y DESCARGA","q":1},{"anio":"2024","efector":"NIVEL CENTRAL","obra":"NUTRICION Y ALIMENTACIÓN","escalafon":"SUBGERENTE OPERATIVO","especialidad":"LIC. EN NUTRICION","q":1},{"anio":"2024","efector":"Piñero","obra":"NUEVA GUARDIA","escalafon":"CPH MEDICO GUARDIA","especialidad":"CLINICA MEDICA","q":7},{"anio":"2024","efector":"Piñero","obra":"NUEVA GUARDIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"KINESIOLOGIA","q":7},{"anio":"2024","efector":"Piñero","obra":"NUEVA GUARDIA","escalafon":"CPH MEDICO GUARDIA","especialidad":"TERAPIA INTENSIVA","q":7},{"anio":"2024","efector":"Piñero","obra":"NUEVA GUARDIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"ODONTOLOGIA GENERAL","q":7},{"anio":"2024","efector":"Piñero","obra":"NUEVA GUARDIA","escalafon":"CPH MEDICO GUARDIA","especialidad":"DIAGNOSTICO POR IMAGENES","q":7},{"anio":"2024","efector":"Pirovano","obra":"USOVNI/SARIP PIROVANO","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"KINESIOLOGIA","q":7},{"anio":"2024","efector":"Santojanni","obra":"RESONADOR","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":4},{"anio":"2024","efector":"SSAPAC","obra":"/ FARMACIAS","escalafon":"CETPS","especialidad":"TEC. EN FARMACIA","q":9},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":3},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":2},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CETPS","especialidad":"TEC. EN RADIOLOGIA","q":3},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CETPS","especialidad":"TEC. EN FARMACIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"NEUMONOLOGIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"NEUROLOGIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CEMAR 1","escalafon":"CPH MEDICO PLANTA","especialidad":"ENDOCRINOLOGIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICINA GENERAL Y/O FAMILIAR","q":2},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH MEDICO PLANTA","especialidad":"PEDIATRIA","q":2},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH MEDICO PLANTA","especialidad":"TOCOGINECOLOGIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH NO MEDICO PLANTA","especialidad":"ODONTOLOGIA GENERAL","q":2},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FONOAUDIOLOGIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOPEDAGOGIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH NO MEDICO PLANTA","especialidad":"FARMACIA HOSPITALARIA","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TRABAJO SOCIAL Y SERVICIO SOCIAL","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CPH MEDICO PLANTA","especialidad":"DIAGNOSTICO POR IMAGENES","q":1},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":3},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CETPS","especialidad":"TEC. EN FARMACIA","q":2},{"anio":"2024","efector":"SSAPAC","obra":"CESAC 49","escalafon":"CETPS","especialidad":"TEC. EN LABORATORIO","q":1},{"anio":"2024","efector":"Tornú","obra":"10 CAMAS INTERNACION - SALUD MENTAL","escalafon":"CPH MEDICO PLANTA","especialidad":"PSIQUIATRIA","q":1},{"anio":"2024","efector":"Tornú","obra":"10 CAMAS INTERNACION - SALUD MENTAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGIA CLINICA","q":1},{"anio":"2024","efector":"Tornú","obra":"10 CAMAS INTERNACION - SALUD MENTAL","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":12},{"anio":"2024","efector":"Tornú","obra":"10 CAMAS INTERNACION - SALUD MENTAL","escalafon":"ESCALAFON GRAL.","especialidad":"ANALISTA ADMINISTRATIVO GENERAL","q":4},{"anio":"2024","efector":"Tornú","obra":"10 CAMAS INTERNACION - SALUD MENTAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TERAPIA OCUPACIONAL","q":1},{"anio":"2024","efector":"Tornú","obra":"10 CAMAS INTERNACION - SALUD MENTAL","escalafon":"CPH MEDICO GUARDIA","especialidad":"PSIQUIATRIA","q":7},{"anio":"2024","efector":"Velez Sarsfield","obra":"AMPLIACION CENTRO DIAGOSTICO POR IMAGENES","escalafon":"CPH MEDICO GUARDIA","especialidad":"ANESTESIOLOGIA","q":5},{"anio":"2024","efector":"Zubizarreta","obra":"","escalafon":"ENFERMERIA","especialidad":"ENFERMERIA","q":8},{"anio":"2023","efector":"JOSE TIBURCIO BORDA","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO CLINICO","q":3},{"anio":"2023","efector":"JOSE TIBURCIO BORDA","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO GUARDIA","q":1},{"anio":"2023","efector":"JOSE TIBURCIO BORDA","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO NEUROLOGO","q":1},{"anio":"2023","efector":"JOSE TIBURCIO BORDA","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO CARDIOLOGO","q":1},{"anio":"2023","efector":"JOSE TIBURCIO BORDA","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":3},{"anio":"2023","efector":"JOSE TIBURCIO BORDA","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":25},{"anio":"2023","efector":"JOSE TIBURCIO BORDA","obra":"SERVICIO CRONICO (30 CAMAS)","escalafon":"ESCALAFON GENERAL SERVICIOS GRALES.","especialidad":"CAMILLEROS","q":2},{"anio":"2023","efector":"DGSAM (SALUD MENTAL)","obra":"CASA DE MEDIO CAMINO. SALUD MENTAL (a.thomas)","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":1},{"anio":"2023","efector":"DGSAM (SALUD MENTAL)","obra":"CASA DE MEDIO CAMINO. SALUD MENTAL (a.thomas)","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TERAPEUTA OCUPACIONAL","q":1},{"anio":"2023","efector":"DGSAM (SALUD MENTAL)","obra":"CASA DE MEDIO CAMINO. SALUD MENTAL (a.thomas)","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGO","q":1},{"anio":"2023","efector":"DGSAM (SALUD MENTAL)","obra":"CASA DE MEDIO CAMINO. SALUD MENTAL (a.thomas)","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PSIQUIATRA","q":1},{"anio":"2023","efector":"DGSAM (SALUD MENTAL)","obra":"CASA DE MEDIO CAMINO. SALUD MENTAL (a.thomas)","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TRABAJADOR SOCIAL","q":1},{"anio":"2023","efector":"DGSAM (SALUD MENTAL)","obra":"CASA DE MEDIO CAMINO. SALUD MENTAL (a.thomas)","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":6},{"anio":"2023","efector":"DGSAM (SALUD MENTAL)","obra":"CASA DE MEDIO CAMINO. SALUD MENTAL (a.thomas)","escalafon":"CPH NO MEDICO PLANTA","especialidad":"NUTRICIONISTA","q":1},{"anio":"2023","efector":"DGSAM (SALUD MENTAL)","obra":"CASA DE MEDIO CAMINO. SALUD MENTAL (a.thomas)","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"OPERADORES TERAPEUTICOS","q":18},{"anio":"2022","efector":"CARLOS G. DURAND","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":2},{"anio":"2022","efector":"CARLOS G. DURAND","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"BIOQUIMICO","q":1},{"anio":"2023","efector":"CARLOS G. DURAND","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PSIQUIATRA","q":2},{"anio":"2023","efector":"CARLOS G. DURAND","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGO","q":2},{"anio":"2023","efector":"CARLOS G. DURAND","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":12},{"anio":"2023","efector":"CARLOS G. DURAND","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TRABAJADOR SOCIAL","q":1},{"anio":"2023","efector":"CARLOS G. DURAND","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TERAPEUTA OCUPACIONAL","q":1},{"anio":"2022","efector":"RAMON CARRILLO","obra":"AMPLIACION DOTACION","escalafon":"CPH NO MEDICO PLANTA","especialidad":"ODONTOLOGO","q":1},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"JEFE UNIDAD","especialidad":"JEFE DE UNIDAD","q":1},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO TOCOGINECOLOGO","q":1},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICINA CLINICO","q":2},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PEDIATRA","q":2},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH NO MEDICO PLANTA","especialidad":"OBSTETRICA","q":1},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH NO MEDICO PLANTA","especialidad":"ODONTOLOGO","q":2},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TRABAJADOR SOCIAL","q":2},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGO","q":2},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH NO MEDICO PLANTA","especialidad":"NUTRICIONISTA","q":1},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOPEDAGOGO","q":1},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN FARMACIA","q":2},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN FONOAUDIOLOGIA","q":1},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":5},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN RADIOLOGIA","q":1},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN FARMACIA","q":2},{"anio":"2022","efector":"CESAC 23 \"BACACAY\"","obra":"EQUIPO SALUD NUCLEAR","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN LABORATORIO","q":1},{"anio":"2022","efector":"DALMACIO VELEZ SARFIELD","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":1},{"anio":"2023","efector":"DALMACIO VELEZ SARFIELD","obra":"TOMOGRAFIA","escalafon":"CEETPS TECNICOS","especialidad":"LICENCIADO EN BIOIMAGENES","q":14},{"anio":"2023","efector":"DALMACIO VELEZ SARFIELD","obra":"TOMOGRAFIA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO DIAGNOSTICO POR IMAGENES","q":7},{"anio":"2023","efector":"DALMACIO VELEZ SARFIELD","obra":"TOMOGRAFIA","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":5},{"anio":"2023","efector":"DALMACIO VELEZ SARFIELD","obra":"TOMOGRAFIA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO","q":1},{"anio":"2022","efector":"DONACION F. SANTOJANNI","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":3},{"anio":"2022","efector":"DR. ABEL ZUBIZARRETA","obra":"TOMOGRAFIA","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN RADIOLOGIA","q":14},{"anio":"2022","efector":"DR. ABEL ZUBIZARRETA","obra":"TOMOGRAFIA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO DIAGNOSTICO POR IMAGENES","q":1},{"anio":"2022","efector":"DR. ABEL ZUBIZARRETA","obra":"TOMOGRAFIA","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":5},{"anio":"2022","efector":"DR. ABEL ZUBIZARRETA","obra":"TOMOGRAFIA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO DIAGNOSTICO POR IMAGENES","q":7},{"anio":"2022","efector":"DR. ABEL ZUBIZARRETA","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":1},{"anio":"2022","efector":"DR. ABEL ZUBIZARRETA","obra":"PLAN CAMAS","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":1},{"anio":"2022","efector":"DR. COSME ARGERICH","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":2},{"anio":"2022","efector":"DR. COSME ARGERICH","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":1},{"anio":"2023","efector":"DR. COSME ARGERICH","obra":"RESONADOR","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":5},{"anio":"2023","efector":"DR. COSME ARGERICH","obra":"RESONADOR","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN RADIOLOGIA","q":14},{"anio":"2023","efector":"DR. COSME ARGERICH","obra":"RESONADOR","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO DIAGNOSTICO POR IMAGENES","q":1},{"anio":"2023","efector":"DR. COSME ARGERICH","obra":"RESONADOR","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO DIAGNOSTICO POR IMAGENES","q":7},{"anio":"2022","efector":"DR. ENRIQUE TORNU","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":1},{"anio":"2022","efector":"DR. IGNACIO PIROVANO","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":1},{"anio":"2023","efector":"DR. IGNACIO PIROVANO","obra":"AMPLIACION DOTACION","escalafon":"CPH NO MEDICO PLANTA","especialidad":"BIOQUIMICA MOLECULAR","q":1},{"anio":"2022","efector":"DR. JUAN A. FERNANDEZ","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":5},{"anio":"2022","efector":"DR. JUAN A. FERNANDEZ","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":1},{"anio":"2023","efector":"DR. JUAN A. FERNANDEZ","obra":"TOMOGRAFIA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO TOMOGRAFIA","q":1},{"anio":"2022","efector":"DR. RICARDO GUTIERREZ","obra":"UTI PEDIATRICA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PEDIATRA","q":1},{"anio":"2022","efector":"DR. RICARDO GUTIERREZ","obra":"UTI PEDIATRICA","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN FARMACIA","q":1},{"anio":"2022","efector":"DR. RICARDO GUTIERREZ","obra":"UTI PEDIATRICA","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":4},{"anio":"2023","efector":"DR. RICARDO GUTIERREZ","obra":"UTI PEDIATRICA","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":42},{"anio":"2022","efector":"DR. RICARDO GUTIERREZ","obra":"UTI PEDIATRICA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":1},{"anio":"2022","efector":"DR. RICARDO GUTIERREZ","obra":"UTI PEDIATRICA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":2},{"anio":"2023","efector":"DR. RICARDO GUTIERREZ","obra":"AMPLIACION DOTACION","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"BIOQUIMICO","q":1},{"anio":"2022","efector":"DR. TEODORO ALVAREZ","obra":"TOMOGRAFIA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO DIAGNOSTICO POR IMAGENES","q":1},{"anio":"2023","efector":"DR. TEODORO ALVAREZ","obra":"TOMOGRAFIA","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TECNICO RADIOLOGO","q":12},{"anio":"2022","efector":"DR. TEODORO ALVAREZ","obra":"TOMOGRAFIA","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":5},{"anio":"2022","efector":"DR. TEODORO ALVAREZ","obra":"TOMOGRAFIA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO DIAGNOSTICO POR IMAGENES","q":7},{"anio":"2022","efector":"DR. TEODORO ALVAREZ","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":1},{"anio":"2022","efector":"DR. TEODORO ALVAREZ","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO GINECOLOGO","q":2},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO ANESTESISTA","q":3},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO CARDIOLOGO","q":2},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO INFECTOLOGO","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO GASTROENTEROLOGO","q":2},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO NEUMONOLOGO","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO NEUROLOGO","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO HEMATOLOGO","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO ENDOCRINOLOGO","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO NUTRICIONISTA (diabetologo)","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO ANATOMIA PATOLOGICA","q":2},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN FONOAUDIOLOGIA","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH NO MEDICO PLANTA","especialidad":"NUTRICIONISTA","q":2},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PSIQUIATRA","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGO","q":2},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":2},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO ONCOLOGO","q":1},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO CLINICO","q":2},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO CIRUGIA GENERAL","q":3},{"anio":"2022","efector":"DRA. CECILIA GRIERSON","obra":"POF HgACG","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO TRAUMATOLOGO","q":1},{"anio":"2023","efector":"DRA. CECILIA GRIERSON","obra":"40 CAMAS","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":30},{"anio":"2023","efector":"DRA. CECILIA GRIERSON","obra":"40 CAMAS","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO CLINICO","q":2},{"anio":"2023","efector":"DRA. CECILIA GRIERSON","obra":"40 CAMAS","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO TRAUMATOLOGO","q":1},{"anio":"2023","efector":"DRA. CECILIA GRIERSON","obra":"40 CAMAS","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO CIRUJANO","q":1},{"anio":"2023","efector":"DRA. CECILIA GRIERSON","obra":"40 CAMAS","escalafon":"ESCALAFON GENERAL SERVICIOS GRALES.","especialidad":"CAMILLEROS","q":5},{"anio":"2023","efector":"DRA. CECILIA GRIERSON","obra":"40 CAMAS","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN FARMACIA","q":2},{"anio":"2023","efector":"DRA. CECILIA GRIERSON","obra":"40 CAMAS","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN LABORATORIO","q":2},{"anio":"2022","efector":"FRANCISCO J. MUNIZ","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":3},{"anio":"2022","efector":"FRANCISCO J. MUNIZ","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":2},{"anio":"2022","efector":"J. M. PENNA","obra":"RELICITACION SERVICIO IMAGENES","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":11},{"anio":"2022","efector":"J. M. PENNA","obra":"RELICITACION SERVICIO IMAGENES","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN RADIOLOGIA","q":10},{"anio":"2022","efector":"JOSE MARIA RAMOS MEJIA","obra":"QUIROFANO","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICOS ANESTESIOLOGIA","q":4},{"anio":"2022","efector":"JOSE MARIA RAMOS MEJIA","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":2},{"anio":"2022","efector":"JOSE MARIA RAMOS MEJIA","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":1},{"anio":"2023","efector":"JOSE MARIA RAMOS MEJIA","obra":"QUIROFANO","escalafon":"CEETPS TECNICOS","especialidad":"TECNICOS EN ESTERILIZACION","q":4},{"anio":"2022","efector":"MANUEL ROCCA","obra":"TRAQUEOSTOMIZADOS","escalafon":"CEETPS TECNICOS","especialidad":"TECNICOS EN HEMOTERAPIA","q":2},{"anio":"2022","efector":"MANUEL ROCCA","obra":"TRAQUEOSTOMIZADOS","escalafon":"ESCALAFON GENERAL SERVICIOS GRALES.","especialidad":"OXIGENISTA","q":1},{"anio":"2022","efector":"MANUEL ROCCA","obra":"TRAQUEOSTOMIZADOS","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN RADIOLOGIA","q":7},{"anio":"2022","efector":"MANUEL ROCCA","obra":"TRAQUEOSTOMIZADOS","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":4},{"anio":"2022","efector":"MANUEL ROCCA","obra":"TRAQUEOSTOMIZADOS","escalafon":"ESCALAFON GENERAL SERVICIOS GRALES.","especialidad":"CAMILLEROS","q":5},{"anio":"2022","efector":"MANUEL ROCCA","obra":"TRAQUEOSTOMIZADOS","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":3},{"anio":"2022","efector":"MANUEL ROCCA","obra":"TRAQUEOSTOMIZADOS","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":3},{"anio":"2022","efector":"MANUEL ROCCA","obra":"TRAQUEOSTOMIZADOS","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN FARMACIA","q":1},{"anio":"2022","efector":"MARIA FERRER","obra":"UNIDAD GUARDIA DIA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":1},{"anio":"2022","efector":"MARIA FERRER","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":1},{"anio":"2022","efector":"PEDRO DE ELIZALDE","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO CARDIOLOGO","q":1},{"anio":"2022","efector":"PEDRO DE ELIZALDE","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO PEDIATRA","q":1},{"anio":"2022","efector":"PEDRO DE ELIZALDE","obra":"UNIDAD TERAPIA INTENSIVA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":1},{"anio":"2023","efector":"PARMENIO PIÑERO","obra":"QUINTO QUIROFANO","escalafon":"CEETPS TECNICOS","especialidad":"TECNICOS EN INSTRUMENTACION QUIRURGICA","q":7},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"GUARDIA NUEVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO EMERGENTOLOGO","q":1},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"GUARDIA NUEVA","escalafon":"CPH MEDICO GUARDIA","especialidad":"PROFESIONAL DE GUARDIA","q":2},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"GUARDIA NUEVA","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":1},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"GUARDIA NUEVA","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":10},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"PABELLON COBO","escalafon":"CPH MEDICO GUARDIA","especialidad":"MEDICO TERAPIA INTENSIVA","q":3},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"PABELLON COBO","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":42},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"PABELLON COBO","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN RADIOLOGIA","q":7},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"PABELLON COBO","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN KINESIOLOGIA","q":4},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"PABELLON COBO","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVOS","q":4},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"PABELLON COBO","escalafon":"CPH NO MEDICO PLANTA","especialidad":"BIOQUIMICO","q":1},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PSIQUIATRA","q":2},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"PSICOLOGO","q":2},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":12},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TRABAJADOR SOCIAL","q":1},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"10 CAMAS INTERNACION SALUD MENTAL","escalafon":"CPH NO MEDICO PLANTA","especialidad":"TERAPEUTA OCUPACIONAL","q":1},{"anio":"2023","efector":"BERNARDINO RIVADAVIA","obra":"UTI","escalafon":"CEETPS TECNICOS","especialidad":"INSTRUMENTADOR QUIRURGICO","q":1},{"anio":"2023","efector":"RODRIGO BUENO","obra":"NUEVA POSTA","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMERIA","q":1},{"anio":"2022","efector":"RODRIGO BUENO","obra":"NUEVA POSTA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO CLINICO","q":1},{"anio":"2022","efector":"RODRIGO BUENO","obra":"NUEVA POSTA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PEDIATRA","q":1},{"anio":"2022","efector":"SSAPAC","obra":"CEMAR 1 y 2","escalafon":"CEETPS TECNICOS","especialidad":"TECNICOS EN RADIOLOGIA (odontologia)","q":1},{"anio":"2022","efector":"SSAPAC","obra":"CEMAR 1 y 2","escalafon":"CEETPS TECNICOS","especialidad":"TECNICO EN RADIOLOGIA (mamografia)","q":3},{"anio":"2022","efector":"SSAPAC","obra":"AMPLIACION DOTACION FORTALECI// RED FARMACIAS CESAC","escalafon":"CPH NO MEDICO PLANTA","especialidad":"LICENCIADO EN FARMACIA","q":10},{"anio":"2022","efector":"HOSPITALES","obra":"JEFATURAS","escalafon":"JEFATURAS","especialidad":"JAFATURAS CPH","q":70},{"anio":"2022","efector":"SAME","obra":"EMERGENCIAS","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PSIQUIATRA","q":4},{"anio":"2023","efector":"DR. IGNACIO PIROVANO","obra":"AMPLIACION DOTACION","escalafon":"CPH NO MEDICO GUARDIA","especialidad":"KINESIOLOGO","q":1},{"anio":"2023","efector":"SSAPAC","obra":"POSTA FRAGA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO PEDIATRA","q":1},{"anio":"2023","efector":"SSAPAC","obra":"POSTA FRAGA","escalafon":"CPH MEDICO PLANTA","especialidad":"MEDICO GENERALISTA/ FLIAR","q":2},{"anio":"2023","efector":"SSAPAC","obra":"POSTA FRAGA","escalafon":"CEETEPS LICENCIADO EN ENFERMERIA","especialidad":"ENFERMEROS","q":2},{"anio":"2023","efector":"SSAPAC","obra":"POSTA FRAGA","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"PROMOTOR DE SALUD","q":1},{"anio":"2023","efector":"SSAPAC","obra":"POSTA FRAGA","escalafon":"ESCALAFON GENERAL ADMINISTRATIVOS","especialidad":"ADMINISTRATIVO/A","q":2}];
+
+        // =====================================================================
+        // MÓDULO Q CARGOS — aislado. Enumera cargos APROBADOS POR HACIENDA.
+        // Fuente: QCARGOS_HISTORICO (2022/2023/2024/2025 embebidos) + 2026 en vivo
+        // del visualizador (datosSheets). NO toca el visualizador ni HIST.
+        // =====================================================================
+
+        // Estado de filtros (todos opcionales / combinables). Vacío = sin filtrar.
+        var _qcFiltros = { anios: {}, efector: {}, obra: {}, escalafon: {}, especialidad: {} };
+        var _qcAbierto = false;
+
+        // Normaliza texto para búsqueda tolerante (sin acentos/may, colapsa espacios).
+        function _qcNorm(s) {
+            return String(s == null ? '' : s).toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, ' ').trim();
+        }
+        function _qcEsc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+            });
+        }
+
+        // Construye el 2026 EN VIVO a partir de datosSheets del visualizador.
+        // Cada cargo con qAprobado >= 1 se convierte en un registro Q CARGOS.
+        function _qcRegistros2026() {
+            var out = [];
+            if (typeof datosSheets !== 'object' || !datosSheets) return out;
+            Object.keys(datosSheets).forEach(function (ef) {
+                (datosSheets[ef] || []).forEach(function (pedido) {
+                    var obra = (pedido.detalle || '').trim();
+                    (pedido.cargos || []).forEach(function (c) {
+                        var q = Number(c.qAprobado) || 0;
+                        if (q < 1) return;
+                        out.push({
+                            anio: '2026', efector: ef, obra: obra,
+                            escalafon: (c.escalafon || '').trim(),
+                            especialidad: (c.puesto || '').trim(), q: q
+                        });
+                    });
+                });
+            });
+            return out;
+        }
+
+        // Devuelve TODOS los registros (histórico embebido + 2026 en vivo).
+        function _qcTodos() {
+            var hist = [];
+            try { if (typeof QCARGOS_HISTORICO !== 'undefined' && Array.isArray(QCARGOS_HISTORICO)) hist = QCARGOS_HISTORICO; }
+            catch (e) { hist = []; }
+            var vivo = [];
+            try { vivo = _qcRegistros2026(); } catch (e) { vivo = []; }
+            return hist.concat(vivo);
+        }
+
+        // Años canónicos (chips). 2026 siempre presente aunque el Sheet esté vacío.
+        var QC_ANIOS = ['2022', '2023', '2024', '2025', '2026'];
+
+        // ---- Abrir / cerrar ----
+        function abrirModuloQC() {
+            _qcAbierto = true;
+            qcRenderChipsAnio();
+            qcRenderOpciones('efector');
+            qcRenderOpciones('obra');
+            qcRenderOpciones('escalafon');
+            qcRenderOpciones('especialidad');
+            qcRenderResultado();
+            document.getElementById('modal-qc').classList.add('abierto');
+        }
+        function cerrarModuloQC() { document.getElementById('modal-qc').classList.remove('abierto'); }
+        function cerrarModuloQCAfuera(ev) { if (ev.target && ev.target.id === 'modal-qc') cerrarModuloQC(); }
+
+        // ---- Chips de año ----
+        function qcRenderChipsAnio() {
+            var cont = document.getElementById('qc-chips-anio'); if (!cont) return;
+            cont.innerHTML = QC_ANIOS.map(function (a) {
+                var activo = _qcFiltros.anios[a] ? ' activo' : '';
+                return '<button class="qc-chip' + activo + '" onclick="qcToggleAnio(\'' + a + '\')">' + a + '</button>';
+            }).join('');
+        }
+        function qcToggleAnio(a) {
+            if (_qcFiltros.anios[a]) delete _qcFiltros.anios[a];
+            else _qcFiltros.anios[a] = true;
+            qcRenderChipsAnio();
+            // El año es el filtro maestro: podar selecciones que ya no existen en los
+            // años elegidos (para no arrastrar "memoria" de otro año).
+            _qcPodarSelecciones();
+            // Recalcular las listas (dependen sólo del año).
+            qcRenderOpciones('efector'); qcRenderOpciones('obra');
+            qcRenderOpciones('escalafon'); qcRenderOpciones('especialidad');
+            qcRenderResultado();
+        }
+
+        // Quita de _qcFiltros los valores de efector/obra/escalafón/especialidad que
+        // ya no existen en los años seleccionados (evita filtros "fantasma").
+        function _qcPodarSelecciones() {
+            var base = _qcTodos().filter(_qcPasaAnio);
+            ['efector', 'obra', 'escalafon', 'especialidad'].forEach(function (campo) {
+                var existentes = {};
+                base.forEach(function (r) { var v = (r[campo] || '').trim(); if (v) existentes[v] = true; });
+                Object.keys(_qcFiltros[campo]).forEach(function (v) {
+                    if (!existentes[v]) delete _qcFiltros[campo][v];
+                });
+            });
+        }
+
+        // ¿El registro pasa el filtro de años? (sin años elegidos = todos)
+        function _qcPasaAnio(r) {
+            var sel = Object.keys(_qcFiltros.anios);
+            return sel.length === 0 || _qcFiltros.anios[r.anio];
+        }
+
+        // Registros que pasan TODOS los filtros EXCEPTO el indicado (para poblar
+        // las opciones de ese filtro de forma coherente con el resto).
+        function _qcFiltrados(excepto) {
+            return _qcTodos().filter(function (r) {
+                if (excepto !== 'anio' && !_qcPasaAnio(r)) return false;
+                if (excepto !== 'efector' && Object.keys(_qcFiltros.efector).length && !_qcFiltros.efector[r.efector]) return false;
+                if (excepto !== 'obra' && Object.keys(_qcFiltros.obra).length && !_qcFiltros.obra[r.obra]) return false;
+                if (excepto !== 'escalafon' && Object.keys(_qcFiltros.escalafon).length && !_qcFiltros.escalafon[r.escalafon]) return false;
+                if (excepto !== 'especialidad' && Object.keys(_qcFiltros.especialidad).length && !_qcFiltros.especialidad[r.especialidad]) return false;
+                return true;
+            });
+        }
+
+        // ---- Opciones (checkboxes) de efector / obra / escalafon / especialidad ----
+        function qcRenderOpciones(campo) {
+            var contId = 'qc-lista-' + campo;
+            var buscarId = 'qc-buscar-' + campo;
+            var cont = document.getElementById(contId); if (!cont) return;
+            var filtroTxt = _qcNorm((document.getElementById(buscarId) || {}).value || '');
+
+            // Opción B: las listas dependen SOLO del año (no se achican entre sí).
+            // Cada filtro muestra todas sus opciones del/los año(s) elegido(s).
+            var base = _qcTodos().filter(_qcPasaAnio);
+            var valores = {};
+            base.forEach(function (r) { var v = (r[campo] || '').trim(); if (v) valores[v] = true; });
+            var lista = Object.keys(valores).sort(function (a, b) { return a.localeCompare(b); });
+
+            // Aplica el texto de búsqueda del propio campo.
+            if (filtroTxt) {
+                var pals = filtroTxt.split(' ').filter(Boolean);
+                lista = lista.filter(function (v) { var n = _qcNorm(v); return pals.every(function (p) { return n.indexOf(p) !== -1; }); });
+            }
+
+            if (!lista.length) { cont.innerHTML = '<div class="qc-vacio-check">Sin opciones</div>'; return; }
+
+            var html = '<div class="qc-opciones-conteo">' + lista.length + ' ' + (lista.length === 1 ? 'opción' : 'opciones') + '</div>';
+            html += lista.map(function (v) {
+                var checked = _qcFiltros[campo][v] ? ' checked' : '';
+                return '<label><input type="checkbox"' + checked +
+                    ' onchange="qcToggleOpcion(\'' + campo + '\', this.getAttribute(\'data-val\'))"' +
+                    ' data-val="' + _qcEsc(v) + '"><span class="qc-opcion-txt">' + _qcEsc(v) + '</span></label>';
+            }).join('');
+            cont.innerHTML = html;
+        }
+
+        function qcToggleOpcion(campo, valor) {
+            if (_qcFiltros[campo][valor]) delete _qcFiltros[campo][valor];
+            else _qcFiltros[campo][valor] = true;
+            // Opción B: las listas NO se achican entre sí; sólo cambia el resultado.
+            // (El checkbox tocado ya queda marcado por el navegador; no re-renderizamos
+            //  las listas para no perder scroll ni dar sensación de "memoria".)
+            qcRenderResultado();
+        }
+
+        function qcLimpiarFiltros() {
+            _qcFiltros = { anios: {}, efector: {}, obra: {}, escalafon: {}, especialidad: {} };
+            ['efector', 'obra', 'escalafon', 'especialidad'].forEach(function (c) {
+                var b = document.getElementById('qc-buscar-' + c); if (b) b.value = '';
+            });
+            qcRenderChipsAnio();
+            qcRenderOpciones('efector'); qcRenderOpciones('obra');
+            qcRenderOpciones('escalafon'); qcRenderOpciones('especialidad');
+            qcRenderResultado();
+        }
+
+        // Registros que pasan TODOS los filtros (resultado final).
+        function _qcResultado() { return _qcFiltrados(null); }
+
+        // ---- Tabla de resultado + totales ----
+        function qcRenderResultado() {
+            var cont = document.getElementById('qc-vista');
+            var resumen = document.getElementById('qc-resumen');
+            if (!cont) return;
+
+            var filas = _qcResultado();
+            // Ordena por año, efector, obra.
+            filas.sort(function (a, b) {
+                return a.anio.localeCompare(b.anio) || a.efector.localeCompare(b.efector) ||
+                    a.obra.localeCompare(b.obra) || a.escalafon.localeCompare(b.escalafon);
+            });
+
+            var totalQ = 0; filas.forEach(function (r) { totalQ += r.q; });
+
+            if (resumen) {
+                resumen.textContent = 'Cargos aprobados por Hacienda: ' + totalQ +
+                    ' (en ' + filas.length + ' líneas). Métrica: suma de Q aprobado.';
+            }
+
+            if (!filas.length) {
+                cont.innerHTML = '<div class="hist-vacio">Sin cargos aprobados para los filtros elegidos.</div>';
+                return;
+            }
+
+            // Totales por año (para el pie).
+            var porAnio = {}; QC_ANIOS.forEach(function (a) { porAnio[a] = 0; });
+            filas.forEach(function (r) { porAnio[r.anio] = (porAnio[r.anio] || 0) + r.q; });
+
+            var h = '<div class="hist-tabla-wrap"><table class="hist-tabla"><thead><tr>' +
+                '<th>Año</th><th class="hist-col-hosp">Efector</th><th class="hist-col-hosp">Obra</th>' +
+                '<th>Escalafón</th><th>Especialidad</th><th class="hist-total">Q aprob.</th>' +
+                '</tr></thead><tbody>';
+            filas.forEach(function (r) {
+                h += '<tr>' +
+                    '<td>' + _qcEsc(r.anio) + '</td>' +
+                    '<td class="hist-col-hosp">' + _qcEsc(r.efector) + '</td>' +
+                    '<td class="hist-col-hosp">' + _qcEsc(r.obra || '—') + '</td>' +
+                    '<td>' + _qcEsc(r.escalafon || '—') + '</td>' +
+                    '<td>' + _qcEsc(r.especialidad || '—') + '</td>' +
+                    '<td class="hist-total">' + r.q + '</td>' +
+                    '</tr>';
+            });
+            h += '</tbody><tfoot><tr><td colspan="5" class="hist-col-hosp">TOTAL cargos aprobados</td>' +
+                '<td>' + totalQ + '</td></tr></tfoot></table></div>';
+
+            // Resumen por año (chips informativos).
+            var resumenAnios = QC_ANIOS.filter(function (a) { return porAnio[a] > 0; })
+                .map(function (a) { return a + ': ' + porAnio[a]; }).join('  ·  ');
+            if (resumenAnios) {
+                h += '<div class="hist-consolidado">Por período → ' + resumenAnios + '</div>';
+            }
+            cont.innerHTML = h;
+        }
+
+        // Arma una descripción legible de los filtros activos (para el encabezado del export).
+        function _qcResumenFiltros() {
+            function lista(obj) { return Object.keys(obj); }
+            var out = [];
+            var anios = lista(_qcFiltros.anios);
+            out.push('Años: ' + (anios.length ? anios.sort().join(', ') : 'todos'));
+            var ef = lista(_qcFiltros.efector);
+            if (ef.length) out.push('Efectores: ' + ef.join(', '));
+            var ob = lista(_qcFiltros.obra);
+            if (ob.length) out.push('Obras: ' + ob.join(', '));
+            var es = lista(_qcFiltros.escalafon);
+            if (es.length) out.push('Escalafón: ' + es.join(', '));
+            var sp = lista(_qcFiltros.especialidad);
+            if (sp.length) out.push('Especialidad: ' + sp.join(', '));
+            return out;
+        }
+
+        // ---- Exportar: PDF con TEXTO NATIVO (seleccionable) y JPG (imagen). ----
+        function exportarVistaQC(formato) {
+            var r = document.getElementById('qc-resumen');
+            var filas = _qcResultado();
+            if (!filas.length) {
+                if (r) r.textContent = 'No hay resultados para exportar. Ajustá los filtros.';
+                return;
+            }
+            try {
+                filas = filas.slice().sort(function (a, b) {
+                    return a.anio.localeCompare(b.anio) || a.efector.localeCompare(b.efector) ||
+                        a.obra.localeCompare(b.obra) || a.escalafon.localeCompare(b.escalafon);
+                });
+                var d = new Date(); var p = function (n) { return (n < 10 ? '0' : '') + n; };
+                var sello = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes());
+                var nombre = 'q-cargos-' + sello + '.' + (formato === 'jpg' ? 'jpg' : 'pdf');
+                if (formato === 'jpg') {
+                    var canvas = _qcTablaACanvas(filas);
+                    _qcDescargar(canvas.toDataURL('image/jpeg', 0.92), nombre);
+                } else {
+                    var blob = _qcPdfTexto(filas);   // PDF con texto real, copiable
+                    var url = URL.createObjectURL(blob);
+                    _qcDescargar(url, nombre);
+                    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+                }
+                if (r) r.textContent = (formato === 'jpg' ? 'JPG' : 'PDF') + ' descargado (' + filas.length + ' líneas).';
+            } catch (err) {
+                if (r) r.textContent = 'No se pudo exportar: ' + (err && err.message ? err.message : err);
+            }
+        }
+
+        // Dibuja la tabla de resultados directamente en un <canvas> (sin SVG/foreignObject,
+        // que es frágil). Robusto y nítido. Devuelve el canvas listo para toDataURL.
+        function _qcTablaACanvas(filas) {
+            var cols = [
+                { k: 'anio', t: 'Año', w: 70 },
+                { k: 'efector', t: 'Efector', w: 170 },
+                { k: 'obra', t: 'Obra', w: 300 },
+                { k: 'escalafon', t: 'Escalafón', w: 220 },
+                { k: 'especialidad', t: 'Especialidad', w: 260 },
+                { k: 'q', t: 'Q aprob.', w: 90 }
+            ];
+            var esc = 2;                 // supersampling para nitidez
+            var padX = 10, rowH = 26, headH = 34, titleH = 32, footH = 32;
+            var totalW = cols.reduce(function (s, c) { return s + c.w; }, 0);
+            var totalQ = 0; filas.forEach(function (f) { totalQ += f.q; });
+
+            // Resumen de filtros (encabezado). Cada línea ~18px.
+            var resumen = _qcResumenFiltros();
+            var filtLineH = 18;
+            var cabH = titleH + resumen.length * filtLineH + 10; // bloque superior
+            var totalH = cabH + headH + filas.length * rowH + footH;
+
+            var canvas = document.createElement('canvas');
+            canvas.width = totalW * esc;
+            canvas.height = totalH * esc;
+            var ctx = canvas.getContext('2d');
+            ctx.scale(esc, esc);
+            ctx.textBaseline = 'middle';
+
+            // Fondo
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, totalW, totalH);
+
+            // Título + total
+            ctx.fillStyle = '#153244';
+            ctx.font = '700 15px Montserrat, Arial, sans-serif';
+            ctx.fillText('Q CARGOS — cargos aprobados por Hacienda  ·  Total: ' + totalQ + ' (en ' + filas.length + ' líneas)', padX, titleH / 2);
+            // Líneas de filtros aplicados
+            ctx.font = '11px Montserrat, Arial, sans-serif';
+            ctx.fillStyle = '#555';
+            resumen.forEach(function (ln, i) {
+                var s = ln; var maxW = totalW - padX * 2;
+                while (s.length && ctx.measureText(s).width > maxW) s = s.slice(0, -1);
+                if (s !== ln) s = s.slice(0, -1) + '…';
+                ctx.fillText(s, padX, titleH + i * filtLineH + filtLineH / 2);
+            });
+
+            var y = cabH;
+            // Encabezado
+            ctx.fillStyle = '#153244'; ctx.fillRect(0, y, totalW, headH);
+            ctx.fillStyle = '#ffffff'; ctx.font = '700 11px Montserrat, Arial, sans-serif';
+            var x = 0;
+            cols.forEach(function (c) {
+                var align = (c.k === 'q') ? 'center' : 'left';
+                _qcTxt(ctx, c.t.toUpperCase(), x, y, c.w, headH, align, padX);
+                x += c.w;
+            });
+            y += headH;
+
+            // Filas
+            ctx.font = '11px Montserrat, Arial, sans-serif';
+            filas.forEach(function (f, i) {
+                ctx.fillStyle = (i % 2 === 0) ? '#ffffff' : '#f6fbfa';
+                ctx.fillRect(0, y, totalW, rowH);
+                // celda total con color
+                var xq = totalW - cols[cols.length - 1].w;
+                ctx.fillStyle = (i % 2 === 0) ? '#cfeee7' : '#c2e8e0';
+                ctx.fillRect(xq, y, cols[cols.length - 1].w, rowH);
+
+                var cx = 0;
+                cols.forEach(function (c) {
+                    ctx.fillStyle = '#153244';
+                    var val = (c.k === 'q') ? String(f.q) : String(f[c.k] || '—');
+                    var align = (c.k === 'q') ? 'center' : 'left';
+                    _qcTxt(ctx, val, cx, y, c.w, rowH, align, padX);
+                    cx += c.w;
+                });
+                y += rowH;
+            });
+
+            // Pie total
+            ctx.fillStyle = '#5fd0bf'; ctx.fillRect(0, y, totalW, footH);
+            ctx.fillStyle = '#153244'; ctx.font = '700 12px Montserrat, Arial, sans-serif';
+            _qcTxt(ctx, 'TOTAL cargos aprobados', 0, y, totalW - cols[cols.length - 1].w, footH, 'left', padX);
+            _qcTxt(ctx, String(totalQ), totalW - cols[cols.length - 1].w, y, cols[cols.length - 1].w, footH, 'center', padX);
+
+            // Líneas divisorias verticales suaves
+            ctx.strokeStyle = '#e3e9ec'; ctx.lineWidth = 1;
+            var lx = 0;
+            cols.forEach(function (c) { lx += c.w; ctx.beginPath(); ctx.moveTo(lx, cabH); ctx.lineTo(lx, totalH); ctx.stroke(); });
+
+            return canvas;
+        }
+        // Dibuja texto recortado dentro de una celda (con elipsis si no entra).
+        function _qcTxt(ctx, txt, x, y, w, h, align, padX) {
+            var maxW = w - padX * 2;
+            var s = String(txt);
+            while (s.length && ctx.measureText(s).width > maxW) s = s.slice(0, -1);
+            if (s !== String(txt) && s.length > 1) s = s.slice(0, -1) + '…';
+            var tx = (align === 'center') ? x + w / 2 : x + padX;
+            ctx.textAlign = (align === 'center') ? 'center' : 'left';
+            ctx.fillText(s, tx, y + h / 2);
+            ctx.textAlign = 'left';
+        }
+        function _qcDescargar(dataURL, nombre) {
+            var a = document.createElement('a');
+            a.href = dataURL; a.download = nombre;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+        // Escapa texto para un literal de cadena PDF ( ) y lo pasa a Latin-1 (WinAnsi).
+        function _qcPdfStr(s) {
+            s = String(s == null ? '' : s);
+            // Reemplaza caracteres fuera de Latin-1 por aproximaciones simples.
+            s = s.normalize('NFC');
+            var out = '';
+            for (var i = 0; i < s.length; i++) {
+                var code = s.charCodeAt(i);
+                if (code > 255) { out += '?'; }                 // fuera de WinAnsi
+                else if (s[i] === '(' || s[i] === ')' || s[i] === '\\') { out += '\\' + s[i]; }
+                else out += s[i];
+            }
+            return out;
+        }
+        // Ancho aproximado de texto en Helvetica (para recorte por columna), en pt.
+        function _qcAnchoHelv(s, size) {
+            // Aproximación: ancho medio 0.5 em (suficiente para recortar con margen).
+            return String(s).length * size * 0.5;
+        }
+        function _qcRecorta(s, maxPt, size) {
+            s = String(s == null ? '' : s);
+            while (s.length && _qcAnchoHelv(s, size) > maxPt) s = s.slice(0, -1);
+            return s;
+        }
+
+        // Genera un PDF con TEXTO NATIVO (seleccionable/copiable), multipágina,
+        // con encabezado de filtros + tabla. Sin librerías (fuente Helvetica base-14).
+        function _qcPdfTexto(filas) {
+            var pw = 841.89, ph = 595.28, margen = 28;         // A4 horizontal
+            var cols = [
+                { k: 'anio', t: 'Año', w: 48 },
+                { k: 'efector', t: 'Efector', w: 150 },
+                { k: 'obra', t: 'Obra', w: 250 },
+                { k: 'escalafon', t: 'Escalafón', w: 165 },
+                { k: 'especialidad', t: 'Especialidad', w: 180 },
+                { k: 'q', t: 'Q aprob.', w: 50 }
+            ];
+            var x0 = margen;
+            var rowH = 14, headH = 16, fs = 8, fsHead = 8;
+            var totalQ = 0; filas.forEach(function (f) { totalQ += f.q; });
+            var resumen = _qcResumenFiltros();
+
+            // Un "run" de texto posicionado: {x, y, size, bold, text}
+            var runs = [];
+            function T(x, y, text, size, bold) { runs.push({ x: x, y: y, text: text, size: size || fs, bold: !!bold }); }
+
+            // Composición por páginas. y crece hacia abajo; PDF usa origen abajo,
+            // convertimos al final (yPdf = ph - y).
+            var paginas = [];
+            var y = margen;
+
+            // --- Encabezado (solo primera página) ---
+            T(x0, y, 'Q CARGOS - cargos aprobados por Hacienda', 14, true); y += 20;
+            T(x0, y, 'Total: ' + totalQ + ' cargos  (en ' + filas.length + ' lineas)', 10, true); y += 16;
+            resumen.forEach(function (ln) {
+                T(x0, y, _qcRecorta(ln, pw - margen * 2, 9), 9, false); y += 12;
+            });
+            y += 6;
+
+            function dibujarHead() {
+                var cx = x0;
+                cols.forEach(function (c) {
+                    T(cx + 2, y + 11, c.t, fsHead, true);
+                    cx += c.w;
+                });
+                y += headH;
+            }
+            dibujarHead();
+
+            var pagRuns = [];
+            function cortarPagina() {
+                paginas.push(runs.slice());
+                runs.length = 0;
+                y = margen;
+                dibujarHead();
+            }
+
+            filas.forEach(function (f) {
+                if (y + rowH > ph - margen) { cortarPagina(); }
+                var cx = x0;
+                cols.forEach(function (c) {
+                    var val = (c.k === 'q') ? String(f.q) : String(f[c.k] || '-');
+                    val = _qcRecorta(val, c.w - 4, fs);
+                    T(cx + 2, y + 10, val, fs, false);
+                    cx += c.w;
+                });
+                y += rowH;
+            });
+            // Total final
+            if (y + rowH > ph - margen) cortarPagina();
+            T(x0 + 2, y + 10, 'TOTAL cargos aprobados', fs, true);
+            T(x0 + cols.slice(0, 5).reduce(function (s, c) { return s + c.w; }, 0) + 2, y + 10, String(totalQ), fs, true);
+            paginas.push(runs.slice());
+
+            // --- Construir el PDF ---
+            // Objetos: 1 Catalog, 2 Pages, 3 Font(Helv), 4 Font(Helv-Bold),
+            // luego por cada página: Page + Contents.
+            var enc = new TextEncoder();
+            var partes = [], offsets = [], pos = 0;
+            function push(b) { partes.push(b); pos += b.length; }
+            function pushStr(s) { push(enc.encode(s)); }
+
+            var nPag = paginas.length;
+            var objFont = 3, objFontB = 4;
+            var primerPage = 5; // ids: pages = [5,7,9,...], contents = [6,8,...]
+            var pageIds = [], contentIds = [];
+            for (var i = 0; i < nPag; i++) { pageIds.push(primerPage + i * 2); contentIds.push(primerPage + i * 2 + 1); }
+            var totalObjs = 4 + nPag * 2;
+
+            function escribirObj(id, cuerpo) { offsets[id] = pos; pushStr(id + ' 0 obj\n' + cuerpo + '\nendobj\n'); }
+
+            pushStr('%PDF-1.4\n');
+            escribirObj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+            escribirObj(2, '<< /Type /Pages /Kids [' + pageIds.map(function (p) { return p + ' 0 R'; }).join(' ') + '] /Count ' + nPag + ' >>');
+            escribirObj(objFont, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+            escribirObj(objFontB, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+
+            paginas.forEach(function (pr, idx) {
+                // Content stream: cada run -> BT /F size Tf x y Td (texto) Tj ET
+                var stream = '';
+                pr.forEach(function (run) {
+                    var fuente = run.bold ? '/F2' : '/F1';
+                    var yPdf = (ph - run.y).toFixed(2);
+                    stream += 'BT ' + fuente + ' ' + run.size + ' Tf 1 0 0 1 ' + run.x.toFixed(2) + ' ' + yPdf + ' Tm (' + _qcPdfStr(run.text) + ') Tj ET\n';
+                });
+                escribirObj(contentIds[idx], '<< /Length ' + enc.encode(stream).length + ' >>\nstream\n' + stream + 'endstream');
+                escribirObj(pageIds[idx],
+                    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + pw + ' ' + ph + '] ' +
+                    '/Resources << /Font << /F1 ' + objFont + ' 0 R /F2 ' + objFontB + ' 0 R >> >> ' +
+                    '/Contents ' + contentIds[idx] + ' 0 R >>');
+            });
+
+            var xrefPos = pos;
+            var maxId = totalObjs;
+            var xref = 'xref\n0 ' + (maxId + 1) + '\n0000000000 65535 f \n';
+            for (var id = 1; id <= maxId; id++) {
+                var off = String(offsets[id] || 0); while (off.length < 10) off = '0' + off;
+                xref += off + ' 00000 n \n';
+            }
+            pushStr(xref);
+            pushStr('trailer\n<< /Size ' + (maxId + 1) + ' /Root 1 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF');
+
+            var total = 0; partes.forEach(function (p) { total += p.length; });
+            var out = new Uint8Array(total); var o = 0;
+            partes.forEach(function (p) { out.set(p, o); o += p.length; });
+            return new Blob([out], { type: 'application/pdf' });
+        }
+
     </script>
 
 </body>
