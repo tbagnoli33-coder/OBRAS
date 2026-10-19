@@ -630,7 +630,9 @@
         }
         .qc-lista-check label:hover { background: var(--gris-claro); }
         .qc-lista-check input { flex: none; }
-        .qc-opcion-txt { flex: 1; }
+        .qc-opcion-txt { flex: 1; font-weight: 600; }
+        .qc-opcion-oficial { display: block; font-size: 9px; font-weight: 400; color: #888; margin-top: 1px; }
+        .qc-cel-oficial { display: block; font-size: 9px; font-weight: 400; color: #888; white-space: normal; }
         .qc-opciones-conteo { font-size: 10px; color: #999; font-weight: 600; padding: 2px 4px 6px; }
         .qc-dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .qc-vacio-check { font-size: 10px; color: #999; font-style: italic; padding: 6px; text-align: center; }
@@ -4906,6 +4908,95 @@
             });
         }
 
+        // ---- Normalización de efectores (nombres oficiales del listado de siglas) ----
+        // Unifica las variantes de cada año a una forma canónica. Opción 3:
+        // devuelve { corto, oficial } (etiqueta legible + nombre oficial completo).
+        // Matcheo por palabra clave; CeSAC/CEMAR/CCI por número.
+        var QC_MAPA_EFECTOR = [
+            ['borda', 'Borda', 'Hospital de Salud Mental Dr. José T. Borda'],
+            ['moyano', 'Moyano', 'Hospital de Salud Mental Dr. Braulio Moyano'],
+            ['argerich', 'Argerich', 'Hospital General de Agudos Dr. Cosme Argerich'],
+            ['durand', 'Durand', 'Hospital General de Agudos Dr. Carlos G. Durand'],
+            ['grierson', 'Grierson', 'Hospital General de Agudos Dra. Cecilia Grierson'],
+            ['santojanni', 'Santojanni', 'Hospital General de Agudos Donación F. Santojanni'],
+            ['pirovano', 'Pirovano', 'Hospital General de Agudos Dr. Ignacio Pirovano'],
+            ['fernandez', 'Fernández', 'Hospital General de Agudos Dr. Juan A. Fernández'],
+            ['penna', 'Penna', 'Hospital General de Agudos José María Penna'],
+            ['pinero', 'Piñero', 'Hospital General de Agudos Parmenio Piñero'],
+            ['ramos mejia', 'Ramos Mejía', 'Hospital General de Agudos José M. Ramos Mejía'],
+            ['tornu', 'Tornú', 'Hospital General de Agudos Dr. Enrique Tornú'],
+            ['alvarez', 'Álvarez', 'Hospital General de Agudos Dr. Teodoro Álvarez'],
+            ['velez', 'Vélez Sarsfield', 'Hospital General de Agudos Dalmacio Vélez Sarsfield'],
+            ['sarsfield', 'Vélez Sarsfield', 'Hospital General de Agudos Dalmacio Vélez Sarsfield'],
+            ['sarfield', 'Vélez Sarsfield', 'Hospital General de Agudos Dalmacio Vélez Sarsfield'],
+            ['zubizarreta', 'Zubizarreta', 'Hospital General de Agudos Dr. Abel Zubizarreta'],
+            ['rivadavia', 'Rivadavia', 'Hospital General de Agudos Bernardino Rivadavia'],
+            ['elizalde', 'Elizalde', 'Hospital General de Niños Pedro de Elizalde'],
+            ['gutierrez', 'Gutiérrez', 'Hospital General de Niños Dr. Ricardo Gutiérrez'],
+            ['muniz', 'Muñiz', 'Hospital de Enfermedades Infecciosas Francisco J. Muñiz'],
+            ['tobar', 'Tobar García', 'Hospital Infanto Juvenil Dra. Carolina Tobar García'],
+            ['sarda', 'Sardá', 'Hospital Materno Infantil Ramón Sardá'],
+            ['duenas', 'Dueñas', 'Hospital de Odontología Dr. José Dueñas'],
+            ['curie', 'María Curie', 'Hospital de Oncología María Curie'],
+            ['carrillo', 'Carrillo', 'Hospital de Odontología Dr. Ramón Carrillo'],
+            ['quinquela', 'Quinquela Martín', 'Hospital de Odontología Infantil Benito Quinquela Martin'],
+            ['lagleyze', 'Lagleyze', 'Hospital de Oftalmología Dr. Pedro Lagleyze'],
+            ['quemados', 'Quemados', 'Hospital de Quemados Dr. Arturo U. Illia'],
+            ['illia', 'Quemados', 'Hospital de Quemados Dr. Arturo U. Illia'],
+            ['rocca', 'Rocca', 'Hospital de Rehabilitación Manuel Rocca'],
+            ['ferrer', 'María Ferrer', 'Hospital de Rehabilitación Respiratoria María Ferrer'],
+            ['santa lucia', 'Santa Lucía', 'Hospital de Oftalmología Santa Lucía'],
+            ['udaondo', 'Udaondo', 'Hospital de Gastroenterología Dr. Carlos B. Udaondo'],
+            ['alvear', 'Alvear', 'Hospital de Emergencias Psiquiátricas Torcuato de Alvear'],
+            ['zoonosis', 'Luis Pasteur', 'Instituto de Zoonosis Luis Pasteur'],
+            ['pasteur', 'Luis Pasteur', 'Instituto de Zoonosis Luis Pasteur'],
+            ['irep', 'IREP', 'Instituto de Rehabilitación Psicofísica'],
+            ['ameghino', 'Ameghino', 'Centro de Salud Mental Nº 3 Dr. Arturo Ameghino'],
+            ['hugo rosario', 'Hugo Rosario', 'Centro de Salud Mental Nº 1 Hugo Rosario'],
+            ['same', 'SAME', 'Subsecretaría Sistema de Atención Médica de Emergencia (SAME)'],
+            ['ssapac', 'SSAPAC', 'Subsecretaría de Atención Primaria, Ambulatoria y Comunitaria'],
+            ['ssah', 'SSAH', 'Subsecretaría de Atención Hospitalaria'],
+            ['dgsam', 'DG Salud Mental', 'Dirección General de Salud Mental'],
+            ['salud mental', 'DG Salud Mental', 'Dirección General de Salud Mental'],
+            ['nivel central', 'Nivel Central', 'Nivel Central'],
+            ['hospitales', 'Hospitales', 'Hospitales (agrupador)'],
+            ['hogar san martin', 'Hogar San Martín', 'Hogar San Martín'],
+            ['rodrigo bueno', 'CCI Rodrigo Bueno', 'Centro de Cuidado Integral Rodrigo Bueno'],
+            ['bacacay', 'CeSAC 23', 'CeSAC N° 23 (Bacacay)']
+        ];
+        function _qcNormEf(s) {
+            return String(s == null ? '' : s).toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+        // Cache para no recomputar.
+        var _qcCanonCache = {};
+        function qcCanonico(efector) {
+            var key = efector || '';
+            if (_qcCanonCache[key]) return _qcCanonCache[key];
+            var n = _qcNormEf(efector);
+            var res;
+            var mC = n.match(/cesac\s*(?:n\s*)?(\d+)/);
+            var mE = n.match(/cemar\s*(\d+)/);
+            var mCCI = n.match(/cci\s*(\d+)/);
+            if (mC) res = { corto: 'CeSAC ' + mC[1], oficial: 'CeSAC N° ' + mC[1] };
+            else if (mE) res = { corto: 'CEMAR ' + mE[1], oficial: 'CEMAR ' + mE[1] };
+            else if (mCCI) res = { corto: 'CCI ' + mCCI[1], oficial: 'Centro de Cuidado Integral N° ' + mCCI[1] };
+            else {
+                res = null;
+                for (var i = 0; i < QC_MAPA_EFECTOR.length; i++) {
+                    if (n.indexOf(QC_MAPA_EFECTOR[i][0]) !== -1) {
+                        res = { corto: QC_MAPA_EFECTOR[i][1], oficial: QC_MAPA_EFECTOR[i][2] };
+                        break;
+                    }
+                }
+                // Sin match: se respeta el nombre original (no se rompe nada).
+                if (!res) res = { corto: String(efector || '').trim() || '—', oficial: '' };
+            }
+            _qcCanonCache[key] = res;
+            return res;
+        }
+
         // Construye el 2026 EN VIVO a partir de datosSheets del visualizador.
         // Cada cargo con qAprobado >= 1 se convierte en un registro Q CARGOS.
         function _qcRegistros2026() {
@@ -4928,14 +5019,26 @@
             return out;
         }
 
-        // Devuelve TODOS los registros (histórico embebido + 2026 en vivo).
+        // Devuelve TODOS los registros (histórico embebido + 2026 en vivo),
+        // con el EFECTOR NORMALIZADO al nombre canónico (corto) + oficial.
+        var _qcTodosCache = null;
         function _qcTodos() {
             var hist = [];
             try { if (typeof QCARGOS_HISTORICO !== 'undefined' && Array.isArray(QCARGOS_HISTORICO)) hist = QCARGOS_HISTORICO; }
             catch (e) { hist = []; }
             var vivo = [];
             try { vivo = _qcRegistros2026(); } catch (e) { vivo = []; }
-            return hist.concat(vivo);
+            // Normaliza el efector de cada registro (unifica variantes de los años).
+            return hist.concat(vivo).map(function (r) {
+                var c = qcCanonico(r.efector);
+                return {
+                    anio: r.anio,
+                    efector: c.corto,              // etiqueta canónica (clave de filtro/visualización)
+                    efectorOficial: c.oficial,     // nombre oficial completo (opción 3)
+                    efectorRaw: r.efector,         // original (por si se necesita)
+                    obra: r.obra, escalafon: r.escalafon, especialidad: r.especialidad, q: r.q
+                };
+            });
         }
 
         // Años canónicos (chips). 2026 siempre presente aunque el Sheet esté vacío.
@@ -5031,11 +5134,20 @@
             if (!lista.length) { cont.innerHTML = '<div class="qc-vacio-check">Sin opciones</div>'; return; }
 
             var html = '<div class="qc-opciones-conteo">' + lista.length + ' ' + (lista.length === 1 ? 'opción' : 'opciones') + '</div>';
+            // Para efector: mapa etiqueta corta -> nombre oficial (opción 3).
+            var oficialDe = {};
+            if (campo === 'efector') {
+                base.forEach(function (r) { if (r.efector && r.efectorOficial) oficialDe[r.efector] = r.efectorOficial; });
+            }
             html += lista.map(function (v) {
                 var checked = _qcFiltros[campo][v] ? ' checked' : '';
+                var textoExtra = '';
+                if (campo === 'efector' && oficialDe[v]) {
+                    textoExtra = '<span class="qc-opcion-oficial">' + _qcEsc(oficialDe[v]) + '</span>';
+                }
                 return '<label><input type="checkbox"' + checked +
                     ' onchange="qcToggleOpcion(\'' + campo + '\', this.getAttribute(\'data-val\'))"' +
-                    ' data-val="' + _qcEsc(v) + '"><span class="qc-opcion-txt">' + _qcEsc(v) + '</span></label>';
+                    ' data-val="' + _qcEsc(v) + '"><span class="qc-opcion-txt">' + _qcEsc(v) + textoExtra + '</span></label>';
             }).join('');
             cont.innerHTML = html;
         }
@@ -5100,9 +5212,10 @@
                 '<th>Escalafón</th><th>Especialidad</th><th class="hist-total">Q aprob.</th>' +
                 '</tr></thead><tbody>';
             filas.forEach(function (r) {
+                var efOficial = r.efectorOficial ? '<span class="qc-cel-oficial">' + _qcEsc(r.efectorOficial) + '</span>' : '';
                 h += '<tr>' +
                     '<td>' + _qcEsc(r.anio) + '</td>' +
-                    '<td class="hist-col-hosp">' + _qcEsc(r.efector) + '</td>' +
+                    '<td class="hist-col-hosp" title="' + _qcEsc(r.efectorOficial || r.efector) + '">' + _qcEsc(r.efector) + efOficial + '</td>' +
                     '<td class="hist-col-hosp">' + _qcEsc(r.obra || '—') + '</td>' +
                     '<td>' + _qcEsc(r.escalafon || '—') + '</td>' +
                     '<td>' + _qcEsc(r.especialidad || '—') + '</td>' +
