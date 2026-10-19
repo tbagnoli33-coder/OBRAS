@@ -633,6 +633,33 @@
         .qc-opcion-txt { flex: 1; font-weight: 600; }
         .qc-opcion-oficial { display: block; font-size: 9px; font-weight: 400; color: #888; margin-top: 1px; }
         .qc-cel-oficial { display: block; font-size: 9px; font-weight: 400; color: #888; white-space: normal; }
+        /* Tabla de resultados Q CARGOS: comprimida para entrar sin scroll horizontal. */
+        table.hist-tabla.qc-tabla { font-size: 10px; table-layout: fixed; width: 100%; }
+        table.hist-tabla.qc-tabla th, table.hist-tabla.qc-tabla td {
+            padding: 4px 5px; white-space: normal; word-break: break-word; vertical-align: top;
+        }
+        /* Anchos por columna (porcentajes; suman ~100%). */
+        table.hist-tabla.qc-tabla col.qc-c-anio { width: 5%; }
+        table.hist-tabla.qc-tabla col.qc-c-efector { width: 17%; }
+        table.hist-tabla.qc-tabla col.qc-c-obra { width: 22%; }
+        table.hist-tabla.qc-tabla col.qc-c-escalafon { width: 15%; }
+        table.hist-tabla.qc-tabla col.qc-c-especialidad { width: 16%; }
+        table.hist-tabla.qc-tabla col.qc-c-expediente { width: 18%; }
+        table.hist-tabla.qc-tabla col.qc-c-q { width: 7%; }
+        table.hist-tabla.qc-tabla td.qc-cel-exp { white-space: normal; }
+        /* Sin sticky horizontal en Q CARGOS (ya no hay scroll a la derecha). */
+        table.hist-tabla.qc-tabla th.hist-col-hosp, table.hist-tabla.qc-tabla td.hist-col-hosp {
+            position: static; text-align: left;
+        }
+        /* Botón copiar expediente */
+        .qc-exp-wrap { display: flex; align-items: flex-start; gap: 4px; }
+        .qc-exp-txt { flex: 1; word-break: break-all; }
+        .qc-btn-copiar {
+            flex: none; cursor: pointer; border: 1px solid var(--gris-bordes); background: var(--blanco);
+            border-radius: 4px; font-size: 10px; line-height: 1; padding: 2px 4px; color: var(--azul-oscuro);
+        }
+        .qc-btn-copiar:hover { background: var(--celeste); }
+        .qc-btn-copiar.ok { background: #5fd0bf; border-color: #5fd0bf; }
         .qc-opciones-conteo { font-size: 10px; color: #999; font-weight: 600; padding: 2px 4px 6px; }
         .qc-dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .qc-vacio-check { font-size: 10px; color: #999; font-style: italic; padding: 6px; text-align: center; }
@@ -4908,6 +4935,40 @@
             });
         }
 
+        // Celda de expediente con botón de copiar al portapapeles.
+        function _qcCeldaExp(exp) {
+            var e = (exp || '').trim();
+            if (!e) return '—';
+            // data-exp lleva el texto crudo (escapado para atributo) para copiar tal cual.
+            return '<span class="qc-exp-wrap">' +
+                '<span class="qc-exp-txt">' + _qcEsc(e) + '</span>' +
+                '<button class="qc-btn-copiar" title="Copiar expediente" data-exp="' + _qcEsc(e) + '" ' +
+                'onclick="qcCopiarExp(this)">⧉</button></span>';
+        }
+
+        // Copia el expediente al portapapeles. Feedback visual breve (✓).
+        function qcCopiarExp(btn) {
+            var texto = btn.getAttribute('data-exp') || '';
+            function ok() {
+                var prev = btn.textContent;
+                btn.textContent = '✓'; btn.classList.add('ok');
+                setTimeout(function () { btn.textContent = prev; btn.classList.remove('ok'); }, 1200);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(texto).then(ok, function () { _qcCopiarFallback(texto, ok); });
+            } else {
+                _qcCopiarFallback(texto, ok);
+            }
+        }
+        function _qcCopiarFallback(texto, ok) {
+            try {
+                var ta = document.createElement('textarea');
+                ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                document.execCommand('copy'); document.body.removeChild(ta); ok();
+            } catch (e) { /* si falla, no hace nada */ }
+        }
+
         // ---- Normalización de efectores (nombres oficiales del listado de siglas) ----
         // Unifica las variantes de cada año a una forma canónica. Opción 3:
         // devuelve { corto, oficial } (etiqueta legible + nombre oficial completo).
@@ -5209,7 +5270,12 @@
             var porAnio = {}; QC_ANIOS.forEach(function (a) { porAnio[a] = 0; });
             filas.forEach(function (r) { porAnio[r.anio] = (porAnio[r.anio] || 0) + r.q; });
 
-            var h = '<div class="hist-tabla-wrap"><table class="hist-tabla"><thead><tr>' +
+            var h = '<div class="hist-tabla-wrap"><table class="hist-tabla qc-tabla">' +
+                '<colgroup>' +
+                '<col class="qc-c-anio"><col class="qc-c-efector"><col class="qc-c-obra">' +
+                '<col class="qc-c-escalafon"><col class="qc-c-especialidad"><col class="qc-c-expediente">' +
+                '<col class="qc-c-q"></colgroup>' +
+                '<thead><tr>' +
                 '<th>Año</th><th class="hist-col-hosp">Efector</th><th class="hist-col-hosp">Obra</th>' +
                 '<th>Escalafón</th><th>Especialidad</th><th>Expediente</th><th class="hist-total">Q aprob.</th>' +
                 '</tr></thead><tbody>';
@@ -5221,7 +5287,7 @@
                     '<td class="hist-col-hosp">' + _qcEsc(r.obra || '—') + '</td>' +
                     '<td>' + _qcEsc(r.escalafon || '—') + '</td>' +
                     '<td>' + _qcEsc(r.especialidad || '—') + '</td>' +
-                    '<td>' + _qcEsc(r.expediente || '—') + '</td>' +
+                    '<td class="qc-cel-exp">' + _qcCeldaExp(r.expediente) + '</td>' +
                     '<td class="hist-total">' + r.q + '</td>' +
                     '</tr>';
             });
