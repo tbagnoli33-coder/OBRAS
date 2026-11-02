@@ -29,7 +29,7 @@
 
         .encabezado-superior { 
             position: relative;
-            height: 135px; 
+            height: 92px; 
             background-color: var(--azul-oscuro); 
             border-bottom: 4px solid var(--amarillo); 
             display: flex; 
@@ -125,6 +125,125 @@
         @media (max-width: 768px) {
             #indicador-carga-header { font-size: 10px; padding: 5px 11px; gap: 6px; max-width: 60%; top: 16px; transform: translateX(-50%); }
         }
+
+        /* ===== FRANJA "PRÓXIMAS OBRAS" — línea de tiempo de hitos ===== */
+        .franja-obras {
+            flex-shrink: 0; background: var(--blanco);
+            border-bottom: 1px solid var(--gris-bordes);
+            padding: 8px 16px 6px; display: flex; align-items: stretch; gap: 16px;
+            z-index: 9;
+        }
+        .franja-obras-tit { flex: none; display: flex; flex-direction: column; justify-content: center; min-width: 110px; }
+        .franja-obras-label { font-size: 11px; font-weight: 800; color: var(--azul-oscuro); letter-spacing: .5px; }
+        .franja-obras-sub { font-size: 9px; color: #9aa4aa; line-height: 1.2; margin-top: 2px; }
+
+        /* Carril de la línea de tiempo (eje + hitos) */
+        .franja-obras-track {
+            flex: 1; position: relative; overflow-x: auto; overflow-y: hidden;
+            display: flex; align-items: flex-start; gap: 0; padding: 2px 0 4px;
+        }
+        .franja-obras-track::-webkit-scrollbar { height: 6px; }
+        .franja-obras-track::-webkit-scrollbar-thumb { background: var(--gris-bordes); border-radius: 4px; }
+        /* Eje horizontal continuo detrás de los hitos */
+        .franja-eje {
+            position: absolute; left: 0; right: 0; top: 20px; height: 2px;
+            background: var(--gris-bordes); z-index: 0;
+        }
+
+        /* Un hito = punto sobre el eje + contenido. */
+        .franja-hito {
+            position: relative; z-index: 1; flex: none; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 0 10px; text-align: center;
+        }
+        .franja-hito .fh-punto {
+            width: 11px; height: 11px; border-radius: 50%; margin-top: 15px;
+            background: var(--celeste); border: 2px solid var(--azul-oscuro); box-sizing: border-box;
+            transition: transform .12s;
+        }
+        .franja-hito:hover .fh-punto { transform: scale(1.35); }
+        .franja-hito .fh-fecha { font-size: 10px; font-weight: 800; color: var(--azul-oscuro); margin-top: 4px; }
+
+        /* Nivel 1 (próximas 3 meses): caja con el título de la obra. */
+        .franja-hito.nivel-1 .fh-punto { background: var(--amarillo); }
+        .franja-hito.nivel-1 .fh-caja {
+            margin-top: 5px; max-width: 128px; background: var(--gris-claro);
+            border: 1px solid var(--gris-bordes); border-radius: 6px; padding: 4px 7px;
+        }
+        .franja-hito.nivel-1 .fh-obra {
+            font-size: 10px; font-weight: 700; color: var(--azul-oscuro); line-height: 1.2;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .franja-hito.nivel-1 .fh-efector {
+            font-size: 8px; color: #9aa4aa; margin-top: 2px; line-height: 1.1;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 114px;
+        }
+        .franja-hito.nivel-1:hover .fh-caja { border-color: var(--amarillo); background: var(--blanco); }
+
+        /* Nivel 2 (resto del año en curso) y 3 (año siguiente+): sin caja, texto chico. */
+        .franja-hito.nivel-2 .fh-punto, .franja-hito.nivel-3 .fh-punto { width: 8px; height: 8px; margin-top: 16px; }
+        .franja-hito.nivel-2 .fh-fecha, .franja-hito.nivel-3 .fh-fecha { font-size: 9px; font-weight: 700; color: #7d8890; }
+        .franja-hito.nivel-2 .fh-obra, .franja-hito.nivel-3 .fh-obra {
+            font-size: 8px; color: #9aa4aa; margin-top: 1px; max-width: 90px; line-height: 1.1;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .franja-hito.nivel-3 { opacity: .78; }
+        .franja-hito.nivel-3 .fh-punto { background: var(--gris-bordes); }
+
+        /* Etiqueta de tramo (separa próximas / este año / año siguiente) */
+        .franja-tramo {
+            position: relative; z-index: 1; flex: none; align-self: center;
+            font-size: 8px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase;
+            color: #b4bcc1; padding: 0 10px; border-left: 1px dashed var(--gris-bordes);
+            margin-left: 4px; align-self: stretch; display: flex; align-items: center;
+        }
+        .franja-obras-vacio { font-size: 11px; color: #9aa4aa; font-style: italic; align-self: center; padding: 8px; }
+        /* Banner cuando se muestra una sola obra (entrada desde la línea de tiempo/buscador) */
+        .banner-obra-unica {
+            width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
+            gap: 12px; flex-wrap: wrap; background: var(--gris-claro); border: 1px solid var(--gris-bordes);
+            border-left: 4px solid var(--amarillo); border-radius: 8px; padding: 8px 14px; margin-bottom: 12px;
+            font-size: 12px; color: var(--azul-oscuro);
+        }
+        .btn-ver-todas {
+            font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; cursor: pointer;
+            border: 1.5px solid var(--azul-oscuro); background: var(--azul-oscuro); color: var(--blanco);
+            border-radius: 50px; padding: 5px 14px; white-space: nowrap;
+        }
+        .btn-ver-todas:hover { background: var(--celeste); color: var(--azul-oscuro); border-color: var(--celeste); }
+        /* Resaltado temporal del cajón de obra al enfocarlo desde la línea de tiempo/buscador */
+        .cajon-enfocado { animation: pulso-enfoque 2.6s ease; box-shadow: 0 0 0 3px var(--amarillo); border-radius: 10px; }
+        @keyframes pulso-enfoque {
+            0% { box-shadow: 0 0 0 4px var(--amarillo); }
+            60% { box-shadow: 0 0 0 3px var(--amarillo); }
+            100% { box-shadow: 0 0 0 0 rgba(255,204,0,0); }
+        }
+        /* Botón "sin fecha" */
+        .franja-btn-sinfecha {
+            margin-top: 4px; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700;
+            cursor: pointer; border: 1px solid var(--gris-bordes); background: var(--blanco);
+            color: var(--azul-oscuro); border-radius: 50px; padding: 3px 9px; white-space: nowrap;
+        }
+        .franja-btn-sinfecha:hover { background: var(--celeste); border-color: var(--celeste); }
+        /* Obra DESPRIORIZADA en la línea: color naranja suave + más chica + etiqueta */
+        .franja-hito.despriorizado .fh-punto { background: var(--naranja-suave); border-color: var(--naranja-fuerte); }
+        .franja-hito.nivel-1.despriorizado .fh-caja { border-color: var(--naranja-suave); background: #fff7f1; }
+        .franja-hito.nivel-1.despriorizado .fh-obra { font-size: 9px; }
+        .franja-hito.nivel-1.despriorizado .fh-caja { max-width: 112px; }
+        .fh-tag {
+            display: inline-block; font-size: 7px; font-weight: 800; letter-spacing: .3px; text-transform: uppercase;
+            color: var(--naranja-fuerte); background: #fde6d8; border-radius: 4px; padding: 1px 4px; margin: 2px 0;
+        }
+        .fh-tag-min { font-size: 7px; color: var(--naranja-fuerte); font-weight: 700; }
+        /* Tabla del modal sin-fecha */
+        .sf-tabla { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .sf-tabla th { background: var(--azul-oscuro); color: var(--blanco); padding: 6px 8px; text-align: left; font-size: 10px; text-transform: uppercase; position: sticky; top: 0; }
+        .sf-tabla td { padding: 5px 8px; border-bottom: 1px solid var(--gris-bordes); cursor: pointer; }
+        .sf-tabla tr:hover td { background: var(--gris-claro); }
+        .sf-tabla .sf-desprior td { color: var(--naranja-fuerte); }
+        .sf-badge { font-size: 8px; font-weight: 800; text-transform: uppercase; padding: 1px 6px; border-radius: 50px; }
+        .sf-badge.activa { background: rgba(141,226,214,.3); color: #11796a; }
+        .sf-badge.desprior { background: #fde6d8; color: var(--naranja-fuerte); }
 
         .contenedor-principal { display: flex; flex: 1; overflow: hidden; background-color: var(--blanco); position: relative; }
 
@@ -1564,6 +1683,55 @@
         </div>
     </header>
 
+    <!-- =====================================================================
+         LÍNEA DE TIEMPO "PRÓXIMAS OBRAS" — franja fija bajo el header.
+         Muestra obras con FECHA FIN entre hoy y +3 meses, ordenadas por fecha.
+         Visible en todos los módulos (está fuera del área de módulos/overlays).
+         ===================================================================== -->
+    <div id="franja-proximas-obras" class="franja-obras">
+        <div class="franja-obras-tit">
+            <span class="franja-obras-label">⏱ PRÓXIMAS OBRAS</span>
+            <span class="franja-obras-sub">por fecha de finalización</span>
+            <div id="franja-sinfecha-slot"></div>
+        </div>
+        <div id="franja-obras-track" class="franja-obras-track"></div>
+    </div>
+
+    <!-- Modal "Obras sin fecha" -->
+    <div class="modal-overlay" id="modal-sinfecha" onclick="cerrarSinFechaAfuera(event)"
+         role="dialog" aria-modal="true" aria-label="Obras sin fecha de finalización">
+        <div class="hist-modal-contenido" style="width:min(900px,94vw);">
+            <h2>📋 Obras sin fecha de finalización</h2>
+            <div class="hist-modal-cuerpo">
+                <div class="hist-nota">
+                    Obras y proyectos que <strong>no tienen FECHA FIN cargada</strong> (por eso no aparecen en la línea
+                    de tiempo). Podés filtrar por efector, tipo y prioridad.
+                </div>
+                <div class="hist-controles">
+                    <label>Buscar:</label>
+                    <input type="text" id="sf-buscar" class="qc-input" style="max-width:220px;" placeholder="Obra o efector..." oninput="renderSinFecha()">
+                    <label>Prioridad:</label>
+                    <select id="sf-prioridad" class="qc-input" style="max-width:150px;" onchange="renderSinFecha()">
+                        <option value="">Todas</option>
+                        <option value="activa">Activas</option>
+                        <option value="desprior">Despriorizadas</option>
+                    </select>
+                    <label>Orden:</label>
+                    <select id="sf-orden" class="qc-input" style="max-width:150px;" onchange="renderSinFecha()">
+                        <option value="efector">Por efector</option>
+                        <option value="obra">Por obra</option>
+                        <option value="tipo">Por tipo</option>
+                    </select>
+                </div>
+                <div id="sf-resumen" class="hist-resumen"></div>
+                <div id="sf-vista"></div>
+            </div>
+            <div class="hist-modal-footer">
+                <button class="hist-btn hist-btn-secundario" onclick="cerrarSinFecha()">CERRAR</button>
+            </div>
+        </div>
+    </div>
+
     <div class="contenedor-principal">
         
         <!-- PANEL IZQUIERDO CON AGRUPADORES Y BOTÓN INFERIOR DE AÑADIR -->
@@ -2128,12 +2296,186 @@
         function inicializarHospitales() {
             renderizarHospitalesNav();
             if (typeof renderizarBarraEtiquetas === 'function') renderizarBarraEtiquetas();
+            if (typeof renderizarFranjaObras === 'function') renderizarFranjaObras();
             const selectModal = document.getElementById('nuevo-hospital');
             selectModal.innerHTML = '<option value="" disabled selected>Seleccioná un Hospital...</option>';
             Object.keys(datosSheets).filter(esEfectorNavegable).sort().forEach(hosp => {
                 selectModal.innerHTML += `<option value="${hosp}">${nombreEfectorDisplay(hosp)}</option>`;
             });
             actualizarInfoFlotante();
+        }
+
+        // ===================================================================
+        // FRANJA "PRÓXIMAS OBRAS" — línea de tiempo bajo el header.
+        // Niveles por FECHA FIN:
+        //   nivel 1: hoy .. +3 meses (próximas a inaugurarse)   -> tarjeta grande
+        //   nivel 2: +3 meses .. 31/12 del año en curso         -> mediana
+        //   nivel 3: desde 1/1 del año siguiente en adelante    -> chica/tenue
+        // Fuente: datosSheets (obras del visualizador). Clic -> entra al efector.
+        // ===================================================================
+        function renderizarFranjaObras() {
+            var track = document.getElementById('franja-obras-track');
+            if (!track) return;
+
+            var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+            var en3m = new Date(hoy); en3m.setMonth(en3m.getMonth() + 3);
+            var finAnio = new Date(hoy.getFullYear(), 11, 31, 23, 59, 59);
+
+            // Recolectar obras: con fecha -> línea de tiempo; sin fecha -> lista aparte.
+            var items = [];
+            _franjaSinFecha = [];   // global, para el modal "sin fecha"
+            Object.keys(datosSheets).forEach(function (ef) {
+                if (!esEfectorNavegable(ef)) return;
+                (datosSheets[ef] || []).forEach(function (pedido, idxObra) {
+                    var desprior = (pedido.prioridad === 'DESPRIORIZADO');
+                    var reg = {
+                        efector: ef, idxObra: idxObra,
+                        obra: pedido.detalle || '(sin denominación)',
+                        tipo: pedido.tipo || '', desprior: desprior,
+                        fechaTxt: pedido.fecha || 'SIN FECHA'
+                    };
+                    var rango = parsearFecha(pedido.fecha);
+                    var f = rango ? (rango.hasta || rango.desde) : null;
+                    // Sin fecha real (no parseable) -> a la lista aparte.
+                    if (!rango || !f || isNaN(f.getTime())) { _franjaSinFecha.push(reg); return; }
+                    if (f < hoy) return;                      // ya pasó -> fuera de la línea
+                    reg.fecha = f; reg.soloAnio = rango.soloAnio;
+                    items.push(reg);
+                });
+            });
+
+            items.sort(function (a, b) { return a.fecha - b.fecha; });
+
+            function nivelDe(f) {
+                if (f <= en3m) return 1;
+                if (f <= finAnio) return 2;
+                return 3;
+            }
+            function fmt(f, soloAnio) {
+                if (soloAnio) return String(f.getFullYear());
+                var dd = ('0' + f.getDate()).slice(-2);
+                var mm = ('0' + (f.getMonth() + 1)).slice(-2);
+                var aa = String(f.getFullYear()).slice(-2);
+                return dd + '/' + mm + '/' + aa;
+            }
+
+            // Botón "sin fecha" (siempre visible si hay alguna).
+            var btnSinFecha = _franjaSinFecha.length
+                ? '<button class="franja-btn-sinfecha" onclick="abrirSinFecha()" title="Ver obras sin fecha de finalización">📋 Sin fecha (' + _franjaSinFecha.length + ')</button>'
+                : '';
+
+            if (!items.length) {
+                track.innerHTML = '<div class="franja-obras-vacio">No hay obras con fecha de finalización próxima.</div>';
+                _franjaPintarBtnSinFecha(btnSinFecha);
+                return;
+            }
+
+            // Limitar NIVEL 1 (próximas) a 8 como máximo.
+            var MAX_N1 = 8;
+            var countN1 = 0, ocultasN1 = 0;
+            var etiquetasTramo = { 1: 'Próximas', 2: 'Durante ' + hoy.getFullYear(), 3: (hoy.getFullYear() + 1) + ' en adelante' };
+            var html = '<div class="franja-eje"></div>';
+            var nivelPrev = 0;
+            items.forEach(function (it) {
+                var n = nivelDe(it.fecha);
+                if (n === 1) {
+                    countN1++;
+                    if (countN1 > MAX_N1) { ocultasN1++; return; }  // corta en 8
+                }
+                if (n !== nivelPrev) {
+                    html += '<div class="franja-tramo">' + _franjaEsc(etiquetasTramo[n]) + '</div>';
+                    nivelPrev = n;
+                }
+                var efDisplay = (typeof nombreEfectorDisplay === 'function') ? nombreEfectorDisplay(it.efector) : it.efector;
+                var marca = it.desprior ? ' despriorizado' : '';
+                var titleAttr = _franjaEsc(it.obra + ' — ' + efDisplay + ' (' + fmt(it.fecha, it.soloAnio) + ')' + (it.desprior ? ' · DESPRIORIZADO' : ''));
+                var onclick = 'onclick="entrarHospital(\'' + _franjaEscAttr(it.efector) + '\', ' + it.idxObra + ')"';
+                var etiqueta = it.desprior ? '<span class="fh-tag">desprior.</span>' : '';
+                if (n === 1) {
+                    html += '<div class="franja-hito nivel-1' + marca + '" title="' + titleAttr + '" ' + onclick + '>' +
+                        '<span class="fh-punto"></span>' +
+                        '<span class="fh-fecha">' + _franjaEsc(fmt(it.fecha, it.soloAnio)) + '</span>' +
+                        '<span class="fh-caja"><span class="fh-obra">' + _franjaEsc(it.obra) + '</span>' + etiqueta +
+                        '<span class="fh-efector">' + _franjaEsc(efDisplay) + '</span></span>' +
+                        '</div>';
+                } else {
+                    html += '<div class="franja-hito nivel-' + n + marca + '" title="' + titleAttr + '" ' + onclick + '>' +
+                        '<span class="fh-punto"></span>' +
+                        '<span class="fh-fecha">' + _franjaEsc(fmt(it.fecha, it.soloAnio)) + '</span>' +
+                        '<span class="fh-obra">' + _franjaEsc(it.obra) + (it.desprior ? ' <span class="fh-tag-min">(despr.)</span>' : '') + '</span>' +
+                        '</div>';
+                }
+            });
+            track.innerHTML = html;
+            _franjaPintarBtnSinFecha(btnSinFecha);
+        }
+        // Coloca el botón "sin fecha" en el área de título de la franja (debajo del subtítulo).
+        function _franjaPintarBtnSinFecha(btnHtml) {
+            var cont = document.getElementById('franja-sinfecha-slot');
+            if (cont) cont.innerHTML = btnHtml || '';
+        }
+        var _franjaSinFecha = [];
+        function _franjaEsc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+            });
+        }
+        function _franjaEscAttr(s) {
+            return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        // ---- Modal "Obras sin fecha" ----
+        function abrirSinFecha() {
+            renderSinFecha();
+            document.getElementById('modal-sinfecha').classList.add('abierto');
+        }
+        function cerrarSinFecha() { document.getElementById('modal-sinfecha').classList.remove('abierto'); }
+        function cerrarSinFechaAfuera(ev) { if (ev.target && ev.target.id === 'modal-sinfecha') cerrarSinFecha(); }
+
+        function renderSinFecha() {
+            var cont = document.getElementById('sf-vista');
+            var resumen = document.getElementById('sf-resumen');
+            if (!cont) return;
+            var txt = (document.getElementById('sf-buscar') || {}).value || '';
+            var prio = (document.getElementById('sf-prioridad') || {}).value || '';
+            var orden = (document.getElementById('sf-orden') || {}).value || 'efector';
+            var nt = function (s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
+            var q = nt(txt).trim();
+
+            var lista = (_franjaSinFecha || []).filter(function (r) {
+                if (prio === 'activa' && r.desprior) return false;
+                if (prio === 'desprior' && !r.desprior) return false;
+                if (q) {
+                    var ef = (typeof nombreEfectorDisplay === 'function') ? nombreEfectorDisplay(r.efector) : r.efector;
+                    if (nt(r.obra + ' ' + ef + ' ' + r.efector).indexOf(q) === -1) return false;
+                }
+                return true;
+            });
+            function efD(r) { return (typeof nombreEfectorDisplay === 'function') ? nombreEfectorDisplay(r.efector) : r.efector; }
+            lista.sort(function (a, b) {
+                if (orden === 'obra') return a.obra.localeCompare(b.obra);
+                if (orden === 'tipo') return (a.tipo || '').localeCompare(b.tipo || '') || efD(a).localeCompare(efD(b));
+                return efD(a).localeCompare(efD(b)) || a.obra.localeCompare(b.obra);
+            });
+
+            if (resumen) resumen.textContent = lista.length + ' obra(s) sin fecha de finalización.';
+            if (!lista.length) { cont.innerHTML = '<div class="hist-vacio">Sin resultados.</div>'; return; }
+
+            var h = '<div class="hist-tabla-wrap"><table class="sf-tabla"><thead><tr>' +
+                '<th>Efector</th><th>Obra</th><th>Tipo</th><th>Prioridad</th></tr></thead><tbody>';
+            lista.forEach(function (r) {
+                var ef = efD(r);
+                var badge = r.desprior
+                    ? '<span class="sf-badge desprior">Desprior.</span>'
+                    : '<span class="sf-badge activa">Activa</span>';
+                h += '<tr class="' + (r.desprior ? 'sf-desprior' : '') + '" onclick="cerrarSinFecha(); entrarHospital(\'' + _franjaEscAttr(r.efector) + '\', ' + r.idxObra + ')" title="Abrir ' + _franjaEsc(ef) + '">' +
+                    '<td>' + _franjaEsc(ef) + '</td>' +
+                    '<td>' + _franjaEsc(r.obra) + '</td>' +
+                    '<td>' + _franjaEsc(r.tipo || '—') + '</td>' +
+                    '<td>' + badge + '</td></tr>';
+            });
+            h += '</tbody></table></div>';
+            cont.innerHTML = h;
         }
 
         function irAlInicio() {
@@ -2186,11 +2528,11 @@
                 allHosp.forEach(hosp => {
                     if (!esEfectorNavegable(hosp)) return;
                     const pedidos = datosSheets[hosp] || [];
-                    pedidos.forEach(p => {
+                    pedidos.forEach((p, idxObra) => {
                         const det = (p.detalle || '').trim();
                         if (!det) return;
                         if (matchTexto(det)) {
-                            obras.push({ efector: hosp, detalle: det });
+                            obras.push({ efector: hosp, detalle: det, idxObra: idxObra });
                         }
                     });
                 });
@@ -2216,7 +2558,7 @@
                         const grupo = grupoDe[o.efector];
                         const ubic = grupo ? `${nombreEfectorDisplay(o.efector)} · en ${grupo}` : `en ${nombreEfectorDisplay(o.efector)}`;
                         html += `
-                            <div class="caja-hospital caja-obra" onclick="entrarHospital('${_escAttr(o.efector)}')" title="Abrir ${_escAttr(o.efector)}">
+                            <div class="caja-hospital caja-obra" onclick="entrarHospital('${_escAttr(o.efector)}', ${o.idxObra})" title="Abrir ${_escAttr(o.efector)}">
                                 <div class="obra-nombre">${_escHtml(o.detalle)}</div>
                                 <div class="obra-ubicacion">↳ ${_escHtml(ubic)}</div>
                             </div>`;
@@ -2341,7 +2683,7 @@
 
         let hospitalActual = ""; 
 
-        function entrarHospital(nombreHospital) {
+        function entrarHospital(nombreHospital, obraAEnfocar) {
             let esHospitalDistinto = (nombreHospital !== hospitalActual);
             hospitalActual = nombreHospital;
             // Desactivar modo global si estaba activo
@@ -2364,10 +2706,27 @@
             const grilla = document.getElementById('grilla-pedidos');
             grilla.innerHTML = '';
 
+            // Enfoque de OBRA ÚNICA: si se entró clickeando una obra puntual, se muestra
+            // SOLO ese cajón + un banner para ver todas las obras del efector.
+            var _idxUnico = (obraAEnfocar !== undefined && obraAEnfocar !== null && obraAEnfocar !== '')
+                ? parseInt(obraAEnfocar, 10) : -1;
+            if (_idxUnico >= 0) {
+                var _ped = (datosSheets[nombreHospital] || [])[_idxUnico];
+                var _nomObra = _ped ? (_ped.detalle || '(sin denominación)') : '';
+                grilla.innerHTML =
+                    '<div class="banner-obra-unica">' +
+                    '<span>Mostrando 1 obra: <strong>' + _escHtml(_nomObra) + '</strong></span>' +
+                    '<button class="btn-ver-todas" onclick="entrarHospital(\'' + _escAttr(nombreHospital) + '\')">Ver todas las obras del efector ▸</button>' +
+                    '</div>';
+            }
+
             if(datosSheets[nombreHospital]) {
                 datosSheets[nombreHospital].forEach((pedido, indexObra) => {
+                    // Obra única: saltar todas menos la enfocada.
+                    if (_idxUnico >= 0 && indexObra !== _idxUnico) return;
                     // El filtro de búsqueda avanzada / etiquetas se evalúa una sola vez por pedido.
-                    if (!pedidoPasaTodosLosFiltros(pedido)) return;
+                    // (al enfocar una obra puntual, ignoramos filtros para garantizar que se vea)
+                    if (_idxUnico < 0 && !pedidoPasaTodosLosFiltros(pedido)) return;
 
                     var esDespriorizado = (pedido.prioridad === "DESPRIORIZADO");
 
@@ -2382,6 +2741,15 @@
 
                     // Un pedido sin cargos se trata como ACTIVO (o DESPRIORIZADO) con 0 cargos.
                     var sinCargos = (pedido.cargos.length === 0);
+
+                    if (_idxUnico >= 0) {
+                        // OBRA ÚNICA: una sola card con todos los cargos (ignora filtros de estado).
+                        var tipoU = esDespriorizado ? 'DESPRIORIZADO' : 'ACTIVO';
+                        var listaU = (noResueltos.length > 0 || sinCargos) ? noResueltos : resueltos;
+                        var tipoCard = (noResueltos.length > 0 || sinCargos) ? tipoU : 'RESUELTO';
+                        grilla.innerHTML += armarCardPedido(nombreHospital, pedido, indexObra, listaU, tipoCard);
+                        return;
+                    }
 
                     // Card RESUELTO: cualquier pedido con al menos un cargo resuelto (incluidos los despriorizados).
                     if (filtrosActivos.RESUELTOS && resueltos.length > 0) {
@@ -2398,6 +2766,17 @@
                         grilla.innerHTML += armarCardPedido(nombreHospital, pedido, indexObra, noResueltos, 'DESPRIORIZADO');
                     }
                 });
+            }
+
+            // Resaltado breve del cajón único (efecto de "señalar").
+            if (_idxUnico >= 0) {
+                setTimeout(function () {
+                    var ids = ['cajon-obra-' + _idxUnico + '-act', 'cajon-obra-' + _idxUnico + '-res'];
+                    for (var i = 0; i < ids.length; i++) {
+                        var el = document.getElementById(ids[i]);
+                        if (el) { el.classList.add('cajon-enfocado'); (function (x) { setTimeout(function () { x.classList.remove('cajon-enfocado'); }, 2600); })(el); break; }
+                    }
+                }, 50);
             }
         }
 
